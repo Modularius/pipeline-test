@@ -3,6 +3,10 @@ version: "3.5"
 services:
   jaeger:
     image: jaegertracing/all-in-one:latest
+    profiles:
+      - no-broker-no-pipeline
+      - no-pipeline
+      - no-broker
     volumes:
       - "./jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
     command: --query.ui-config /etc/jaeger/jaeger-ui.json
@@ -20,6 +24,8 @@ services:
   redpanda:
     container_name: kafka
     image: docker.redpanda.com/redpandadata/redpanda:v23.1.11
+    profiles:
+      - no-pipeline
     command:
       - redpanda start
       - --smp 1
@@ -55,6 +61,8 @@ services:
   redpanda_console:
     container_name: kafka_console
     image: docker.redpanda.com/redpandadata/console:v2.2.4
+    profiles:
+      - no-pipeline
     entrypoint: /bin/sh
     command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
     # We don't need the console in general, so the following command only
@@ -89,6 +97,8 @@ services:
       mode: replicated
       replicas: 1
     image: supermusr-trace-to-events
+    profiles:
+      - no-broker
     environment:
       - RUST_LOG=${RUST_LOG}
     command:
@@ -110,6 +120,8 @@ services:
      - jaeger
      - redpanda
     image: supermusr-digitiser-aggregator
+    profiles:
+      - no-broker
     environment:
       - RUST_LOG=${RUST_LOG}
     command:
@@ -133,6 +145,8 @@ services:
      - jaeger
      - redpanda
     image: supermusr-nexus-writer
+    profiles:
+      - no-broker
     environment:
       - RUST_LOG=${RUST_LOG}
     command:

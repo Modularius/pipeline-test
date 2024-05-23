@@ -1,9 +1,5 @@
-. ./.vscode/Benchmark/Shell/lib.sh
-. ./.vscode/Benchmark/Shell/Tests/full.sh
-. ./.vscode/Benchmark/Shell/Tests/partial.sh
-. ./.vscode/Benchmark/Shell/Tests/typetests.sh
-. ./.vscode/Benchmark/Shell/Tests/benchmark.sh
-
+. ./.vscode/Benchmark/Shell/libs/lib.sh
+. ./.vscode/Benchmark/Shell/tests/tests.sh
 
 cargo build --release
 
