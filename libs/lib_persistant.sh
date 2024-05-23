@@ -13,19 +13,16 @@ run_trace_to_events() {
     GROUP="$1"
     OBS_ADDRESS="$2"
 
-    [ $INPUT = simulator ] \
-    && TRACE_TO_EVENTS_INPUT_MODE="--polarity positive --baseline=0" \
-    || TRACE_TO_EVENTS_INPUT_MODE="--polarity negative --baseline=100"
-    TRACE_TO_EVENTS_INPUT_MODE="--polarity positive --baseline=0"
-
-    echo "Using Input Mode '$TRACE_TO_EVENTS_INPUT_MODE' with detector settings '$TTE_INPUT_MODE'"
+    echo "Using detector settings '$TTE_INPUT_MODE'"
 
     echo "--" "--" "Executing Event Formation"
     $TRACE_TO_EVENTS \
         --broker $BROKER --group $GROUP \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
-        --observability-address $OBS_ADDRESS $TRACE_TO_EVENTS_INPUT_MODE \
+        --observability-address $OBS_ADDRESS \
+        --polarity $TTE_POLARITY \
+        --baseline $TTE_BASELINE \
         --otel-endpoint $OTEL_ENDPOINT \
         $TTE_INPUT_MODE  &
 }
