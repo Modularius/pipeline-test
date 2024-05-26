@@ -21,7 +21,7 @@ ALARMS_TOPIC=Alarms
 #SELOGS_TOPIC=ics-metadata
 #ALARMS_TOPIC=ics-alarms
 
-#cargo run --bin kafka-daq-report -- --broker 130.246.55.29:9092 --group=vis-3 --trace-topic=daq-traces-in
+#cargo run --bin diagnostics -- daq-trace --broker 130.246.55.29:9092 --group=vis-3 --topic=daq-traces-in
 #cargo run --bin trace-archiver-hdf5 -- --broker 130.246.55.29:9092 --group=vis-1 --trace-topic=daq-traces-in --file "Trace.nxs" --digitizer-count 12
 
 

@@ -8,6 +8,8 @@ send_run_start() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
+        $LOG_LEVEL \
+        $LOG_PATH \
         start --instrument-name $INSTRUMENT_NAME
 }
 
@@ -19,6 +21,8 @@ send_logdata() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
+        $LOG_LEVEL \
+        $LOG_PATH \
         log \
             --source-name "$SOURCE_NAME" \
             --value-type "$VALUE_TYPE" \
@@ -33,6 +37,8 @@ send_selog() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
+        $LOG_LEVEL \
+        $LOG_PATH \
         sample-env \
             --name "$SOURCE_NAME" \
             --values-type "$VALUE_TYPE" \
@@ -48,6 +54,8 @@ send_alarm() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
+        $LOG_LEVEL \
+        $LOG_PATH \
         alarm \
             --source-name "$SOURCE_NAME" \
             --severity "$SEVERITY" \
@@ -61,5 +69,7 @@ send_run_stop() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
+        $LOG_LEVEL \
+        $LOG_PATH \
         stop
 }

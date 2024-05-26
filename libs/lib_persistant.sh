@@ -24,6 +24,9 @@ run_trace_to_events() {
         --polarity $TTE_POLARITY \
         --baseline $TTE_BASELINE \
         --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_LEVEL \
+        $LOG_LEVEL \
+        $LOG_PATH \
         $TTE_INPUT_MODE  &
 }
 
@@ -34,8 +37,11 @@ run_aggregator() {
     $EVENT_AGGREGATOR \
         --broker $BROKER --group $GROUP \
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
-        --otel-endpoint $OTEL_ENDPOINT \
         --frame-ttl-ms 500 \
+        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_LEVEL \
+        $LOG_LEVEL \
+        $LOG_PATH \
         $DIGITIZERS &
 }
 
@@ -43,7 +49,6 @@ run_nexus_writer() {
     GROUP="$1"
 
     echo "--" "--" "Executing nexus-writer"
-    RUST_LOG=info
     $NEXUS_WRITER \
         --broker $BROKER --consumer-group "$GROUP" --observability-address "127.0.0.1:9091" \
         --control-topic $CONTROL_TOPIC \
@@ -53,6 +58,9 @@ run_nexus_writer() {
         --alarm-topic $CONTROL_TOPIC \
         --cache-run-ttl-ms 4000 \
         --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_LEVEL \
+        $LOG_LEVEL \
+        $LOG_PATH \
         --file-name "$NEXUS_OUTPUT_PATH" &
 }
 

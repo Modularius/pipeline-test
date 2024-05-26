@@ -4,9 +4,9 @@ services:
   jaeger:
     image: jaegertracing/all-in-one:latest
     profiles:
-      - no-broker-no-pipeline
-      - no-pipeline
       - no-broker
+      - broker
+      - all
     volumes:
       - "./jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
     command: --query.ui-config /etc/jaeger/jaeger-ui.json
@@ -25,7 +25,8 @@ services:
     container_name: kafka
     image: docker.redpanda.com/redpandadata/redpanda:v23.1.11
     profiles:
-      - no-pipeline
+      - broker
+      - all
     command:
       - redpanda start
       - --smp 1
@@ -62,7 +63,8 @@ services:
     container_name: kafka_console
     image: docker.redpanda.com/redpandadata/console:v2.2.4
     profiles:
-      - no-pipeline
+      - broker
+      - all
     entrypoint: /bin/sh
     command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
     # We don't need the console in general, so the following command only
@@ -90,15 +92,13 @@ services:
       - redpanda
 
   event-formation:
-    depends_on:
-     - jaeger
-     - redpanda
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 3
     image: supermusr-trace-to-events
     profiles:
-      - no-broker
+      - pipeline
+      - all
     environment:
       - RUST_LOG=${RUST_LOG}
     command:
@@ -116,12 +116,10 @@ services:
      - --cool-off=0
 
   frame-aggregation:
-    depends_on:
-     - jaeger
-     - redpanda
     image: supermusr-digitiser-aggregator
     profiles:
-      - no-broker
+      - pipeline
+      - all
     environment:
       - RUST_LOG=${RUST_LOG}
     command:
@@ -130,37 +128,27 @@ services:
      - --input-topic=${DAT_EVENT_TOPIC}
      - --output-topic=${FRAME_EVENT_TOPIC}
      - --otel-endpoint=${OTEL_ENDPOINT}
-     - --frame-ttl-ms=500
-     - --digitiser-ids=4
-     - --digitiser-ids=5
-     - --digitiser-ids=6
-     - --digitiser-ids=8
-     - --digitiser-ids=9
-     - --digitiser-ids=10
-     - --digitiser-ids=11
-
+     - --frame-ttl-ms=2500
+     - --digitiser-ids=${DIGITISERS}
 
   nexus-writer:
-    depends_on:
-     - jaeger
-     - redpanda
     image: supermusr-nexus-writer
     profiles:
-      - no-broker
+      - pipeline
+      - all
     environment:
       - RUST_LOG=${RUST_LOG}
     command:
      - --broker=${BROKER}
      - --consumer-group=nexus-writer
      - --observability-address=127.0.0.1:9091
-     - --frame-event-topic=${DAT_EVENT_TOPIC}
+     - --frame-event-topic=${FRAME_EVENT_TOPIC}
      - --control-topic=${CONTROL_TOPIC}
      - --log-topic=${LOGDATA_TOPIC}
      - --sample-env-topic=${SELOG_TOPIC}
      - --alarm-topic=${ALARM_TOPIC}
      - --cache-run-ttl-ms=4000
      - --otel-endpoint=${OTEL_ENDPOINT}
-     - --otel-level=${OTEL_LEVEL}
      - --file-name=home/Runs
     volumes:
       - "../${NEXUS_DEST}/:/home/Runs"
