@@ -13,7 +13,7 @@ SIMULATOR_CONFIG_SOURCE="simulator_configs/data.json"
 TTE_POLARITY=positive
 TTE_BASELINE=0
 TTE_INPUT_MODE="constant-phase-discriminator --threshold=10 --duration=1 --cool-off=0"
-DIGITIZERS="-d1 -d2 -d3 -d4 -d5 -d6 -d7 -d8"
+DIGITIZERS="-d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7"
 NEXUS_OUTPUT_PATH="Output/Local"
 
 LOG_LEVEL="--log-level=info"
