@@ -94,7 +94,7 @@ services:
   event-formation:
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
     image: supermusr-trace-to-events
     profiles:
       - pipeline
@@ -108,12 +108,17 @@ services:
      - --event-topic=${DAT_EVENT_TOPIC}
      - --observability-address=127.0.0.1:9090
      - --otel-endpoint=${OTEL_ENDPOINT}
+     - ${OTEL_LEVEL}
+     - ${LOG_PATH}
+     - ${LOG_LEVEL}
      - --polarity=positive
      - --baseline=34400
      - constant-phase-discriminator
      - --threshold=10
      - --duration=1
      - --cool-off=0
+    volumes:
+      - "../Logs:/Logs"
 
   frame-aggregation:
     image: supermusr-digitiser-aggregator
@@ -128,8 +133,13 @@ services:
      - --input-topic=${DAT_EVENT_TOPIC}
      - --output-topic=${FRAME_EVENT_TOPIC}
      - --otel-endpoint=${OTEL_ENDPOINT}
+     - ${OTEL_LEVEL}
+     - ${LOG_PATH}
+     - ${LOG_LEVEL}
      - --frame-ttl-ms=2500
      - --digitiser-ids=${DIGITISERS}
+    volumes:
+      - "../Logs:/Logs"
 
   nexus-writer:
     image: supermusr-nexus-writer
@@ -149,9 +159,14 @@ services:
      - --alarm-topic=${ALARM_TOPIC}
      - --cache-run-ttl-ms=4000
      - --otel-endpoint=${OTEL_ENDPOINT}
+     - ${OTEL_LEVEL}
+     - ${LOG_PATH}
+     - ${LOG_LEVEL}
+
      - --file-name=home/Runs
     volumes:
       - "../${NEXUS_DEST}/:/home/Runs"
+      - "../Logs:/Logs"
 
 volumes:
   redpanda: null

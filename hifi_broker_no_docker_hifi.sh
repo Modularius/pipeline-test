@@ -14,6 +14,10 @@ TTE_INPUT_MODE="constant-phase-discriminator --threshold=10 --duration=1 --cool-
 DIGITIZERS="-d4 -d5 -d6 -d4 -d8 -d9 -d10 -d11"
 NEXUS_OUTPUT_PATH="Output/HiFi"
 
+LOG_LEVEL="--log-level=info"
+LOG_PATH="--log-path=Logs"
+OTEL_LEVEL="--otel-level=info"
+
 . ./libs/lib.sh
 . ./tests/tests.sh
 

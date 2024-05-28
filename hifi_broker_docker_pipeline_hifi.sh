@@ -13,6 +13,10 @@ TTE_BASELINE=34400
 TTE_INPUT_MODE="constant-phase-discriminator --threshold=10 --duration=1 --cool-off=0"
 NEXUS_OUTPUT_PATH="Output/HiFi"
 
+LOG_LEVEL="--log-level=info"
+LOG_PATH="--log-path=Logs"
+OTEL_LEVEL="--otel-level=info"
+
 . ./libs/lib.sh
 . ./tests/tests.sh
 

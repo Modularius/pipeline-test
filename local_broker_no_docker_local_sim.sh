@@ -16,9 +16,9 @@ TTE_INPUT_MODE="constant-phase-discriminator --threshold=10 --duration=1 --cool-
 DIGITIZERS="-d1 -d2 -d3 -d4 -d5 -d6 -d7 -d8"
 NEXUS_OUTPUT_PATH="Output/Local"
 
-LOG_LEVEL="--log-level=trace"
-LOG_PATH="--log-path=logs"
-OTEL_LEVEL="--otel-level=trace"
+LOG_LEVEL="--log-level=info"
+LOG_PATH="--log-path=Logs"
+OTEL_LEVEL="--otel-level=info"
 
 . ./libs/lib.sh
 . ./tests/tests.sh
