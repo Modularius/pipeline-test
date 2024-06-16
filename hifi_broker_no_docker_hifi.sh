@@ -11,12 +11,10 @@ ALARMS_TOPIC=ics-alarms
 TTE_POLARITY=positive
 TTE_BASELINE=34400
 TTE_INPUT_MODE="constant-phase-discriminator --threshold=10 --duration=1 --cool-off=0"
-DIGITIZERS="-d4 -d5 -d6 -d4 -d8 -d9 -d10 -d11"
+DIGITIZERS="-d4 -d5 -d6 -d8 -d9 -d10 -d11"
 NEXUS_OUTPUT_PATH="Output/HiFi"
 
-LOG_LEVEL="--log-level=info"
-LOG_PATH="--log-path=Logs"
-OTEL_LEVEL="--otel-level=info"
+OTEL_LEVEL="--otel-level=off"
 
 . ./libs/lib.sh
 . ./tests/tests.sh
@@ -24,8 +22,20 @@ OTEL_LEVEL="--otel-level=info"
 docker compose --env-file ./configs/.env.hifi -f "./configs/docker-compose.yaml" --profile=all down
 docker compose --env-file ./configs/.env.hifi -f "./configs/docker-compose.yaml" --profile=no-broker up -d
 
-run_persistant_components
+export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
 
-#kill_persistant_components
+i=0
+while :
+do
+#run_persistant_components
+run_nexus_writer "nexus-writer"
+sleep 1
+send_run_start FrameEventRun$i HiFi "--time 2024-05-30T02:14:29.0Z"
+send_run_stop FrameEventRun$i HiFi "--time 2024-06-01T12:49:02.0Z"
+sleep 100
+kill_persistant_components
+sleep 1
+((i++))
+done
 
 #docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=no-broker-no-pipeline down

@@ -4,16 +4,7 @@
     "sample-rate": 100000000,
     "traces": [
         {
-            "source-type": { "digitisers": [
-                { "id": 0, "channels": { "min": 0, "max": 7 } },
-                { "id": 1, "channels": { "min": 8, "max": 15 } },
-                { "id": 2, "channels": { "min": 16, "max": 23 } },
-                { "id": 3, "channels": { "min": 24, "max": 31 } },
-                { "id": 4, "channels": { "min": 32, "max": 39 } },
-                { "id": 5, "channels": { "min": 40, "max": 47 } },
-                { "id": 6, "channels": { "min": 48, "max": 55 } },
-                { "id": 7, "channels": { "min": 56, "max": 63 } }
-            ]},
+            "source-type": { "aggregated-frame": { "channels": { "min": 0, "max": 7 } } },
             "frames": { "interval": { "min": 0, "max": 10 } },
             "pulses": [
                 {

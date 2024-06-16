@@ -109,8 +109,6 @@ services:
      - --observability-address=127.0.0.1:9090
      - --otel-endpoint=${OTEL_ENDPOINT}
      - ${OTEL_LEVEL}
-     - ${LOG_PATH}
-     - ${LOG_LEVEL}
      - --polarity=positive
      - --baseline=34400
      - constant-phase-discriminator
@@ -134,8 +132,6 @@ services:
      - --output-topic=${FRAME_EVENT_TOPIC}
      - --otel-endpoint=${OTEL_ENDPOINT}
      - ${OTEL_LEVEL}
-     - ${LOG_PATH}
-     - ${LOG_LEVEL}
      - --frame-ttl-ms=2500
      - --digitiser-ids=${DIGITISERS}
     volumes:
@@ -160,9 +156,6 @@ services:
      - --cache-run-ttl-ms=4000
      - --otel-endpoint=${OTEL_ENDPOINT}
      - ${OTEL_LEVEL}
-     - ${LOG_PATH}
-     - ${LOG_LEVEL}
-
      - --file-name=home/Runs
     volumes:
       - "../${NEXUS_DEST}/:/home/Runs"

@@ -13,10 +13,6 @@ TTE_BASELINE=34400
 TTE_INPUT_MODE="constant-phase-discriminator --threshold=10 --duration=1 --cool-off=0"
 NEXUS_OUTPUT_PATH="Output/HiFi"
 
-LOG_LEVEL="--log-level=info"
-LOG_PATH="--log-path=Logs"
-OTEL_LEVEL="--otel-level=info"
-
 . ./libs/lib.sh
 . ./tests/tests.sh
 
@@ -24,7 +20,14 @@ docker compose --env-file ./configs/.env.hifi -f "./configs/docker-compose.yaml"
 docker compose --env-file ./configs/.env.hifi -f "./configs/docker-compose.yaml" --profile=no-broker up -d
 docker compose --env-file ./configs/.env.hifi -f "./configs/docker-compose.yaml" --profile=pipeline up -d
 
-#kill_persistant_components
 
+i=0
+while :
+do
+    send_run_start DeadRun$i HiFi
+    sleep 100
+    send_run_stop DeadRun$i HiFi
+    ((i++))
+done
 #docker compose --env-file ./configs/.env.hifi -f "./configs/docker-compose.yaml" --profile=no-broker down
 #docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=pipeline down

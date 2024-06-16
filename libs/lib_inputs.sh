@@ -9,8 +9,7 @@ run_trace_simulator() {
         --broker $BROKER \
         --trace-topic $TRACE_TOPIC \
         --otel-endpoint $OTEL_ENDPOINT \
-        $LOG_LEVEL \
-        $LOG_PATH \
+        $OTEL_LEVEL \
         defined "$SIMULATOR_CONFIG_SOURCE" \
         --repeat=1
 }

@@ -4,12 +4,13 @@ RUN_SIMULATOR="../supermusr-data-pipeline/target/release/run-simulator"
 send_run_start() {
     RUN_NAME=$1
     INSTRUMENT_NAME=$2
+    TIME="$3"
 
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
-        $LOG_LEVEL \
-        $LOG_PATH \
+        $OTEL_LEVEL \
+        $TIME \
         start --instrument-name $INSTRUMENT_NAME
 }
 
@@ -21,8 +22,8 @@ send_logdata() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
-        $LOG_LEVEL \
-        $LOG_PATH \
+        $OTEL_LEVEL \
+        $TIME \
         log \
             --source-name "$SOURCE_NAME" \
             --value-type "$VALUE_TYPE" \
@@ -37,8 +38,8 @@ send_selog() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
-        $LOG_LEVEL \
-        $LOG_PATH \
+        $OTEL_LEVEL \
+        $TIME \
         sample-env \
             --name "$SOURCE_NAME" \
             --values-type "$VALUE_TYPE" \
@@ -54,8 +55,8 @@ send_alarm() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
-        $LOG_LEVEL \
-        $LOG_PATH \
+        $OTEL_LEVEL \
+        $TIME \
         alarm \
             --source-name "$SOURCE_NAME" \
             --severity "$SEVERITY" \
@@ -69,7 +70,7 @@ send_run_stop() {
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
         --otel-endpoint $OTEL_ENDPOINT \
-        $LOG_LEVEL \
-        $LOG_PATH \
+        $OTEL_LEVEL \
+        $TIME \
         stop
 }
