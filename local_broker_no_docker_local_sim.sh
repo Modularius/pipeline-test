@@ -26,12 +26,12 @@ OTEL_LEVEL="--otel-level=info"
 
 kill_persistant_components
 
-export RUST_LOG=error,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
+export RUST_LOG=off,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
 
-docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=all down
+#docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=all down
 docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=broker up -d
 
 run_persistant_components
-run_full_test
+run_timed_test
 
 #docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=no-pipeline down
