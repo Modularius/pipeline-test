@@ -1,0 +1,29 @@
+{
+    "voltage": {"min": 0, "max": 80},
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "sample-rate": 100000000,
+    "traces": [
+        {
+            "source-type" : { "channels-by-digitisers": { "num-digitisers": 100, "channels-per-digitiser": 8 } },
+            "frames": { "interval": { "min": 0, "max": 99 } },
+            "pulses": [
+                {
+                    "weight": 1,
+                    "attributes": {
+                        "pulse-type": "triangular",
+                        "start": { "random-type": "exponential", "lifetime": { "fixed-value": 2200 } },
+                        "peak_time": { "random-type": "uniform", "min": { "fixed-value": 0 }, "max": { "fixed-value": 1 } },
+                        "width": { "random-type": "uniform", "min": { "fixed-value": 20 }, "max": { "fixed-value": 50 } },
+                        "height": { "random-type": "uniform", "min": { "fixed-value": 30 }, "max": { "fixed-value": 70 } }
+                    }
+                }
+            ],
+            "noises": [
+            ],
+            "num-pulses": { "random-type": "uniform", "min": { "fixed-value": 0 }, "max": { "fixed-value": 100 } },
+            "time-bins": 30000,
+            "timestamp": "now",
+            "frame-delay-us": 20000
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "start" : "now",
+    "runs" : [
+        {
+            "run-name" : "MyRun",
+            "instrument" : "PseudoMuSR",
+            "start" : 0,
+            "duration" : "auto",
+            "schedule" : [
+                { "send-start" : 0 },
+                { "send-trace" : 0, "index" : 0 },
+                { "send-dat-event" : 0, "index" : 1 },
+                { "send-end" : "after-last-trace" }
+            ]
+        }
+    ]
+}

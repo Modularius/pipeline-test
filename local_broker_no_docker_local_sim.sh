@@ -15,6 +15,7 @@ TTE_POLARITY=positive
 TTE_BASELINE=0
 TTE_INPUT_MODE="fixed-threshold-discriminator --threshold=10 --duration=1 --cool-off=0"
 DIGITIZERS="-d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7"
+#DIGITIZERS="-d0 -d1"
 #DIGITIZERS="-d0"
 NEXUS_OUTPUT_PATH="Output/Local"
 
@@ -26,12 +27,12 @@ OTEL_LEVEL="--otel-level=info"
 
 kill_persistant_components
 
-export RUST_LOG=off,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
+export RUST_LOG=off,digitiser_aggregator=off,nexus_writer=info,trace_to_events=off,$RUST_LOG_OFF
 
 #docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=all down
 docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=broker up -d
 
 run_persistant_components
-run_timed_test
+run_digitiser_test
 
 #docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=no-pipeline down

@@ -4,3 +4,4 @@
 . ./tests/benchmark.sh
 . ./tests/temp.sh
 . ./tests/timed.sh
+. ./tests/digitisers.sh
