@@ -1,17 +1,58 @@
 {
-    "start" : "now",
-    "runs" : [
-        {
-            "run-name" : "MyRun",
-            "instrument" : "PseudoMuSR",
-            "start" : 0,
-            "duration" : "auto",
-            "schedule" : [
-                { "send-start" : 0 },
-                { "send-trace" : 0, "index" : 0 },
-                { "send-dat-event" : 0, "index" : 1 },
-                { "send-end" : "after-last-trace" }
-            ]
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "time-bins": 30000,
+    "sample-rate": 1000000000,
+    "digitiser-config": {
+        "auto-digitisers": {
+            "num-digitisers": 32,
+            "num-channels-per-digitiser": 8
         }
+    },
+    "pulses": [
+                {
+                    "pulse-type": "flat",
+                    "start":  { "random-type": "exponential", "lifetime": { "float": 2200 } },
+                    "width":  { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
+                    "height": { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                },
+                {
+                    "pulse-type": "triangular",
+                    "start":     { "random-type": "exponential", "lifetime": { "float": 2200 } },
+                    "width":     { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
+                    "peak_time": { "random-type": "uniform", "min": { "float": 0.25 }, "max": { "float": 0.75 } },
+                    "height":    { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                }],
+    "event-lists": [
+        {
+            "pulses": [ {"weight": 1, "index": 0}, {"weight": 1, "index": 1} ],
+            "noises": [],
+            "num-pulses": { "random-type": "constant", "value": {"int": 50 }}
+        }
+    ],
+    "schedule" : [
+        { "set-timestamp": "now"},
+        { "send-run-start" : { "name": "MyRun", "instrument": "MuSR" } },
+        { "wait-ms": 100 },
+        { "frame-loop" : {
+                "start": 0,
+                "end": 9,
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": 0,
+                            "end": 31,
+                            "schedule" : [
+                                { "generate-trace": { "template-index": 0, "repeat": 8}},
+                                { "send-digitiser-trace": "pop-front"}
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        { "wait-ms": 100 },
+        { "set-timestamp": { "advance-by-ms": 200}},
+        { "send-run-stop": { "name": "MyRun"} }
     ]
 }

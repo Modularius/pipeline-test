@@ -8,6 +8,9 @@ run_trace_simulator() {
     $SIMULATOR \
         --broker $BROKER \
         --trace-topic $TRACE_TOPIC \
+        --event-topic $DAT_EVENT_TOPIC \
+        --frame-event-topic $FRAME_EVENT_TOPIC \
+        --control-topic $CONTROL_TOPIC \
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL \
         defined "$SIMULATOR_CONFIG_SOURCE" \
