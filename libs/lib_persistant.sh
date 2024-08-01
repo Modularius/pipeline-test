@@ -17,10 +17,10 @@ run_trace_to_events() {
 
     echo "--" "--" "Executing Event Formation"
     $TRACE_TO_EVENTS \
-        --broker $BROKER --group $GROUP \
+        --broker $BROKER --consumer-group $GROUP \
+        --observability-address "127.0.0.1:9090" \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
-        --observability-address $OBS_ADDRESS \
         --polarity $TTE_POLARITY \
         --baseline $TTE_BASELINE \
         --otel-endpoint $OTEL_ENDPOINT \
@@ -35,6 +35,7 @@ run_aggregator() {
     $EVENT_AGGREGATOR \
         --broker $BROKER --group $GROUP \
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
+        --observability-address "127.0.0.1:9091" \
         --frame-ttl-ms 5000 \
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL \
@@ -47,7 +48,8 @@ run_nexus_writer() {
     echo "--" "--" "Executing nexus-writer"
     RUST_LOG=$RUST_LOG
     $NEXUS_WRITER \
-        --broker $BROKER --consumer-group "$GROUP" --observability-address "127.0.0.1:9091" \
+        --broker $BROKER --consumer-group "$GROUP" \
+        --observability-address "127.0.0.1:9092" \
         --control-topic $CONTROL_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --log-topic $CONTROL_TOPIC \

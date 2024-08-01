@@ -1,0 +1,146 @@
+{
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "time-bins": 30000,
+    "sample-rate": 1000000000,
+    "digitiser-config": {
+        "auto-digitisers": {
+            "num-digitisers": 128,
+            "num-channels-per-digitiser": 8
+        }
+    },
+    "pulses": [
+                {
+                    "pulse-type": "flat",
+                    "start":  { "random-type": "exponential", "lifetime": { "float": 2200 } },
+                    "width":  { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
+                    "height": { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                },
+                {
+                    "pulse-type": "triangular",
+                    "start":     { "random-type": "exponential", "lifetime": { "float": 2200 } },
+                    "width":     { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
+                    "peak_time": { "random-type": "uniform", "min": { "float": 0.25 }, "max": { "float": 0.75 } },
+                    "height":    { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                }],
+    "event-lists": [
+        {
+            "pulses": [ {"weight": 1, "pulse-index": 0}, {"weight": 1, "pulse-index": 1} ],
+            "noises": [],
+            "num-pulses": { "random-type": "constant", "value": {"int": 50 }}
+        }
+    ],
+    "schedule" : [
+        { "set-timestamp": "now"},
+        { "send-run-start" : { "name": "MyRun", "instrument": "MuSR" } },
+        { "wait-ms": 100 },
+        { "send-run-log-data" : {
+            "source-name" : "A-Double-Value",
+            "value-type" : "float64",
+            "value" : ["0"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-Float-Value",
+            "value-type" : "float32",
+            "value" : ["-58"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-Byte-Value",
+            "value-type" : "int8",
+            "value" : ["-54"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-UByte-Value",
+            "value-type" : "uint8",
+            "value" : ["52"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-Short-Value",
+            "value-type" : "int16",
+            "value" : ["-540"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-UByte-Value",
+            "value-type" : "uint16",
+            "value" : ["524"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-Int-Value",
+            "value-type" : "int32",
+            "value" : ["-2234540"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-UInt-Value",
+            "value-type" : "uint32",
+            "value" : ["53524"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-Long-Value",
+            "value-type" : "int64",
+            "value" : ["-22111111111345400"]
+        } },
+        { "wait-ms": 100 },
+        { "send-run-log-data" : {
+            "source-name" : "A-Long-Value",
+            "value-type" : "int64",
+            "value" : ["-22111111111345400"]
+        } },
+        { "send-run-log-data" : {
+            "source-name" : "A-ULong-Value",
+            "value-type" : "uint64",
+            "value" : ["53524000000000"]
+        } },
+        { "wait-ms": 100 },
+        { "send-sample-env-log" : {
+            "name" : "Earth's Core",
+            "values-type" : "uint64",
+            "location": "unknown",
+            "values" : ["36", "36.1", "36.8"]
+        } },
+        { "send-sample-env-log" : {
+            "name" : "Earth's Other Core",
+            "values-type" : "uint64",
+            "location": "unknown",
+            "values" : ["36.9", "36.1", "36.8"]
+        } },
+        { "send-alarm" : {
+            "source-name" : "Earth's Core",
+            "severity" : "minor",
+            "message": "fml"
+        } },
+        { "set-timestamp": { "advance-by-ms": 20}},
+        { "send-alarm" : {
+            "source-name" : "Earth's Core",
+            "severity" : "major",
+            "message": "wtf"
+        } },
+        { "set-timestamp": { "advance-by-ms": 20}},
+        { "send-alarm" : {
+            "source-name" : "Earth's Core",
+            "severity" : "ok",
+            "message": "fml"
+        } },
+        { "wait-ms": 100 },
+        { "frame-loop" : {
+                "start": 0,
+                "end": 149,
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": 0,
+                            "end": 127,
+                            "schedule" : [
+                                { "generate-trace": { "event-list-index": 0, "repeat": 8}},
+                                { "send-digitiser-trace": "pop-front"}
+                            ]
+                        }
+                    },
+                    { "set-timestamp": { "advance-by-ms": 20}}
+                ]
+            }
+        },
+        { "wait-ms": 100 },
+        { "set-timestamp": { "advance-by-ms": 200}},
+        { "send-run-stop": { "name": "MyRun"} }
+    ]
+}

@@ -14,7 +14,9 @@ run_trace_simulator() {
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL \
         defined "$SIMULATOR_CONFIG_SOURCE" \
-        --repeat=1
+        --runlog-topic $CONTROL_TOPIC \
+        --selog-topic $CONTROL_TOPIC \
+        --alarm-topic $CONTROL_TOPIC
 }
 
 run_trace_reader() {

@@ -47,7 +47,8 @@
                                 { "send-digitiser-trace": "pop-front"}
                             ]
                         }
-                    }
+                    },
+                    { "set-timestamp": { "advance-by-ms": 20}}
                 ]
             }
         },
