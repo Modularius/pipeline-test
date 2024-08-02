@@ -53,6 +53,11 @@ class Digitiser:
         self.start_time : int = span.start_time
         self.duration : int = span.duration
 
+        '''
+            If there is a Frame Complete child span, then it's Message Producer child
+            span may persist longer than the time we wish to measure, so we subtract
+            its duration from this one.
+        '''
         frame_complete = span.get_only_child("process_digitiser_event_list_message", "digitisier-aggregator").get_child_span_sublist("Frame Complete")
         if frame_complete:
             self.duration -= frame_complete[0].get_only_child("Message Producer", "digitisier-aggregator").duration
@@ -79,14 +84,15 @@ class Digitiser:
 
 
 class Frame:
-    def __init__(self, span : Span):    #   "Frame" in "digitiser-aggregator"
+    def __init__(self, span : Span):    #   "process_kafka_message" : "nexus-writer"
+        digitiser_aggregator_span = span.get_parent("Frame", "digitiser-aggregator")
         # Run through each "Digitiser Event List" of the frame, extracting the event formation span, and creating the Digitiser object
         self.digitisers : List[Digitiser] = [
             Digitiser(s
                       .get_only_hero("process_digitiser_event_list_message", "digitiser-aggregator")
                       .get_parent("process_kafka_message", "digitiser-aggregator")
                       )
-                    for s in span.get_child_span_sublist("Digitiser Event List")
+                    for s in digitiser_aggregator_span.get_child_span_sublist("Digitiser Event List")
         ]
         self.frame_number : int = self.digitisers[0].frame_number
         self.start_time : int = span.start_time
@@ -116,7 +122,6 @@ class Run:
             Frame(s
                   .get_only_hero("process_frame_assembled_event_list_message", "nexus-writer")
                   .get_parent("process_kafka_message", "nexus-writer")
-                  .get_parent("Frame", "digitiser-aggregator")
                   )
                 for s in span.get_child_span_sublist("Frame Event List")
         ]

@@ -5,6 +5,7 @@ import json
 import requests
 import time
 import matplotlib.pyplot as plt
+import matplotlib.ticker
 
 import numpy as np
 
@@ -62,91 +63,100 @@ class TraceScrape:
         return list(Run(list(trace.get_span_subset("Run").values())[0]) for trace in self.run_traces.traces.values())[0:n]
 
 def plot(run : Run):
-    #print("Event Formation Times")
-    figure = plt.figure(0, figsize = (14,4))
-    plot_event_formation(run, figure)
+    plot_event_formation(run)
+    plot_aggregation(run)
+    plot_writer(run)
 
-    figure = plt.figure(1, figsize = (14,4))
-    #print("Digitiser Aggregation Times")
-    plot_aggregation(run, figure)
+def plot_box_and_whisker(title, durations, labels):
+    figure = plt.figure(figsize = (10,4))
+    ax = figure.add_axes([0,0,1,1])
+    ax.set_xlabel('Frame')
+    ax.set_yscale('log')
+    ax.set_ylabel('Duration (us)')
+    ax.set_yticks([2**e for e in range(16)])
+    ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.set_title(title)
+    bp = ax.boxplot(durations, meanline = True, labels = labels)
     
-def plot_event_formation(run : Run, figure):
-    channel_frame_numbers = [f.frame_number + d.digitiser_id/32 for f in run.frames for d in f.digitisers for _ in d.channels]
-    channel_durations = [c.duration for f in run.frames for d in f.digitisers for c in d.channels]
+    for whisker in bp['whiskers']:
+        whisker.set(color ='#8B008B',
+                    linewidth = 1.5,
+                    linestyle =":")
     
-    frame_frame_numbers = [f.frame_number for f in run.frames]
-    frame_frame_numbers.sort()
-    frame_mean_durations = {f.frame_number: np.mean(f.get_channel_durations()) for f in run.frames}
-    frame_max_durations = {f.frame_number: np.max(f.get_channel_durations()) for f in run.frames}
+    for cap in bp['caps']:
+        cap.set(color ='#8B008B',
+                linewidth = 2)
+        
+    for flier in bp['fliers']:
+        flier.set(marker ='.',
+                color ='#FF0000',
+                alpha = 0.25)
 
-    figure.add_subplot(1,2,1)
-    plt.scatter(channel_frame_numbers,channel_durations, marker = ".") # type: ignore
-    plt.xlabel ('Frame Number')
-    plt.ylabel ('Duration (us)')
+    return ax
     
-    figure = plt.subplot(1,2,2)
-    plt.plot(frame_frame_numbers,[frame_mean_durations[f] for f in frame_frame_numbers]) # type: ignore
-    plt.plot(frame_frame_numbers,[frame_max_durations[f]  for f in frame_frame_numbers]) # type: ignore
-    plt.xlabel ('Frame Number')
-    plt.ylabel ('Duration (us)')
-    
-def plot_aggregation(run : Run, figure):
-    digitiser_frame_numbers = [f.frame_number + d.digitiser_id/32 for f in run.frames for d in f.digitisers]
-    digitiser_durations = [d.duration for f in run.frames for d in f.digitisers]
-    
-    frame_frame_numbers = [f.frame_number for f in run.frames]
-    frame_frame_numbers.sort()
-    frame_mean_durations = {f.frame_number: np.mean(f.get_digitiser_durations()) for f in run.frames}
-    frame_max_durations = {f.frame_number: np.max(f.get_digitiser_durations()) for f in run.frames}
+def plot_event_formation(run : Run):
+    frame_box_width : int = 10
+    frame_box_indices = range(len(run.frames)//frame_box_width)
+    channel_durations = [
+        [c.duration
+            for f in run.frames[f_i*10:(f_i + 1)*frame_box_width]
+            for d in f.digitisers
+            for c in d.channels
+            ]
+        for f_i in frame_box_indices
+        ]
+    labels = [f"{f_i*frame_box_width}-{(f_i + 1)*frame_box_width - 1}" for f_i in frame_box_indices]
+    plot_box_and_whisker('Event Formation Channel Times', channel_durations, labels)
 
-    figure.add_subplot(1,2,1)
-    plt.scatter(digitiser_frame_numbers, digitiser_durations, marker = ".") # type: ignore
-    plt.xlabel ('Frame Number')
-    plt.ylabel ('Duration (us)')
-    
-    figure = plt.subplot(1,2,2)
-    plt.plot(frame_frame_numbers,[frame_mean_durations[f] for f in frame_frame_numbers]) # type: ignore
-    plt.plot(frame_frame_numbers,[frame_max_durations[f]  for f in frame_frame_numbers]) # type: ignore
-    plt.xlabel ('Frame Number')
-    plt.ylabel ('Duration (us)')
-    
-def plot_others(run : Run):
-    channel_start_times = [c.start_time for f in run.frames for d in f.digitisers for c in d.channels]
-    channel_frame_numbers = [f.frame_number for f in run.frames for d in f.digitisers for _ in d.channels]
-    channel_durations = [c.duration for f in run.frames for d in f.digitisers for c in d.channels]
-    
-    digitiser_frame_numbers = [f.frame_number for f in run.frames for _ in f.digitisers]
-    #digitiser_mean_durations = [d.max_duration() for f in run.frames for d in f.digitisers]
+def plot_aggregation(run : Run):
+    frame_box_width : int = 10
+    frame_box_indices = range(len(run.frames)//frame_box_width)
+    digitiser_durations = [
+        [d.duration
+            for f in run.frames[f_i*10:(f_i + 1)*frame_box_width]
+            for d in f.digitisers
+            ]
+        for f_i in frame_box_indices
+        ]
+    labels = [f"{f_i*frame_box_width}-{(f_i + 1)*frame_box_width - 1}" for f_i in frame_box_indices]
+    plot_box_and_whisker('Frame Assembler Digitiser Times', digitiser_durations, labels)
+        
+def plot_writer(run : Run):
+    frame_box_width : int = 10
+    frame_box_indices = range(len(run.frames)//frame_box_width)
+    frame_durations = [
+        [f.duration for f in run.frames[f_i*10:(f_i + 1)*frame_box_width]]
+        for f_i in frame_box_indices
+    ]
+    labels = [f"{f_i*frame_box_width}-{(f_i + 1)*frame_box_width - 1}" for f_i in frame_box_indices]
+    ax = plot_box_and_whisker('Nexus Writer Frame Times', frame_durations, labels)
 
-    frame_start_times = [f.start_time for f in run.frames]
-    frame_frame_numbers = [f.frame_number for f in run.frames]
-    #framer_mean_durations = [f.max_duration() for f in run.frames]
 
-    plt.figure(0)
-    plt.scatter(channel_start_times,channel_durations, marker = ".") # type: ignore
-    plt.xlabel ('Start Time of Channel (ns from epoch)')
-    plt.ylabel ('Duration (us)')
 
-    plt.figure(1)
-    plt.scatter(channel_frame_numbers,channel_durations, marker = ".") # type: ignore
-    plt.xlabel ('Frame Number')
-    plt.ylabel ('Duration (us)')
-    
-    plt.figure(2)
-    plt.scatter(digitiser_frame_numbers,digitiser_mean_durations, marker = ".") # type: ignore
-    plt.xlabel ('Frame Number')
-    plt.ylabel ('Duration (us)')
-    
-    plt.figure(3)
-    plt.scatter(frame_frame_numbers,framer_mean_durations, marker = ".") # type: ignore
-    plt.xlabel ('Frame Number')
-    plt.ylabel ('Duration (us)')
-    
-    plt.figure(4)
-    plt.scatter(frame_start_times,framer_mean_durations, marker = ".") # type: ignore
-    plt.xlabel ('Start Time of Frame (ns from epoch)')
-    plt.ylabel ('Duration (us)')
 
-#runs = get_last_n_runs(1)
-#for run in runs:
-#    plot(run)
+def plot_correlations(run):
+    figure = plt.figure(figsize = (10,4))
+    channel_durations, ave_channel_durations = zip(*[
+        (c.duration, np.std(d.get_durations()))
+            for f in run.frames
+            for d in f.digitisers
+            for c in d.channels
+        ]
+    )
+    ax = figure.add_axes([0.0,0,0.45,1])
+    ax.set_xlabel('Channel Duration (us)')
+    ax.set_ylabel('Standard Deviation of Digitiser Channel Duration (us)')
+    ax.set_title("Correlation of channel durations to digitiser average channel duration")
+    ax.scatter(channel_durations, ave_channel_durations, marker = ".") # type: ignore
+    return
+    ave_channel_durations, digitiser_duration = zip(*[
+        (np.mean(d.get_durations()), d.duration)
+            for f in run.frames
+            for d in f.digitisers
+        ]
+    )
+    ax = figure.add_axes([0.55,0,0.45,1])
+    ax.set_xlabel('Digitiser Duration (us)')
+    ax.set_ylabel('Digitiser Mean Channel Duration (us)')
+    ax.set_title("Correlation of digitiser average channel duration to digitiser duration")
+    ax.scatter(ave_channel_durations, digitiser_duration, marker = ".") # type: ignore
