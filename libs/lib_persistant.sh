@@ -10,15 +10,12 @@ EVENT_AGGREGATOR="../supermusr-data-pipeline/target/release/digitiser-aggregator
 #--save-file output/Saves/Tests/output_ \
 
 run_trace_to_events() {
-    GROUP="$1"
-    OBS_ADDRESS="$2"
-
     echo "Using detector settings '$TTE_INPUT_MODE'"
 
     echo "--" "--" "Executing Event Formation"
     $TRACE_TO_EVENTS \
-        --broker $BROKER --consumer-group $GROUP \
-        --observability-address "127.0.0.1:9090" \
+        --broker $BROKER --consumer-group $GROUP_EVENT_FORMATION \
+        --observability-address "127.0.0.1:29093" \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
         --polarity $TTE_POLARITY \
@@ -29,13 +26,12 @@ run_trace_to_events() {
 }
 
 run_aggregator() {
-    GROUP="$1"
-
     echo "--" "--" "Executing aggregator"
+
     $EVENT_AGGREGATOR \
-        --broker $BROKER --group $GROUP \
+        --broker $BROKER --group $GROUP_AGGREGATOR \
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
-        --observability-address "127.0.0.1:9091" \
+        --observability-address "127.0.0.1:29091" \
         --frame-ttl-ms 5000 \
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL \
@@ -43,13 +39,11 @@ run_aggregator() {
 }
 
 run_nexus_writer() {
-    GROUP="$1"
-
     echo "--" "--" "Executing nexus-writer"
-    RUST_LOG=$RUST_LOG
+    
     $NEXUS_WRITER \
-        --broker $BROKER --consumer-group "$GROUP" \
-        --observability-address "127.0.0.1:9092" \
+        --broker $BROKER --consumer-group "$GROUP_WRITER" \
+        --observability-address "127.0.0.1:29092" \
         --control-topic $CONTROL_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --log-topic $CONTROL_TOPIC \

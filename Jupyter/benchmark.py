@@ -7,74 +7,125 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.ticker
 
-import numpy as np
-
-def build_jaeger_traces_endpoint(service : str, operation : str) -> str:
-    limit = 200000
-    lookback_seconds = 60*2
+def build_jaeger_traces_endpoint(service : str, operation : str, lookback_minutes : int) -> str:
+    limit = 500000
+    lookback_seconds = 60*lookback_minutes
     start_ms = int((time.time() - lookback_seconds)*1_000_000)
     end_ms = int(time.time()*1_000_000)
     return f"http://localhost:6686/api/traces?limit={limit}&lookback={lookback_seconds}s&service={service}&operation={operation}&start={start_ms}&end={end_ms}"
 
-def get_traces(service : str, operation : str) -> TraceBank:
+def get_traces(service : str, operation : str, lookback_minutes : int) -> TraceBank:
     """
     Returns list of all traces for a service
     """
     print(f"Obtaining {operation} from {service}")
-    url = build_jaeger_traces_endpoint(service, operation)
+    url = build_jaeger_traces_endpoint(service, operation, lookback_minutes)
     try:
         response = requests.get(url)
         response.raise_for_status()
     except requests.exceptions.HTTPError as err:
         raise err
 
+    print(f"  Response received. Processing json")
     response = json.loads(response.text)
     traces = response["data"]
-    return TraceBank(traces)
+    return traces
 
 class TraceScrape:
     def __init__(self):
-        self.run_traces : TraceBank = get_traces("nexus-writer", "Run")
-        self.frame_traces : TraceBank = get_traces("digitiser-aggregator", "Frame")
-        self.event_formation_traces : TraceBank = get_traces("trace-to-events", "process_kafka_message")
-        self.simulator_traces : TraceBank = get_traces("simulator", "run_schedule")
+        pass
+    
+    def save(self):
+        with open("run.json", 'x') as f:
+            json.dump(self.run_json, f)
+            f.close()
+            
+        with open("frame.json", 'x') as f:
+            json.dump(self.frame_json, f)
+            f.close()
+            
+        with open("nexus_writer.json", 'x') as f:
+            json.dump(self.nexus_writer_json, f)
+            f.close()
+            
+        with open("digitiser_aggregator.json", 'x') as f:
+            json.dump(self.digitiser_aggregator_json, f)
+            f.close()
+            
+        with open("event_formation.json", 'x') as f:
+            json.dump(self.event_formation_json, f)
+            f.close()
+            
+        with open("simulator.json", 'x') as f:
+            json.dump(self.simulator_json, f)
+            f.close()
+    
+    def load(self):
+        with open("run.json", 'r') as f:
+            self.run_json = json.load(f)
+            f.close()
+            
+        with open("frame.json", 'r') as f:
+            self.frame_json = json.load(f)
+            f.close()
+            
+        with open("nexus_writer.json", 'r') as f:
+            self.nexus_writer_json = json.load(f)
+            f.close()
+            
+        with open("digitiser_aggregator.json", 'r') as f:
+            self.digitiser_aggregator_json = json.load(f)
+            f.close()
+            
+        with open("event_formation.json", 'r') as f:
+            self.event_formation_json = json.load(f)
+            f.close()
+            
+        with open("simulator.json", 'r') as f:
+            self.simulator_json = json.load(f)
+            f.close()
 
+    def scrape(self, lookback_minutes : int):
+        self.run_json : TraceBank = get_traces("nexus-writer", "Run", lookback_minutes)
+        self.frame_json : TraceBank = get_traces("digitiser-aggregator", "Frame", lookback_minutes)
+        self.nexus_writer_json : TraceBank = get_traces("nexus-writer", "process_kafka_message", lookback_minutes)
+        self.digitiser_aggregator_json : TraceBank = get_traces("digitiser-aggregator", "process_digitiser_event_list_message", lookback_minutes)
+        self.event_formation_json : TraceBank = get_traces("trace-to-events", "process_frame_assembled_event_list_message", lookback_minutes)
+        self.simulator_json : TraceBank = get_traces("simulator", "run_configured_simulation", lookback_minutes)
+
+    def make_trace_banks(self):
+        self.run_traces : TraceBank = TraceBank(self.run_json)
+        self.frame_traces : TraceBank = TraceBank(self.frame_json)
+        self.nexus_writer_traces : TraceBank = TraceBank(self.nexus_writer_json)
+        self.digitiser_aggregator_traces : TraceBank = TraceBank(self.digitiser_aggregator_json)
+        self.event_formation_traces : TraceBank = TraceBank(self.event_formation_json)
+        self.simulator_traces : TraceBank = TraceBank(self.simulator_json)
 
     def get_last_n_runs(self, n : int) -> List[Run]:
-        #simulator_traces.extract_parents_from_traces(simulator_traces)
-        #event_formation_traces.extract_parents_from_traces(event_formation_traces)
-        #event_formation_traces.extract_parents_from_traces(simulator_traces)
-        #frame_traces.extract_parents_from_traces(frame_traces)
-        #run_traces.extract_parents_from_traces(run_traces)
-
         collect = TraceBank({})
         collect.union(self.simulator_traces)
         collect.union(self.event_formation_traces)
+        collect.union(self.digitiser_aggregator_traces)
+        collect.union(self.nexus_writer_traces)
         collect.union(self.frame_traces)
         collect.union(self.run_traces)
         collect.extract_parents_from_traces(collect)
         collect.extract_heroes_from_traces(collect)
         
-        #run_traces
-        #frame_traces.extract_heroes_from_traces(collect)
-        #simulator_traces.extract_heroes_from_traces(collect)
-        #frame_traces.extract_heroes_from_traces(simulator_traces)
+        runs = [list(trace.get_span_subset("Run").values())[0] for trace in self.run_traces.traces.values()]
+        print(len(runs))
         
-        return list(Run(list(trace.get_span_subset("Run").values())[0]) for trace in self.run_traces.traces.values())[0:n]
+        return list(Run(run) for run in runs)[0:n]
 
-def plot(run : Run):
-    plot_event_formation(run)
-    plot_aggregation(run)
-    plot_writer(run)
-
-def plot_box_and_whisker(title, durations, labels):
+def plot_box_and_whisker(title : str, durations, labels, xlabel : str, ylabel : str, is_ylog : bool = False):
     figure = plt.figure(figsize = (10,4))
     ax = figure.add_axes([0,0,1,1])
-    ax.set_xlabel('Frame')
-    ax.set_yscale('log')
-    ax.set_ylabel('Duration (us)')
-    ax.set_yticks([2**e for e in range(16)])
-    ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.set_xlabel(xlabel)
+    if is_ylog:
+        ax.set_yscale('log')
+        ax.set_yticks([2**e for e in range(20)])
+        ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.set_ylabel(ylabel)
     ax.set_title(title)
     bp = ax.boxplot(durations, meanline = True, labels = labels)
     
@@ -93,70 +144,17 @@ def plot_box_and_whisker(title, durations, labels):
                 alpha = 0.25)
 
     return ax
-    
-def plot_event_formation(run : Run):
-    frame_box_width : int = 10
-    frame_box_indices = range(len(run.frames)//frame_box_width)
-    channel_durations = [
-        [c.duration
-            for f in run.frames[f_i*10:(f_i + 1)*frame_box_width]
-            for d in f.digitisers
-            for c in d.channels
-            ]
-        for f_i in frame_box_indices
-        ]
-    labels = [f"{f_i*frame_box_width}-{(f_i + 1)*frame_box_width - 1}" for f_i in frame_box_indices]
-    plot_box_and_whisker('Event Formation Channel Times', channel_durations, labels)
 
-def plot_aggregation(run : Run):
-    frame_box_width : int = 10
-    frame_box_indices = range(len(run.frames)//frame_box_width)
-    digitiser_durations = [
-        [d.duration
-            for f in run.frames[f_i*10:(f_i + 1)*frame_box_width]
-            for d in f.digitisers
-            ]
-        for f_i in frame_box_indices
-        ]
-    labels = [f"{f_i*frame_box_width}-{(f_i + 1)*frame_box_width - 1}" for f_i in frame_box_indices]
-    plot_box_and_whisker('Frame Assembler Digitiser Times', digitiser_durations, labels)
-        
-def plot_writer(run : Run):
-    frame_box_width : int = 10
-    frame_box_indices = range(len(run.frames)//frame_box_width)
-    frame_durations = [
-        [f.duration for f in run.frames[f_i*10:(f_i + 1)*frame_box_width]]
-        for f_i in frame_box_indices
-    ]
-    labels = [f"{f_i*frame_box_width}-{(f_i + 1)*frame_box_width - 1}" for f_i in frame_box_indices]
-    ax = plot_box_and_whisker('Nexus Writer Frame Times', frame_durations, labels)
-
-
-
-
-def plot_correlations(run):
+def plot_scatter(title : str, durations, labels, xlabel : str, ylabel : str, is_ylog : bool = False):
     figure = plt.figure(figsize = (10,4))
-    channel_durations, ave_channel_durations = zip(*[
-        (c.duration, np.std(d.get_durations()))
-            for f in run.frames
-            for d in f.digitisers
-            for c in d.channels
-        ]
-    )
-    ax = figure.add_axes([0.0,0,0.45,1])
-    ax.set_xlabel('Channel Duration (us)')
-    ax.set_ylabel('Standard Deviation of Digitiser Channel Duration (us)')
-    ax.set_title("Correlation of channel durations to digitiser average channel duration")
-    ax.scatter(channel_durations, ave_channel_durations, marker = ".") # type: ignore
-    return
-    ave_channel_durations, digitiser_duration = zip(*[
-        (np.mean(d.get_durations()), d.duration)
-            for f in run.frames
-            for d in f.digitisers
-        ]
-    )
-    ax = figure.add_axes([0.55,0,0.45,1])
-    ax.set_xlabel('Digitiser Duration (us)')
-    ax.set_ylabel('Digitiser Mean Channel Duration (us)')
-    ax.set_title("Correlation of digitiser average channel duration to digitiser duration")
-    ax.scatter(ave_channel_durations, digitiser_duration, marker = ".") # type: ignore
+    ax = figure.add_axes([0,0,1,1])
+    ax.set_xlabel(xlabel)
+    if is_ylog:
+        ax.set_yscale('log')
+        ax.set_yticks([2**e for e in range(20)])
+        ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.scatter(labels, durations)
+    
+    return ax

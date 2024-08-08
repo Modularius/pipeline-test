@@ -23,7 +23,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 15G
+          memory: 30G
 
   redpanda:
     container_name: kafka
@@ -65,7 +65,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 30G
+          memory: 45G
 
   redpanda_console:
     container_name: kafka_console

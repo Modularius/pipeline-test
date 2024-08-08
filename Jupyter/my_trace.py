@@ -54,7 +54,7 @@ class Span:
         children = self.get_child_span_sublist(expected_name)
         if len(children) != 1:
             pprint.pprint(self.json_source, compact=True)
-            raise Exception("Not an only child", len(children), len(self.children))
+            raise Exception("Not an only child", len(children), len(self.children), [s.name for s in self.children])
         #elif children[0].service_name != expected_service:
         #    raise Exception("Unexpected service of Child")
         else:

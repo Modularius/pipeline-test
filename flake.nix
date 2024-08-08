@@ -13,18 +13,26 @@
         let
           pkgs = (import nixpkgs) {
             inherit system;
+            config.allowUnfree = true;
           };
         in {
           devShell = pkgs.mkShell {
-            buildInputs = [
-              pkgs.python312
-              pkgs.python312.pip
-              pkgs.python312.pandas
-              pkgs.python312Packages.matplotlib
-              pkgs.python312.numpy
-              pkgs.python312.ipywidgets
-              pkgs.python312Packages.conda
-              ];
+            buildInputs = with pkgs; [
+              nixd
+              direnv
+              python312
+            ] ++ (
+              with python312Packages; [
+                pip
+                requests
+                pandas
+                matplotlib
+                numpy
+                scipy
+                ipykernel
+                ipywidgets
+              ]
+            );
             inputsFrom  = [
               pipeline.devShell.${system}
             ];
