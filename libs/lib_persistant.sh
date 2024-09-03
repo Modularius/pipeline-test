@@ -7,7 +7,7 @@ TRACE_TO_EVENTS="../supermusr-data-pipeline/target/release/trace-to-events"
 NEXUS_WRITER="../supermusr-data-pipeline/target/release/nexus-writer"
 EVENT_AGGREGATOR="../supermusr-data-pipeline/target/release/digitiser-aggregator"
 
-#--save-file output/Saves/Tests/output_ \
+#        --save-file Output/HiFi/output_ \
 
 run_trace_to_events() {
     echo "Using detector settings '$TTE_INPUT_MODE'"
@@ -32,7 +32,7 @@ run_aggregator() {
         --broker $BROKER --group $GROUP_AGGREGATOR \
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
         --observability-address "127.0.0.1:29091" \
-        --frame-ttl-ms 5000 \
+        --frame-ttl-ms 2000 \
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL \
         $DIGITIZERS &
@@ -49,7 +49,7 @@ run_nexus_writer() {
         --log-topic $CONTROL_TOPIC \
         --sample-env-topic $CONTROL_TOPIC \
         --alarm-topic $CONTROL_TOPIC \
-        --cache-run-ttl-ms 4000 \
+        --cache-run-ttl-ms 5000 \
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL \
         --file-name "$NEXUS_OUTPUT_PATH" &

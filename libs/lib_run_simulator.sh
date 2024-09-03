@@ -1,17 +1,23 @@
 #RUN_SIMULATOR="cargo run --release --bin run-simulator --"
 RUN_SIMULATOR="../supermusr-data-pipeline/target/release/run-simulator"
+SIMULATOR="../supermusr-data-pipeline/target/release/simulator"
 
 send_run_start() {
     RUN_NAME=$1
     INSTRUMENT_NAME=$2
     TIME="$3"
 
-    $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
-        --run-name $RUN_NAME \
+    $SIMULATOR --broker $BROKER \
+        --trace-topic $TRACE_TOPIC \
+        --event-topic $DAT_EVENT_TOPIC \
+        --frame-event-topic $FRAME_EVENT_TOPIC \
+        --control-topic $CONTROL_TOPIC \
         --otel-endpoint $OTEL_ENDPOINT \
-        $OTEL_LEVEL \
-        $TIME \
-        start --instrument-name $INSTRUMENT_NAME
+        $OTEL_LEVEL_SIM \
+        start $TIME \
+        --run-name $RUN_NAME \
+        --topic $CONTROL_TOPIC \
+        --instrument-name $INSTRUMENT_NAME
 }
 
 send_logdata() {
@@ -65,12 +71,16 @@ send_alarm() {
 
 send_run_stop() {
     RUN_NAME=$1
-    INSTRUMENT_NAME=$2
+    TIME="$3"
 
-    $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
-        --run-name $RUN_NAME \
+    $SIMULATOR --broker $BROKER \
+        --trace-topic $TRACE_TOPIC \
+        --event-topic $DAT_EVENT_TOPIC \
+        --frame-event-topic $FRAME_EVENT_TOPIC \
+        --control-topic $CONTROL_TOPIC \
         --otel-endpoint $OTEL_ENDPOINT \
-        $OTEL_LEVEL \
-        $TIME \
-        stop
+        $OTEL_LEVEL_SIM \
+        stop $TIME \
+        --run-name $RUN_NAME \
+        --topic $CONTROL_TOPIC
 }

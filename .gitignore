@@ -3,4 +3,4 @@ Logs/*
 .direnv/*
 *.pyc
 *.csv
-Jupyter/*.json
+Jupyter/cache/*.json

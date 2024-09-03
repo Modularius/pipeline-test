@@ -34,6 +34,7 @@
         { "ensure-delay-ms": 0 },
         { "send-run-start" : { "name": { "text-env": "RUN_NAME" }, "instrument": { "text": "MuSR" }}},
         { "wait-ms": 100 },
+        { "generate-trace": { "event-list-index": 0, "repeat": 1}},
         { "frame-loop" : {
                 "start": { "int": 0 },
                 "end": { "int": 49 },
@@ -44,8 +45,7 @@
                             "start": { "int": 0 },
                             "end": { "int-env" : "MAX_DIGITISER" },
                             "schedule" : [
-                                { "generate-trace": { "event-list-index": 0, "repeat": 8}},
-                                { "send-digitiser-trace": "pop-front"}
+                                { "send-digitiser-trace": "replace-random"}
                             ]
                         }
                     },
@@ -54,7 +54,7 @@
             }
         },
         { "wait-ms": 100 },
-        { "set-timestamp": { "advance-by-ms": 1000}},
-        { "send-run-stop": { "name": { "text": "RUN_NAME" }}}
+        { "set-timestamp": { "advance-by-ms": 10000}},
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME" }}}
     ]
 }

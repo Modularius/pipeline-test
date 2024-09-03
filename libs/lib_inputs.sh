@@ -12,7 +12,7 @@ run_trace_simulator() {
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --control-topic $CONTROL_TOPIC \
         --otel-endpoint $OTEL_ENDPOINT \
-        $OTEL_LEVEL \
+        $OTEL_LEVEL_SIM \
         defined "$SIMULATOR_CONFIG_SOURCE" \
         --runlog-topic $CONTROL_TOPIC \
         --selog-topic $CONTROL_TOPIC \

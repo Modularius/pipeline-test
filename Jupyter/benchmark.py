@@ -36,52 +36,41 @@ class TraceScrape:
         pass
     
     def save(self):
-        with open("run.json", 'x') as f:
-            json.dump(self.run_json, f)
-            f.close()
-            
-        with open("frame.json", 'x') as f:
-            json.dump(self.frame_json, f)
-            f.close()
-            
-        with open("nexus_writer.json", 'x') as f:
-            json.dump(self.nexus_writer_json, f)
-            f.close()
-            
-        with open("digitiser_aggregator.json", 'x') as f:
-            json.dump(self.digitiser_aggregator_json, f)
-            f.close()
-            
-        with open("event_formation.json", 'x') as f:
-            json.dump(self.event_formation_json, f)
-            f.close()
-            
-        with open("simulator.json", 'x') as f:
-            json.dump(self.simulator_json, f)
-            f.close()
+        json_objects = {
+            "run": self.run_json,
+            "frame": self.frame_json,
+            "nexus_writer": self.nexus_writer_json,
+            "digitiser_aggregator": self.digitiser_aggregator_json,
+            "event_formation": self.event_formation_json,
+            "simulator": self.simulator_json,
+        }
+        for file in json_objects:
+            with open(f"cache/{file}.json", 'x') as f:
+                json.dump(json_objects[file], f)
+                f.close()
     
     def load(self):
-        with open("run.json", 'r') as f:
+        with open("cache/run.json", 'r') as f:
             self.run_json = json.load(f)
             f.close()
             
-        with open("frame.json", 'r') as f:
+        with open("cache/frame.json", 'r') as f:
             self.frame_json = json.load(f)
             f.close()
             
-        with open("nexus_writer.json", 'r') as f:
+        with open("cache/nexus_writer.json", 'r') as f:
             self.nexus_writer_json = json.load(f)
             f.close()
             
-        with open("digitiser_aggregator.json", 'r') as f:
+        with open("cache/digitiser_aggregator.json", 'r') as f:
             self.digitiser_aggregator_json = json.load(f)
             f.close()
             
-        with open("event_formation.json", 'r') as f:
+        with open("cache/event_formation.json", 'r') as f:
             self.event_formation_json = json.load(f)
             f.close()
             
-        with open("simulator.json", 'r') as f:
+        with open("cache/simulator.json", 'r') as f:
             self.simulator_json = json.load(f)
             f.close()
 
@@ -117,17 +106,19 @@ class TraceScrape:
         
         return list(Run(run) for run in runs)[0:n]
 
-def plot_box_and_whisker(title : str, durations, labels, xlabel : str, ylabel : str, is_ylog : bool = False):
-    figure = plt.figure(figsize = (10,4))
-    ax = figure.add_axes([0,0,1,1])
+def create_axes(title : str, xlabel : str, ylabel : str, figure, placement, is_ylog : bool = False):
+    ax = figure.add_axes(placement)
     ax.set_xlabel(xlabel)
     if is_ylog:
         ax.set_yscale('log')
-        ax.set_yticks([2**e for e in range(20)])
+        ax.set_yticks([2**e for e in range(23)])
         ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     ax.set_ylabel(ylabel)
     ax.set_title(title)
-    bp = ax.boxplot(durations, meanline = True, labels = labels)
+    return ax
+
+def plot_box_and_whisker(axes : plt.Axes,  durations : List[List[int]], labels : List[int]|List[str]):
+    bp = axes.boxplot(durations, meanline = True, labels = labels)
     
     for whisker in bp['whiskers']:
         whisker.set(color ='#8B008B',
@@ -142,19 +133,3 @@ def plot_box_and_whisker(title : str, durations, labels, xlabel : str, ylabel : 
         flier.set(marker ='.',
                 color ='#FF0000',
                 alpha = 0.25)
-
-    return ax
-
-def plot_scatter(title : str, durations, labels, xlabel : str, ylabel : str, is_ylog : bool = False):
-    figure = plt.figure(figsize = (10,4))
-    ax = figure.add_axes([0,0,1,1])
-    ax.set_xlabel(xlabel)
-    if is_ylog:
-        ax.set_yscale('log')
-        ax.set_yticks([2**e for e in range(20)])
-        ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-    ax.set_ylabel(ylabel)
-    ax.set_title(title)
-    ax.scatter(labels, durations)
-    
-    return ax

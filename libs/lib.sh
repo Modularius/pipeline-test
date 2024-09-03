@@ -1,4 +1,5 @@
 OTEL_ENDPOINT="http://localhost:4317/v1/traces"
+#OTEL_ENDPOINT="http://146.199.207.182:4317/v1/traces"
 
 RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
 
