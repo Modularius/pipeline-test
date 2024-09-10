@@ -22,7 +22,9 @@ TTE_INPUT_MODE="fixed-threshold-discriminator --threshold=100 --duration=1 --coo
 DIGITIZERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
 NEXUS_OUTPUT_PATH="Output/HiFi"
 
-OTEL_LEVEL="--otel-level=off"
+OTEL_LEVEL_EVENT_FORMATION="--otel-level=off"
+OTEL_LEVEL_AGGREGATOR="--otel-level=off"
+OTEL_LEVEL_WRITER="--otel-level=off"
 OTEL_LEVEL_SIM="--otel-level=off"
 
 . ./libs/lib.sh

@@ -23,6 +23,7 @@
               nixd
               direnv
               python312
+              valgrind-light
             ] ++ (
               with python312Packages; [
                 pip

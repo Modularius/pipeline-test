@@ -15,13 +15,13 @@ run_trace_to_events() {
     echo "--" "--" "Executing Event Formation"
     $TRACE_TO_EVENTS \
         --broker $BROKER --consumer-group $GROUP_EVENT_FORMATION \
-        --observability-address "127.0.0.1:29093" \
+        --observability-address "127.0.0.1:29094" \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
         --polarity $TTE_POLARITY \
         --baseline $TTE_BASELINE \
         --otel-endpoint $OTEL_ENDPOINT \
-        $OTEL_LEVEL \
+        $OTEL_LEVEL_EVENT_FORMATION \
         $TTE_INPUT_MODE  &
 }
 
@@ -34,7 +34,7 @@ run_aggregator() {
         --observability-address "127.0.0.1:29091" \
         --frame-ttl-ms 2000 \
         --otel-endpoint $OTEL_ENDPOINT \
-        $OTEL_LEVEL \
+        $OTEL_LEVEL_AGGREGATOR \
         $DIGITIZERS &
 }
 
@@ -43,7 +43,7 @@ run_nexus_writer() {
     
     $NEXUS_WRITER \
         --broker $BROKER --consumer-group "$GROUP_WRITER" \
-        --observability-address "127.0.0.1:29092" \
+        --observability-address "127.0.0.1:29090" \
         --control-topic $CONTROL_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --log-topic $CONTROL_TOPIC \
@@ -51,7 +51,7 @@ run_nexus_writer() {
         --alarm-topic $CONTROL_TOPIC \
         --cache-run-ttl-ms 5000 \
         --otel-endpoint $OTEL_ENDPOINT \
-        $OTEL_LEVEL \
+        $OTEL_LEVEL_WRITER \
         --file-name "$NEXUS_OUTPUT_PATH" &
 }
 
