@@ -1,8 +1,8 @@
 RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
 
-. ./libs/lib_run_simulator.sh
-. ./libs/lib_inputs.sh
-. ./libs/lib_persistant.sh
+. ./Libs/lib_run_simulator.sh
+. ./Libs/lib_inputs.sh
+. ./Libs/lib_persistant.sh
 
 kill_persistant_components() {
     pkill $PROCESS_EVENT_FORMATION
