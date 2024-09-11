@@ -1,9 +1,3 @@
-#SIMULATOR="cargo run --release --bin simulator --"
-#TRACE_READER="cargo run --release --bin trace-reader --"
-
-SIMULATOR="../supermusr-data-pipeline/target/release/simulator"
-TRACE_READER="../supermusr-data-pipeline/target/release/trace-reader"
-
 run_trace_simulator() {
     $SIMULATOR \
         --broker $BROKER \

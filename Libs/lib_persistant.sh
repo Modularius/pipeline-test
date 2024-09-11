@@ -1,14 +1,3 @@
-
-#TRACE_TO_EVENTS="cargo run --release --bin trace-to-events --"
-#EVENT_AGGREGATOR="cargo run --release --bin digitiser-aggregator --"
-#NEXUS_WRITER="cargo run --release --bin nexus-writer --"
-
-TRACE_TO_EVENTS="../supermusr-data-pipeline/target/release/trace-to-events"
-NEXUS_WRITER="../supermusr-data-pipeline/target/release/nexus-writer"
-EVENT_AGGREGATOR="../supermusr-data-pipeline/target/release/digitiser-aggregator"
-
-#        --save-file Output/HiFi/output_ \
-
 run_trace_to_events() {
     echo "Using detector settings '$TTE_INPUT_MODE'"
 
@@ -23,6 +12,7 @@ run_trace_to_events() {
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL_EVENT_FORMATION \
         $TTE_INPUT_MODE  &
+        #        --save-file Output/HiFi/output_ \
 }
 
 build_digitiser_argument() {

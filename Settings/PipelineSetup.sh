@@ -1,12 +1,16 @@
-#TTE_INPUT_MODE="advanced-muon-detector --muon-onset=0.1 --muon-fall=-0.1 --muon-termination=0.01 --duration=10 --smoothing-window-size=10"
-TTE_POLARITY=positive
-TTE_BASELINE=0
-TTE_INPUT_MODE="fixed-threshold-discriminator --threshold=10 --duration=1 --cool-off=0"
+#RUN_SIMULATOR="cargo run --release --bin run-simulator --"
+RUN_SIMULATOR="../supermusr-data-pipeline/target/release/run-simulator"
 
-DIGITIZERS="-d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7"
+#TRACE_TO_EVENTS="cargo run --release --bin trace-to-events --"
+#EVENT_AGGREGATOR="cargo run --release --bin digitiser-aggregator --"
+#NEXUS_WRITER="cargo run --release --bin nexus-writer --"
 
-NEXUS_OUTPUT_PATH="Output/Local"
+TRACE_TO_EVENTS="../supermusr-data-pipeline/target/release/trace-to-events"
+NEXUS_WRITER="../supermusr-data-pipeline/target/release/nexus-writer"
+EVENT_AGGREGATOR="../supermusr-data-pipeline/target/release/digitiser-aggregator"
 
-OTEL_ENDPOINT="http://localhost:4317/v1/traces"
-#OTEL_ENDPOINT="http://146.199.207.182:4317/v1/traces"
-OTEL_LEVEL="--otel-level=info"
+#SIMULATOR="cargo run --release --bin simulator --"
+#TRACE_READER="cargo run --release --bin trace-reader --"
+
+SIMULATOR="../supermusr-data-pipeline/target/release/simulator"
+TRACE_READER="../supermusr-data-pipeline/target/release/trace-reader"
