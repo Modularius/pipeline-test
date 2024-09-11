@@ -33,26 +33,6 @@ export OTEL_BSP_MAX_QUEUE_SIZE=8192
 
 . ./libs/lib.sh
 
-build_digitiser_argument() {
-    MAX_DIGITISER=$1
-    DIGITIZERS=""
-    for I in $(seq 0 1 $MAX_DIGITISER)
-    do
-        DIGITIZERS=$DIGITIZERS" -d$I"
-    done
-    echo "$DIGITIZERS"
-}
-
-wait_for_input() {
-    echo press any key to continue
-    while true; do
-        read -rsn1 key  # Read a single character silently
-        if [[ -n "$key" ]]; then
-            break  # Exit the loop if a key is pressed
-        fi
-    done
-}
-
 execute_run() {
     kill_persistant_components
 

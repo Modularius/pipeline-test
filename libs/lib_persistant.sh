@@ -25,6 +25,16 @@ run_trace_to_events() {
         $TTE_INPUT_MODE  &
 }
 
+build_digitiser_argument() {
+    MAX_DIGITISER=$1
+    DIGITIZERS=""
+    for I in $(seq 0 1 $MAX_DIGITISER)
+    do
+        DIGITIZERS=$DIGITIZERS" -d$I"
+    done
+    echo "$DIGITIZERS"
+}
+
 run_aggregator() {
     echo "--" "--" "Executing aggregator"
 
