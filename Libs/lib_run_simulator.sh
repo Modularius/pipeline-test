@@ -1,6 +1,3 @@
-#RUN_SIMULATOR="cargo run --release --bin run-simulator --"
-RUN_SIMULATOR="../supermusr-data-pipeline/target/release/run-simulator"
-SIMULATOR="../supermusr-data-pipeline/target/release/simulator"
 
 send_run_start() {
     RUN_NAME=$1

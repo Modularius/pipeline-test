@@ -7,6 +7,11 @@ DIGITIZERS="-d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7"
 
 NEXUS_OUTPUT_PATH="Output/Local"
 
-OTEL_ENDPOINT="http://localhost:4317/v1/traces"
-#OTEL_ENDPOINT="http://146.199.207.182:4317/v1/traces"
 OTEL_LEVEL="--otel-level=info"
+
+OTEL_LEVEL_EVENT_FORMATION="--otel-level=off"
+OTEL_LEVEL_AGGREGATOR="--otel-level=off"
+OTEL_LEVEL_WRITER="--otel-level=off"
+OTEL_LEVEL_SIM="--otel-level=off"
+
+export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
