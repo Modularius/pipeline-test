@@ -8,7 +8,10 @@
 . ./Settings/EventFormationConfig.sh
 
 ### Enact Pipeline Configuration for Chosen Broker
-. ./Settings/Local/PipelineConfig.sh
+#### Local
+MAX_DIGITISER=7 . ./Settings/Local/PipelineConfig.sh
+#### HiFi
+#. ./Settings/HiFi/PipelineConfig.sh
 
 ## OpenTelemetry Observability Levels
 OTEL_LEVEL_EVENT_FORMATION="--otel-level=off"
@@ -21,8 +24,7 @@ export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=off,trace_to_events=o
 
 ## Main Script
 
-# run_persistant_components
-
-# sleep 1
-
-# run_trace_simulator
+#### Local
+. ./Scripts/local_no_docker.sh
+#### HiFi
+#. ./Scripts/HiFi.sh
