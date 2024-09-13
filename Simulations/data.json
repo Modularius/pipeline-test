@@ -1,0 +1,38 @@
+{
+    "voltage": {"min": 0, "max": 80},
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "sample-rate": 100000000,
+    "traces": [
+        {
+            "source-type": { "digitisers": [
+                { "id": 0, "channels": { "min": 0, "max": 7 } },
+                { "id": 1, "channels": { "min": 8, "max": 15 } },
+                { "id": 2, "channels": { "min": 16, "max": 23 } },
+                { "id": 3, "channels": { "min": 24, "max": 31 } },
+                { "id": 4, "channels": { "min": 32, "max": 39 } },
+                { "id": 5, "channels": { "min": 40, "max": 47 } },
+                { "id": 6, "channels": { "min": 48, "max": 55 } },
+                { "id": 7, "channels": { "min": 56, "max": 63 } }
+            ]},
+            "frames": { "interval": { "min": 0, "max": 199 } },
+            "pulses": [
+                {
+                    "weight": 1,
+                    "attributes": {
+                        "pulse-type": "triangular",
+                        "start": { "random-type": "exponential", "lifetime": { "fixed-value": 2200 } },
+                        "peak_time": { "random-type": "uniform", "min": { "fixed-value": 0 }, "max": { "fixed-value": 1 } },
+                        "width": { "random-type": "uniform", "min": { "fixed-value": 20 }, "max": { "fixed-value": 50 } },
+                        "height": { "random-type": "uniform", "min": { "fixed-value": 30 }, "max": { "fixed-value": 70 } }
+                    }
+                }
+            ],
+            "noises": [
+            ],
+            "num-pulses": { "random-type": "uniform", "min": { "fixed-value": 0 }, "max": { "fixed-value": 100 } },
+            "time-bins": 30000,
+            "timestamp": "now",
+            "frame-delay-us": 20000
+        }
+    ]
+}

@@ -1,0 +1,173 @@
+# docker-compose.yml file
+version: "3.5"
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    profiles:
+      - no-broker
+      - broker
+      - all
+    volumes:
+      - "./jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
+    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "14250:14250"
+      - "14268:14268"
+      - "6831:6831/udp"
+      - "6686:16686"
+      - "6685:16685"
+    deploy:
+      resources:
+        limits:
+          memory: 30G
+
+  redpanda:
+    container_name: kafka
+    image: docker.redpanda.com/redpandadata/redpanda:v23.1.11
+    profiles:
+      - broker
+      - all
+    command:
+      - redpanda start
+      - --smp 1
+      - --overprovisioned
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      # Address the broker advertises to clients that connect to the Kafka API.
+      # Use the internal addresses to connect to the Redpanda brokers
+      # from inside the same Docker network.
+      # Use the external addresses to connect to the Redpanda brokers
+      # from outside the Docker network.
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:18082
+      # Address the broker advertises to clients that connect to the HTTP Proxy.
+      - --advertise-pandaproxy-addr internal://redpanda:8082,external://localhost:18082
+      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:18081
+      # Redpanda brokers use the RPC API to communicate with each other internally.
+      - --rpc-addr redpanda:33145
+      - --advertise-rpc-addr redpanda:33145
+    ports:
+      - 18081:18081
+      - 18082:18082
+      - 19092:19092
+      - 19644:9644
+    volumes:
+      - redpanda:/var/lib/redpanda/data
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 45G
+
+  redpanda_console:
+    container_name: kafka_console
+    image: docker.redpanda.com/redpandadata/console:v2.2.4
+    profiles:
+      - broker
+      - all
+    entrypoint: /bin/sh
+    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
+    # We don't need the console in general, so the following command only
+    # includes it if --profile include_redpanda_console is set
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda:9092"]
+          schemaRegistry:
+            enabled: true
+            urls: ["http://redpanda:8081"]
+        redpanda:
+          adminApi:
+            enabled: true
+            urls: ["http://redpanda:9644"]
+        connect:
+          enabled: true
+          clusters:
+            - name: local-connect-cluster
+              url: http://connect:8083
+    ports:
+      - 8080:8080
+    depends_on:
+      - redpanda
+
+  event-formation:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: supermusr-trace-to-events
+    profiles:
+      - pipeline
+      - all
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    command:
+     - --broker=${BROKER}
+     - --group=trace-to-events
+     - --trace-topic=${TRACE_TOPIC}
+     - --event-topic=${DAT_EVENT_TOPIC}
+     - --observability-address=127.0.0.1:9090
+     - --otel-endpoint=${OTEL_ENDPOINT}
+     - ${OTEL_LEVEL}
+     - --polarity=positive
+     - --baseline=34400
+     - constant-phase-discriminator
+     - --threshold=10
+     - --duration=1
+     - --cool-off=0
+    volumes:
+      - "../Logs:/Logs"
+
+  frame-aggregation:
+    image: supermusr-digitiser-aggregator
+    profiles:
+      - pipeline
+      - all
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    command:
+     - --broker=${BROKER}
+     - --group=digitiser-aggregator
+     - --input-topic=${DAT_EVENT_TOPIC}
+     - --output-topic=${FRAME_EVENT_TOPIC}
+     - --otel-endpoint=${OTEL_ENDPOINT}
+     - ${OTEL_LEVEL}
+     - --frame-ttl-ms=2500
+     - --digitiser-ids=${DIGITISERS}
+    volumes:
+      - "../Logs:/Logs"
+
+  nexus-writer:
+    image: supermusr-nexus-writer
+    profiles:
+      - pipeline
+      - all
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    command:
+     - --broker=${BROKER}
+     - --consumer-group=nexus-writer
+     - --observability-address=127.0.0.1:9091
+     - --frame-event-topic=${FRAME_EVENT_TOPIC}
+     - --control-topic=${CONTROL_TOPIC}
+     - --log-topic=${LOGDATA_TOPIC}
+     - --sample-env-topic=${SELOG_TOPIC}
+     - --alarm-topic=${ALARM_TOPIC}
+     - --cache-run-ttl-ms=4000
+     - --otel-endpoint=${OTEL_ENDPOINT}
+     - ${OTEL_LEVEL}
+     - --file-name=home/Runs
+    volumes:
+      - "../${NEXUS_DEST}/:/home/Runs"
+      - "../Logs:/Logs"
+
+volumes:
+  redpanda: null
