@@ -1,5 +1,5 @@
 ## Include Library Scripts
-. ./Lib/lib.sh
+. ./Libs/lib.sh
 
 ## Setup Pipeline
 . ./Settings/PipelineSetup.sh
