@@ -1,4 +1,7 @@
-export OTEL_BSP_MAX_QUEUE_SIZE=8192
+
+SIMULATOR_CONFIG_SOURCE="Simulations/test.json"
+
+#export OTEL_BSP_MAX_QUEUE_SIZE=8192
 
 execute_run() {
     kill_persistant_components

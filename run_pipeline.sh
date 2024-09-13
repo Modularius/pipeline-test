@@ -14,10 +14,10 @@ MAX_DIGITISER=7 . ./Settings/Local/PipelineConfig.sh
 #. ./Settings/HiFi/PipelineConfig.sh
 
 ## OpenTelemetry Observability Levels
-OTEL_LEVEL_EVENT_FORMATION="--otel-level=off"
-OTEL_LEVEL_AGGREGATOR="--otel-level=off"
-OTEL_LEVEL_WRITER="--otel-level=off"
-OTEL_LEVEL_SIM="--otel-level=off"
+OTEL_LEVEL_EVENT_FORMATION="--otel-level=info"
+OTEL_LEVEL_AGGREGATOR="--otel-level=info"
+OTEL_LEVEL_WRITER="--otel-level=info"
+OTEL_LEVEL_SIM="--otel-level=info"
 
 ## Stdout Observability Levels
 export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
