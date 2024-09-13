@@ -1,5 +1,3 @@
-BROKER="130.246.55.29:9092"
-
 #RUN_SIMULATOR="cargo run --release --bin run-simulator --"
 RUN_SIMULATOR="../supermusr-data-pipeline/target/release/run-simulator"
 
