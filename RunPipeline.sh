@@ -1,12 +1,28 @@
-#TTE_INPUT_MODE="advanced-muon-detector --muon-onset=0.1 --muon-fall=-0.1 --muon-termination=0.01 --duration=10 --smoothing-window-size=10"
-TTE_POLARITY=positive
-TTE_BASELINE=0
-TTE_INPUT_MODE="fixed-threshold-discriminator --threshold=10 --duration=1 --cool-off=0"
+## Include Library Scripts
+. ./Lib/lib.sh
 
-OTEL_LEVEL="--otel-level=info"
+## Setup Pipeline
+. ./Settings/PipelineSetup.sh
+
+### Enact Event Formation Configuration
+. ./Settings/EventFormationConfig.sh
+
+### Enact Pipeline Configuration for Chosen Broker
+. ./Settings/Local/PipelineConfig.sh
+
+## OpenTelemetry Observability Levels
 OTEL_LEVEL_EVENT_FORMATION="--otel-level=off"
 OTEL_LEVEL_AGGREGATOR="--otel-level=off"
 OTEL_LEVEL_WRITER="--otel-level=off"
 OTEL_LEVEL_SIM="--otel-level=off"
 
+## Stdout Observability Levels
 export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
+
+## Main Script
+
+# run_persistant_components
+
+# sleep 1
+
+# run_trace_simulator
