@@ -1,0 +1,60 @@
+{
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "time-bins": 20000,
+    "sample-rate": 1000000000,
+    "digitiser-config": {
+        "auto-digitisers": {
+            "num-digitisers": { "int-env" : "NUM_DIGITISERS" },
+            "num-channels-per-digitiser": { "int" : 8 }
+        }
+    },
+    "pulses": [
+                {
+                    "pulse-type": "flat",
+                    "start":  { "random-type": "exponential", "lifetime": { "float": 2200 } },
+                    "width":  { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
+                    "height": { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                },
+                {
+                    "pulse-type": "triangular",
+                    "start":     { "random-type": "exponential", "lifetime": { "float": 2200 } },
+                    "width":     { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
+                    "peak_time": { "random-type": "uniform", "min": { "float": 0.25 }, "max": { "float": 0.75 } },
+                    "height":    { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                }],
+    "event-lists": [
+        {
+            "pulses": [ {"weight": 1, "pulse-index": 0}, {"weight": 1, "pulse-index": 1} ],
+            "noises": [],
+            "num-pulses": { "random-type": "constant", "value": { "int": 25 }}
+        }
+    ],
+    "schedule" : [
+        { "set-timestamp": "now"},
+        { "ensure-delay-ms": 0 },
+        { "send-run-start" : { "name": { "text-env": "RUN_NAME" }, "instrument": { "text": "MuSR" }}},
+        { "wait-ms": 100 },
+        { "generate-trace": { "event-list-index": 0, "repeat": 1}},
+        { "frame-loop" : {
+                "start": { "int": 0 },
+                "end": { "int": 49 },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": { "int": 0 },
+                            "end": { "int-env" : "MAX_DIGITISER" },
+                            "schedule" : [
+                                { "send-digitiser-trace": "replace-random"}
+                            ]
+                        }
+                    },
+                    { "ensure-delay-ms": 20 }
+                ]
+            }
+        },
+        { "wait-ms": 100 },
+        { "set-timestamp": { "advance-by-ms": 10000}},
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME" }}}
+    ]
+}
