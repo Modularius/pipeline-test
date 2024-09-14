@@ -1,18 +1,12 @@
-#RUN_SIMULATOR="cargo run --release --bin run-simulator --"
-RUN_SIMULATOR="../supermusr-data-pipeline/target/release/run-simulator"
+APPLICATION_PREFIX="../supermusr-data-pipeline/target/release/"
+#APPLICATION_PREFIX="cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
 
-#SIMULATOR="cargo run --release --bin simulator --"
-SIMULATOR="../supermusr-data-pipeline/target/release/simulator"
-
-#TRACE_READER="cargo run --release --bin trace-reader --"
-TRACE_READER="../supermusr-data-pipeline/target/release/trace-reader"
-
-#TRACE_TO_EVENTS="cargo run --release --bin trace-to-events --"
-TRACE_TO_EVENTS="../supermusr-data-pipeline/target/release/trace-to-events"
-#EVENT_AGGREGATOR="cargo run --release --bin digitiser-aggregator --"
-EVENT_AGGREGATOR="../supermusr-data-pipeline/target/release/digitiser-aggregator"
-#NEXUS_WRITER="cargo run --release --bin nexus-writer --"
-NEXUS_WRITER="../supermusr-data-pipeline/target/release/nexus-writer"
+RUN_SIMULATOR="${APPLICATION_PREFIX}run-simulator"
+SIMULATOR="${APPLICATION_PREFIX}simulator"
+TRACE_READER="${APPLICATION_PREFIX}trace-reader"
+TRACE_TO_EVENTS="${APPLICATION_PREFIX}trace-to-events"
+EVENT_AGGREGATOR="${APPLICATION_PREFIX}digitiser-aggregator"
+NEXUS_WRITER="${APPLICATION_PREFIX}/nexus-writer"
 
 
 GROUP_WRITER=nexus-writer
