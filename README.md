@@ -50,37 +50,32 @@ The deployment follows the pattern:
 ```mermaid
 erDiagram
 
-RUN_PIPELINE["run_pipeline"] {
-
-}
-
-LIBS["libs/*"] {
-    
-}
-RUN_PIPELINE ||--|| LIBS: ssfaf
+RUN_PIPELINE["run_pipeline"] {}
+LIBS["libs/*"] {}
+RUN_PIPELINE ||--|| LIBS: calls
 
 SETUP["Settings/PipelineSetup.sh"] {
     
 }
-RUN_PIPELINE ||--|| SETUP: ssfaf
+RUN_PIPELINE ||--|| SETUP: calls
 
 CONFIG["Settings/*/PipelineConfig.sh"] {
     
 }
-RUN_PIPELINE ||--|| CONFIG: ssfaf
+RUN_PIPELINE ||--|| CONFIG: calls
 
 EVCONFIG["Settings/EventFormationPipelineConfig.sh"] {
     
 }
-RUN_PIPELINE ||--|| EVCONFIG: ssfaf
+RUN_PIPELINE ||--|| EVCONFIG: calls
 
 SCRIPTS["Scripts/*.sh"] {
     
 }
-RUN_PIPELINE ||--|{ SCRIPTS: ssfaf
+RUN_PIPELINE ||--|{ SCRIPTS: calls
 
 TESTS["Tests/*.sh"] {
     
 }
-SCRIPTS }|--|{ TESTS: tet
+SCRIPTS }|--|{ TESTS: calls
 ```
