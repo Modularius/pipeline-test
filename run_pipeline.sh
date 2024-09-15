@@ -21,8 +21,8 @@ export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=off,trace_to_events=o
 
 ## Main Script
 
-# run_persistant_components
+run_persistant_components
 
-# sleep 1
+#sleep 1
 
-# run_trace_simulator
+#./Scripts/SimultateRuns.sh
