@@ -25,4 +25,5 @@ run_persistant_components
 
 #sleep 1
 
+./Scripts/RunSimulator.sh
 #./Scripts/SimultateRuns.sh
