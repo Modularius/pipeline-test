@@ -8,7 +8,6 @@ TRACE_TO_EVENTS="${APPLICATION_PREFIX}trace-to-events"
 EVENT_AGGREGATOR="${APPLICATION_PREFIX}digitiser-aggregator"
 NEXUS_WRITER="${APPLICATION_PREFIX}/nexus-writer"
 
-
 GROUP_WRITER=nexus-writer
 GROUP_AGGREGATOR=digitiser-aggregator
 GROUP_EVENT_FORMATION=trace-to-events
