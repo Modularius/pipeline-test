@@ -1,9 +1,4 @@
-kill_processes()
-{
-    pkill trace-to-events
-    pkill nexus-writer
-    pkill digitiser-aggre
-    pkill trace-archiver-
-}
+. ./Settings/PipelineSetup.sh
+. ./Libs/lib.sh
 
-kill_processes
+kill_persistant_components
