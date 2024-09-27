@@ -24,6 +24,8 @@
               direnv
               python312
               valgrind-light
+              cifs-utils
+              nfs-utils
             ] ++ (
               with python312Packages; [
                 pip
