@@ -10,8 +10,12 @@ LOGS_TOPIC=ics-metadata
 SELOGS_TOPIC=ics-metadata
 ALARMS_TOPIC=ics-alarms
 
+# Trace Source Dependent Event Formation Settings
+TTE_POLARITY=positive
+TTE_BASELINE=0
+
 # Digitisers Expected from Broker
 DIGITIZERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
 
 # Output Path
-NEXUS_OUTPUT_PATH="Output/Local"
+NEXUS_OUTPUT_PATH="/mnt/archive/incoming/hifi"
