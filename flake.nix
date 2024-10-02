@@ -26,6 +26,8 @@
               valgrind-light
               cifs-utils
               nfs-utils
+              hdf5_1_10
+              kcat
             ] ++ (
               with python312Packages; [
                 pip
