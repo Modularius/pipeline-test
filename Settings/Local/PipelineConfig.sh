@@ -10,8 +10,12 @@ LOGS_TOPIC=Logs
 SELOGS_TOPIC=SELogs
 ALARMS_TOPIC=Alarms
 
+# Trace Source Dependent Event Formation Settings
+TTE_POLARITY=positive
+TTE_BASELINE=0
+
 # Digitisers Expected from Broker
 DIGITIZERS=$(build_digitiser_argument $MAX_DIGITISER)
 
 # Output Path
-NEXUS_OUTPUT_PATH="Output/Local"
+NEXUS_OUTPUT_PATH="/mnt/archive/incoming/local"

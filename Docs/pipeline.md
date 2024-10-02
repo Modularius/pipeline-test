@@ -4,6 +4,12 @@ The command to enter the dev shell is
 nix develop ../supermusr-data-pipeline/
 ```
 
+The command to run the Jaeger docker collector is
+`docker compose --env-file ./configs/.env.hifi -f "./configs/docker-compose.yaml" --profile=no-broker up -d`
+
+To run the daq diagnostic tool run
+`cargo run --bin diagnostics daq-trace --broker 130.246.55.29:9090 --topic daq-traces-in  --group vis-3`
+
 ```mermaid
 
 erDiagram
