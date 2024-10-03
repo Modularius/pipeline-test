@@ -23,7 +23,53 @@ services:
       - "6831:6831/udp"
       - "6686:16686"
       - "6685:16685"
-    deploy:
-      resources:
-        limits:
-          memory: 30G
+  agent:
+    image: jaegertracing/jaeger-agent:latest
+    profiles:
+      - components
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=true
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "14250:14250"
+      - "14268:14268"
+      - "6831:6831/udp"
+      - "6686:16686"
+      - "6685:16685"
+  collector:
+    image: jaegertracing/jaeger-collector:latest
+    profiles:
+      - components
+    volumes:
+      - "../../jaeger_data:/badger"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=true
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "14250:14250"
+      - "14268:14268"
+      - "6831:6831/udp"
+      - "6686:16686"
+      - "6685:16685"
+  query:
+    image: jaegertracing/jaeger-query:latest
+    profiles:
+      - components
+    volumes:
+      - "./jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
+    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+    environment:
+      - SPAN_STORAGE_TYPE=badger
+    ports:
+      - "6686:16686"
+      - "6685:16685"
