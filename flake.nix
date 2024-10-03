@@ -28,6 +28,7 @@
               nfs-utils
               hdf5_1_10
               kcat
+              elasticsearch
             ] ++ (
               with python312Packages; [
                 pip
