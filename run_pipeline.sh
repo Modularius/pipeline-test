@@ -11,9 +11,9 @@
 . ./Settings/Local/PipelineConfig.sh
 
 ## OpenTelemetry Observability Levels
-OTEL_LEVEL_EVENT_FORMATION="--otel-level=off"
-OTEL_LEVEL_AGGREGATOR="--otel-level=off"
-OTEL_LEVEL_WRITER="--otel-level=off"
+OTEL_LEVEL_EVENT_FORMATION="--otel-level=info"
+OTEL_LEVEL_AGGREGATOR="--otel-level=info"
+OTEL_LEVEL_WRITER="--otel-level=info"
 OTEL_LEVEL_SIM="--otel-level=off"
 
 ## Stdout Observability Levels
