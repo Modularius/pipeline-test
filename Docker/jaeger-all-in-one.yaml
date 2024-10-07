@@ -1,0 +1,23 @@
+# docker-compose.yml file
+version: "3.5"
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    volumes:
+      - "./jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
+      - "../../jaeger_data:/badger"
+    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "14250:14250"
+      - "14268:14268"
+      - "6831:6831/udp"
+      - "6686:16686"
+      - "6685:16685"
