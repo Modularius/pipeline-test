@@ -1,6 +1,6 @@
 from typing import List
 from my_trace import TraceBank # type: ignore
-from model import Run
+from DataModel.model import Run
 import json
 import requests
 import time

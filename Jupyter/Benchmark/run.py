@@ -1,4 +1,4 @@
-from model import Run
+from DataModel.model import Run
 from benchmark import create_axes, plot_box_and_whisker
 
 import numpy as np

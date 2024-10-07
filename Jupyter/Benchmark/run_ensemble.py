@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict, Any
-from model import Run
+from DataModel.model import Run, Frame
 from benchmark import create_axes, plot_box_and_whisker
 import run as rn
 

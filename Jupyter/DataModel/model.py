@@ -1,5 +1,5 @@
 from typing import List
-from my_trace import Span # type: ignore
+from TraceLib.my_trace import Span # type: ignore
 
 import numpy as np
 
