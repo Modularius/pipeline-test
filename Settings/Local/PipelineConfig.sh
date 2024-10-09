@@ -18,4 +18,5 @@ TTE_BASELINE=0
 DIGITIZERS=$(build_digitiser_argument $MAX_DIGITISER)
 
 # Output Path
-NEXUS_OUTPUT_PATH="/mnt/archive/incoming/local"
+NEXUS_OUTPUT_PATH="Output/Local"
+NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/local"

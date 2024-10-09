@@ -52,6 +52,7 @@ run_nexus_writer() {
         --cache-run-ttl-ms 5000 \
         --otel-endpoint $OTEL_ENDPOINT \
         $OTEL_LEVEL_WRITER \
-        --file-name "$NEXUS_OUTPUT_PATH" &
+        --file-name "$NEXUS_OUTPUT_PATH" \
+        --archive-name "$NEXUS_ARCHIVE_PATH" &
 }
 

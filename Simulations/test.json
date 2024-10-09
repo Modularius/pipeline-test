@@ -13,14 +13,14 @@
                     "pulse-type": "flat",
                     "start":  { "random-type": "exponential", "lifetime": { "float": 2200 } },
                     "width":  { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
-                    "height": { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                    "height": { "random-type": "uniform", "min": { "float": 2000 }, "max": { "float": 4000 } }
                 },
                 {
                     "pulse-type": "triangular",
                     "start":     { "random-type": "exponential", "lifetime": { "float": 2200 } },
                     "width":     { "random-type": "uniform", "min": { "float": 20 }, "max": { "float": 50 } },
                     "peak_time": { "random-type": "uniform", "min": { "float": 0.25 }, "max": { "float": 0.75 } },
-                    "height":    { "random-type": "uniform", "min": { "float": 30 }, "max": { "float": 70 } }
+                    "height":    { "random-type": "uniform", "min": { "float": 2000 }, "max": { "float": 4000 } }
                 }],
     "event-lists": [
         {

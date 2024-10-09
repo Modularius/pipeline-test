@@ -26,7 +26,7 @@ execute_run() {
     export RUN_NAME
 
     run_persistant_components
-    sleep 6
+    sleep 2
 
     echo simulator start
     run_trace_simulator
@@ -38,7 +38,7 @@ execute_run() {
 
 #send_run_start "MyRun" "MuSR"
 
-execute_run 8 Run1
+execute_run 8 MyMovedRunAgain
 #execute_run 16 Run16
 #execute_run 24 Run3
 #execute_run 32 Run32
