@@ -1,18 +1,19 @@
-from typing import List
-from TraceLib.my_trace import Span, TraceBank # type: ignore
+from typing import List, Dict
+from TraceLib.my_trace import Span # type: ignore
+from scraper import TraceScraper
 
 class Tree:
     def __init__(self, span: Span):
         self.span = span
         self.nodes: List[Tree] = []
     
-    def get_children(self, tracebank : TraceBank):
-        self.nodes = [Tree(tracebank.extract_spans()[r.span_id]) for r in self.span.refs]
+    def get_children(self, scraper : TraceScraper):
+        self.nodes = [scraper.get_tree(r.trace_id, r.span_id) for r in self.span.refs]
 
-    def get_all_children(self, tracebank : TraceBank):
-        self.get_children(tracebank)
+    def get_all_children(self, scraper : TraceScraper):
+        self.get_children(scraper)
         for node in self.nodes:
-            node.get_all_children(tracebank)
+            node.get_all_children(scraper)
 
     def get_earliest_start_time(self) -> int:
         if self.nodes is []:
