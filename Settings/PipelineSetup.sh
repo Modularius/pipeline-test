@@ -17,5 +17,6 @@ PROCESS_WRITER=nexus-writer
 PROCESS_AGGREGATOR=digitiser-aggre
 PROCESS_EVENT_FORMATION=trace-to-events
 
-OTEL_ENDPOINT="http://localhost:4317/v1/traces"
+OTEL_ENDPOINT="--otel-endpoint http://localhost:4317/v1/traces"
 #OTEL_ENDPOINT="http://146.199.207.182:4317/v1/traces"
+#OTEL_ENDPOINT=""

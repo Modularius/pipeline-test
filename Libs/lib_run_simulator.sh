@@ -9,7 +9,7 @@ send_run_start() {
         --event-topic $DAT_EVENT_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --control-topic $CONTROL_TOPIC \
-        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_ENDPOINT \
         $OTEL_LEVEL_SIM \
         start $TIME \
         --run-name $RUN_NAME \
@@ -24,7 +24,7 @@ send_logdata() {
 
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
-        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_ENDPOINT \
         $OTEL_LEVEL \
         $TIME \
         log \
@@ -40,7 +40,7 @@ send_selog() {
 
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
-        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_ENDPOINT \
         $OTEL_LEVEL \
         $TIME \
         sample-env \
@@ -57,7 +57,7 @@ send_alarm() {
 
     $RUN_SIMULATOR --broker $BROKER --topic $CONTROL_TOPIC \
         --run-name $RUN_NAME \
-        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_ENDPOINT \
         $OTEL_LEVEL \
         $TIME \
         alarm \
@@ -75,7 +75,7 @@ send_run_stop() {
         --event-topic $DAT_EVENT_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --control-topic $CONTROL_TOPIC \
-        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_ENDPOINT \
         $OTEL_LEVEL_SIM \
         stop $TIME \
         --run-name $RUN_NAME \
