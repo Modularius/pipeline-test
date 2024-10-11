@@ -1,16 +1,16 @@
-from typing import List, Dict
-from TraceLib.my_trace import Span # type: ignore
-from scraper import TraceScraper
+from typing import Any, List, Dict
+from Tree.scraper_interface import TraceScraperInterface
+from TraceLib.span import Span
 
 class Tree:
     def __init__(self, span: Span):
         self.span = span
         self.nodes: List[Tree] = []
     
-    def get_children(self, scraper : TraceScraper):
+    def get_children(self, scraper : TraceScraperInterface):
         self.nodes = [scraper.get_tree(r.trace_id, r.span_id) for r in self.span.refs]
 
-    def get_all_children(self, scraper : TraceScraper):
+    def get_all_children(self, scraper : TraceScraperInterface):
         self.get_children(scraper)
         for node in self.nodes:
             node.get_all_children(scraper)

@@ -1,12 +1,13 @@
 from typing import List, Dict
-from TraceLib.my_trace import Span # type: ignore
+from Tree.scraper_interface import TraceScraperInterface
+from TraceLib.span import Span
 from Tree.my_tree import Tree
 import json
 import requests
 import time
 
 def build_jaeger_trace_endpoint(trace_id : str) -> str:
-    return f"http://localhost:6686/api/traces?{trace_id}"
+    return f"http://localhost:6686/api/traces/{trace_id}"
 
 def build_jaeger_spans_endpoint(service : str, operation : str, lookback_minutes : int) -> str:
     limit = 500000
@@ -15,7 +16,7 @@ def build_jaeger_spans_endpoint(service : str, operation : str, lookback_minutes
     end_ms = int(time.time()*1_000_000)
     return f"http://localhost:6686/api/traces?limit={limit}&lookback={lookback_seconds}s&service={service}&operation={operation}&start={start_ms}&end={end_ms}"
 
-class TraceScraper:
+class TraceScraper(TraceScraperInterface):
     def __init__(self):
         self.trace_id_log : List[str] = []
         self.spans : Dict[str,Tree] = dict()
@@ -44,7 +45,7 @@ class TraceScraper:
         self.trace_id_log.extend([t["traceID"] for t in traces])
         for trace in traces:
             for span in trace["spans"]:
-                self.spans[span["spanID"]] = Tree(span)
+                self.spans[span["spanID"]] = Tree(Span(span))
     
     def get_tree(self, trace_id: str, span_id: str) -> Tree:
         if trace_id not in self.trace_id_log:

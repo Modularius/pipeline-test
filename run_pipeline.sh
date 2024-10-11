@@ -20,7 +20,7 @@ OTEL_LEVEL_WRITER="--otel-level=info"
 OTEL_LEVEL_SIM="--otel-level=info"
 
 ## Stdout Observability Levels
-export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=off,trace_to_events=off,$RUST_LOG_OFF
+export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=info,trace_to_events=off,$RUST_LOG_OFF
 
 ## Main Script
 
