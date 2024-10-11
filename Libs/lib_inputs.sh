@@ -5,7 +5,7 @@ run_trace_simulator() {
         --event-topic $DAT_EVENT_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --control-topic $CONTROL_TOPIC \
-        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_ENDPOINT \
         $OTEL_LEVEL_SIM \
         defined "$SIMULATOR_CONFIG_SOURCE" \
         --runlog-topic $CONTROL_TOPIC \
@@ -27,7 +27,7 @@ run_trace_reader() {
         --consumer-group trace-reader \
         --frame-number=$FRAME_NUMBER \
         --digitizer-id=$DID \
-        --otel-endpoint $OTEL_ENDPOINT \
+        $OTEL_ENDPOINT \
         --number-of-trace-events=$NUM_TRACE_EVENTS \
         --trace-offset=$OFFSET \
         --file-name "../Data/Traces/MuSR_A41_B42_C43_D44_Apr2021_Ag_ZF_IntDeg_Slit60_short.traces"
