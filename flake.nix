@@ -38,6 +38,7 @@
                 scipy
                 ipykernel
                 ipywidgets
+                h5py
               ]
             );
             inputsFrom  = [
