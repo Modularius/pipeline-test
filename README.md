@@ -44,6 +44,18 @@ To run call `./run_pipeline.sh`.
 
 To kill the pipeline (though not the simulator) call `./kill.sh`.
 
+To mount the archive, run
+
+```shell
+mount -t cifs \
+   -o username=SuperMusr_mgr -o password=******** \
+   -o domain=ISIS -o vers=2.1 -o noserverino -o _netdev \
+   //ISISARVR55.isis.cclrc.ac.uk/SuperMusrTestDataBackup$ \
+   /mnt/archive
+```
+
+altering any parameters as required.
+
 ## File Structure
 
 The deployment follows the pattern:
