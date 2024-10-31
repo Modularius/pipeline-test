@@ -13,6 +13,8 @@ MAX_DIGITISER=7 . ./Settings/Local/PipelineConfig.sh
 #### HiFi
 #. ./Settings/HiFi/PipelineConfig.sh
 
+$CONFIG_STRING="{ broker: $BROKER, event_formation: { mode: $TTE_INPUT_MODE, polarity: $TTE_POLARITY, baseline: $TTE_BASELINE }, digitisers: $DIGITIZERS }"
+
 ## OpenTelemetry Observability Levels
 OTEL_LEVEL_EVENT_FORMATION="--otel-level=info"
 OTEL_LEVEL_AGGREGATOR="--otel-level=info"
