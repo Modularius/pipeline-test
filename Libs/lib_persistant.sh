@@ -12,8 +12,8 @@ run_trace_to_events() {
         $OTEL_ENDPOINT \
         $OTEL_LEVEL_EVENT_FORMATION \
         $TTE_INPUT_MODE  &
-        #        --save-file Output/HiFi/output_ \
 }
+#        --save-file Output/HiFi/output_ \
 
 build_digitiser_argument() {
     MAX_DIGITISER=$1
@@ -52,7 +52,7 @@ run_nexus_writer() {
         --cache-run-ttl-ms 5000 \
         $OTEL_ENDPOINT \
         $OTEL_LEVEL_WRITER \
-        --file-name "$NEXUS_OUTPUT_PATH" &
-#--archive-name "$NEXUS_ARCHIVE_PATH" &
+        --file-name "$NEXUS_OUTPUT_PATH"  &
 }
-
+#\
+#        --archive-name "$NEXUS_ARCHIVE_PATH"
