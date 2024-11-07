@@ -13,7 +13,7 @@ MAX_DIGITISER=7 . ./Settings/Local/PipelineConfig.sh
 #### HiFi
 #. ./Settings/HiFi/PipelineConfig.sh
 
-$CONFIG_STRING="{ broker: $BROKER, event_formation: { mode: $TTE_INPUT_MODE, polarity: $TTE_POLARITY, baseline: $TTE_BASELINE }, digitisers: $DIGITIZERS }"
+#$CONFIG_STRING="{ broker: $BROKER, event_formation: { mode: $TTE_INPUT_MODE, polarity: $TTE_POLARITY, baseline: $TTE_BASELINE }, digitisers: $DIGITIZERS }"
 
 ## OpenTelemetry Observability Levels
 OTEL_LEVEL_EVENT_FORMATION="--otel-level=info"
@@ -22,7 +22,9 @@ OTEL_LEVEL_WRITER="--otel-level=info"
 OTEL_LEVEL_SIM="--otel-level=info"
 
 ## Stdout Observability Levels
-export RUST_LOG=info,digitiser_aggregator=off,nexus_writer=info,trace_to_events=off,$RUST_LOG_OFF
+export RUST_LOG=info,digitiser_aggregator=warn,nexus_writer=info,trace_to_events=off,$RUST_LOG_OFF
+
+echo "Current Time: $(date +"%T")"
 
 ## Main Script
 

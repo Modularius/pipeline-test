@@ -5,7 +5,7 @@
     "digitiser-config": {
         "auto-digitisers": {
             "num-digitisers": { "int-env" : "NUM_DIGITISERS" },
-            "num-channels-per-digitiser": { "int" : 8 }
+            "num-channels-per-digitiser": { "int" : 2 }
         }
     },
     "pulses": [
@@ -34,7 +34,7 @@
         { "ensure-delay-ms": 0 },
         { "send-run-start" : { "name": { "text-env": "RUN_NAME" }, "instrument": { "text": "MuSR" }}},
         { "wait-ms": 100 },
-        { "generate-trace": { "event-list-index": 0, "repeat": 1}},
+        { "generate-trace": { "event-list-index": 0, "repeat": 18}},
         { "wait-ms": 200 },
         { "send-run-log-data" : {
             "source-name" : { "text" : "A-Double-Value" },
@@ -87,13 +87,6 @@
             "value" : ["53524000000000"]
         } },
         { "wait-ms": 100 },
-        { "send-sample-env-log" : {
-            "name" : { "text" : "Earth's Core" },
-            "values-type" : "uint64",
-            "location": "unknown",
-            "time-delta": 1.0,
-            "values" : ["36", "36.1", "36.8"]
-        } },
         { "send-alarm" : {
             "source-name" : { "text" : "Earth's Core" },
             "severity" : "minor",
@@ -112,6 +105,13 @@
             "message": "fml"
         } },
         { "send-sample-env-log" : {
+            "name" : { "text" : "Earth's Other Core again" },
+            "values-type" : "uint64",
+            "location": "unknown",
+            "time-delta": 1.0,
+            "values" : ["36.0", "36.1", "36.8"]
+        } },
+        { "send-sample-env-log" : {
             "name" : { "text" : "Earth's Other Core" },
             "values-type" : "uint64",
             "location": "unknown",
@@ -120,12 +120,48 @@
         } },
         { "frame-loop" : {
                 "start": { "int": 0 },
-                "end": { "int": 49 },
+                "end": { "int": 2 },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": { "int": 1 },
+                            "end": { "int-env" : "MAX_DIGITISER" },
+                            "schedule" : [
+                                { "send-digitiser-trace": "replace-random"}
+                            ]
+                        }
+                    },
+                    { "ensure-delay-ms": 20 }
+                ]
+            }
+        },
+        { "frame-loop" : {
+                "start": { "int": 3 },
+                "end": { "int": 5 },
                 "schedule" : [
                     { "set-timestamp": { "advance-by-ms": 20}},
                     {
                         "digitiser-loop" : {
                             "start": { "int": 0 },
+                            "end": { "int-env" : "MAX_DIGITISER" },
+                            "schedule" : [
+                                { "send-digitiser-trace": "replace-random"}
+                            ]
+                        }
+                    },
+                    { "ensure-delay-ms": 20 }
+                ]
+            }
+        },
+        { "frame-loop" : {
+                "start": { "int": 6 },
+                "end": { "int": 1500 },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": { "int": 1 },
                             "end": { "int-env" : "MAX_DIGITISER" },
                             "schedule" : [
                                 { "send-digitiser-trace": "replace-random"}

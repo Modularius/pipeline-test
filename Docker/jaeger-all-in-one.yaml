@@ -5,14 +5,15 @@ services:
     image: jaegertracing/all-in-one:latest
     volumes:
       - "./jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
-      - "../../jaeger_data:/badger"
+      - "/mnt/extension/jaeger_data:/badger"
     command: --query.ui-config /etc/jaeger/jaeger-ui.json
     environment:
       - COLLECTOR_OTLP_ENABLED=true
       - SPAN_STORAGE_TYPE=badger
-      - BADGER_EPHEMERAL=true
+      - BADGER_EPHEMERAL=false
       - BADGER_DIRECTORY_VALUE=/badger/data
       - BADGER_DIRECTORY_KEY=/badger/key
+      - BADGER_SPAN_STORE_TTL=86400000000000
     ports:
       - "4317:4317"
       - "4318:4318"
@@ -21,3 +22,5 @@ services:
       - "6831:6831/udp"
       - "6686:16686"
       - "6685:16685"
+volumes:
+  badger_data:
