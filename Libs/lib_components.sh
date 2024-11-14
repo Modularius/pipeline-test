@@ -3,7 +3,6 @@
 #   BROKER GROUP TRACE_TOPIC DAT_EVENT_TOPIC
 #   OBSV_ADDRESS OTEL_ENDPOINT OTEL_LEVEL
 #   TTE_POLARITY TTE_BASELINE TTE_INPUT_MODE
-
 build_trace_to_events_command() {
 
     TRACE_TO_EVENTS=$1;shift;
@@ -21,20 +20,22 @@ build_trace_to_events_command() {
     TTE_BASELINE=$1;shift;
     TTE_INPUT_MODE=$@
 
-    echo "--" "Executing Event Formation : $TRACE_TO_EVENTS, with properties:"
-    echo "--" "-" "broker = $BROKER"
-    echo "--" "-" "consumer-group = $GROUP_EVENT_FORMATION"
-    echo "--" "-" "observability-address = $OBSV_ADDRESS"0
-    echo "--" "-" "trace-topic = $TRACE_TOPIC"
-    echo "--" "-" "event-topic = $DAT_EVENT_TOPIC"
-    echo "--" "-" "polarity = $TTE_POLARITY"
-    echo "--" "-" "baseline = $TTE_BASELINE"
+    echo "--" "Executing Event Formation with properties:"
+    echo "--" "-" "$TRACE_TO_EVENTS"
+    echo "--" "-" "--broker $BROKER"
+    echo "--" "-" "--consumer-group $GROUP"
+    echo "--" "-" "--trace-topic $TRACE_TOPIC"
+    echo "--" "-" "--event-topic $DAT_EVENT_TOPIC"
+    echo "--" "-" "--observability-address $OBSV_ADDRESS"0
     echo "$OTEL_ENDPOINT"
     echo "$OTEL_LEVEL"
+    echo "--" "-" "--polarity $TTE_POLARITY"
+    echo "--" "-" "--baseline $TTE_BASELINE"
     echo "$TTE_INPUT_MODE"
 
     $TRACE_TO_EVENTS \
-        --broker $BROKER --consumer-group $GROUP_EVENT_FORMATION \
+        --broker $BROKER \
+        --consumer-group $GROUP \
         --observability-address "$OBSV_ADDRESS"0 \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
@@ -61,7 +62,18 @@ build_digitiser_aggregator_command() {
 
     DIGITIZERS=$1;shift;
 
-    echo "--" "--" "Executing aggregator : $EVENT_AGGREGATOR"
+    
+    echo "--" "Executing Digitiser Aggregator with properties:"
+    echo "--" "-" "$EVENT_AGGREGATOR"
+    echo "--" "-" "--broker $BROKER"
+    echo "--" "-" "--group $GROUP"
+    echo "--" "-" "--input-topic $DAT_EVENT_TOPIC"
+    echo "--" "-" "--output-topic $FRAME_EVENT_TOPIC"
+    echo "--" "-" "--observability-address "$OBSV_ADDRESS"1"
+    echo "--" "-" "--frame-ttl-ms $FRAME_TTL_MS"
+    echo "--" "-" "$OTEL_ENDPOINT"
+    echo "--" "-" "$OTEL_LEVEL"
+    echo "--" "-" "$DIGITIZERS"
 
     $EVENT_AGGREGATOR \
         --broker $BROKER --group $GROUP \
@@ -70,7 +82,7 @@ build_digitiser_aggregator_command() {
         --frame-ttl-ms $FRAME_TTL_MS \
         $OTEL_ENDPOINT \
         $OTEL_LEVEL \
-        $DIGITIZERS &
+        $DIGITIZERS
 }
 
 ## Fully Functional
@@ -88,6 +100,21 @@ build_nexus_writer_command() {
     OBSV_ADDRESS=$1;shift;
     OTEL_ENDPOINT=$1;shift;
     OTEL_LEVEL=$1;shift;
+
+    echo "--" "Executing Nexus Writer with properties:"
+    echo "--" "-" "$NEXUS_WRITER"
+    echo "--" "-" "--broker $BROKER --consumer-group "$GROUP""
+    echo "--" "-" "--observability-address "$OBSV_ADDRESS"2"
+    echo "--" "-" "--control-topic $CONTROL_TOPIC"
+    echo "--" "-" "--frame-event-topic $FRAME_EVENT_TOPIC"
+    echo "--" "-" "--log-topic $CONTROL_TOPIC"
+    echo "--" "-" "--sample-env-topic $CONTROL_TOPIC"
+    echo "--" "-" "--alarm-topic $CONTROL_TOPIC"
+    echo "--" "-" "--cache-run-ttl-ms $RUN_TTL_MS"
+    echo "--" "-" "$OTEL_ENDPOINT"
+    echo "--" "-" "$OTEL_LEVEL_WRITER"
+    echo "--" "-" "--file-name "$NEXUS_OUTPUT_PATH""
+    echo "--" "-" "--archive-name "$NEXUS_ARCHIVE_PATH""
 
     echo "--" "--" "Executing nexus-writer: $NEXUS_WRITER"
     

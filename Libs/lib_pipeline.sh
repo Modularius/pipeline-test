@@ -4,14 +4,12 @@ g_CONTAINER_ENGINE="docker"
 #g_CONTAINER_ENGINE="podman"
 g_IMAGE_PREFIX="ghcr.io/stfc-icd-research-and-design/supermusr"
 
-#deploy_pipeline inst1 8g 2g 8g True "fixed-threshold-discriminator --threshold=2200 --duration=1 --cool-off=0"
-#deploy_pipeline PIPELINE_NAME 
+#deploy_pipeline inst1 8g 2g 8g "fixed-threshold-discriminator --threshold=2200 --duration=1 --cool-off=0" 
 deploy_containerised_pipeline() {
     PIPELINE_NAME=$1;shift;
     EF_MEM=$1;shift;
     DA_MEM=$1;shift;
     NW_MEM=$1;shift;
-    REMOVE_GROUPS=$1;shift;
     TTE_INPUT_MODE=$@
 
     echo "Deploying containerised pipeline with name $PIPELINE_NAME with properties:"
@@ -45,10 +43,6 @@ deploy_containerised_pipeline() {
     GROUP_AGGREGATOR=${PIPELINE_NAME}-digitiser-aggregator
     GROUP_EVENT_FORMATION=${PIPELINE_NAME}-trace-to-events
     
-    if [ "$REMOVE_GROUPS" = true ] ; then
-        rpk group delete $GROUP_WRITER $GROUP_AGGREGATOR $GROUP_EVENT_FORMATION
-    fi
-
     build_trace_to_events_command "$TRACE_TO_EVENTS_COMMAND" \
         $g_BROKER $GROUP_EVENT_FORMATION $g_TRACE_TOPIC $DAT_EVENT_TOPIC \
         $g_OBSV_ADDRESS "$g_OTEL_ENDPOINT" "$g_OTEL_LEVEL_EVENT_FORMATION" \
@@ -66,4 +60,22 @@ deploy_containerised_pipeline() {
         
     echo "Pipeline Deployed"
     echo ""
+}
+
+teardown_pipeline_consumer_groups() {
+    PIPELINE_NAME=$1;shift;
+    
+    GROUP_WRITER=${PIPELINE_NAME}-nexus-writer
+    GROUP_AGGREGATOR=${PIPELINE_NAME}-digitiser-aggregator
+    GROUP_EVENT_FORMATION=${PIPELINE_NAME}-trace-to-events
+    
+    rpk group delete $GROUP_WRITER $GROUP_AGGREGATOR $GROUP_EVENT_FORMATION
+}
+
+teardown_containerised_pipeline() {
+    PIPELINE_NAME=$1;shift;
+
+    sudo g_CONTAINER_ENGINE kill $(g_CONTAINER_ENGINE container ls --all --quiet --no-trunc --filter "name=${PIPELINE_NAME}_event_formation")
+    sudo g_CONTAINER_ENGINE kill $(g_CONTAINER_ENGINE container ls --all --quiet --no-trunc --filter "name=${PIPELINE_NAME}_digitiser_aggregator")
+    sudo g_CONTAINER_ENGINE kill $(g_CONTAINER_ENGINE container ls --all --quiet --no-trunc --filter "name=${PIPELINE_NAME}_nexus_writer")
 }
