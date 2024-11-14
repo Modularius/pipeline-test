@@ -38,7 +38,7 @@ execute_run() {
 
 #send_run_start "MyRun" "MuSR"
 
-execute_run 8 LetsDoARun2
+execute_run 8 LetsDoARun3
 #execute_run 16 Run16
 #execute_run 24 Run3
 #execute_run 32 Run32

@@ -33,7 +33,6 @@ run_aggregator() {
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
         --observability-address "127.0.0.1:29091" \
         --frame-ttl-ms 2000 \
-        --send-frame-buffer-size 1024 \
         $OTEL_ENDPOINT \
         $OTEL_LEVEL_AGGREGATOR \
         $DIGITIZERS &

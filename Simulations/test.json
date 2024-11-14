@@ -120,48 +120,12 @@
         } },
         { "frame-loop" : {
                 "start": { "int": 0 },
-                "end": { "int": 2 },
-                "schedule" : [
-                    { "set-timestamp": { "advance-by-ms": 20}},
-                    {
-                        "digitiser-loop" : {
-                            "start": { "int": 1 },
-                            "end": { "int-env" : "MAX_DIGITISER" },
-                            "schedule" : [
-                                { "send-digitiser-trace": "replace-random"}
-                            ]
-                        }
-                    },
-                    { "ensure-delay-ms": 20 }
-                ]
-            }
-        },
-        { "frame-loop" : {
-                "start": { "int": 3 },
-                "end": { "int": 5 },
+                "end": { "int": 50 },
                 "schedule" : [
                     { "set-timestamp": { "advance-by-ms": 20}},
                     {
                         "digitiser-loop" : {
                             "start": { "int": 0 },
-                            "end": { "int-env" : "MAX_DIGITISER" },
-                            "schedule" : [
-                                { "send-digitiser-trace": "replace-random"}
-                            ]
-                        }
-                    },
-                    { "ensure-delay-ms": 20 }
-                ]
-            }
-        },
-        { "frame-loop" : {
-                "start": { "int": 6 },
-                "end": { "int": 1500 },
-                "schedule" : [
-                    { "set-timestamp": { "advance-by-ms": 20}},
-                    {
-                        "digitiser-loop" : {
-                            "start": { "int": 1 },
                             "end": { "int-env" : "MAX_DIGITISER" },
                             "schedule" : [
                                 { "send-digitiser-trace": "replace-random"}
