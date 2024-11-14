@@ -1,5 +1,4 @@
-
-SIMULATOR_CONFIG_SOURCE="Simulations/test.json"
+g_SIMULATOR_CONFIG_SOURCE="Simulations/test.json"
 
 #export OTEL_BSP_MAX_QUEUE_SIZE=8192
 
@@ -10,22 +9,21 @@ execute_run() {
 
     #rpk topic delete $TRACE_TOPIC $DAT_EVENT_TOPIC $FRAME_EVENT_TOPIC $CONTROL_TOPIC $LOGS_TOPIC $SELOGS_TOPIC $ALARMS_TOPIC
     #rpk topic create $TRACE_TOPIC $DAT_EVENT_TOPIC $FRAME_EVENT_TOPIC $CONTROL_TOPIC $LOGS_TOPIC $SELOGS_TOPIC $ALARMS_TOPIC
-    rpk topic trim $TRACE_TOPIC --offset end --no-confirm
     #rpk topic trim $CONTROL_TOPIC --offset end --no-confirm
     
     #sleep 1
 
     NUM_DIGITISERS=$1
     MAX_DIGITISER=$(($NUM_DIGITISERS - 1))
-    DIGITIZERS=$(build_digitiser_argument $MAX_DIGITISER)
-    echo executing run with $NUM_DIGITISERS digitisers: $DIGITIZERS
+    g_DIGITISERS=$(build_digitiser_argument $MAX_DIGITISER)
+    echo executing run with $NUM_DIGITISERS digitisers: $g_DIGITISERS
 
     RUN_NAME=$2
     export MAX_DIGITISER
     export NUM_DIGITISERS
     export RUN_NAME
 
-    run_persistant_components
+    deploy_containerised_pipeline pipeline1 8g 2g 8g True "fixed-threshold-discriminator --threshold=2200 --duration=1 --cool-off=0"
     sleep 2
 
     echo simulator start
@@ -38,7 +36,7 @@ execute_run() {
 
 #send_run_start "MyRun" "MuSR"
 
-execute_run 8 LetsDoARun3
+execute_run 8 LetsDoARun4
 #execute_run 16 Run16
 #execute_run 24 Run3
 #execute_run 32 Run32

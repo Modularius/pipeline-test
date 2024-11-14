@@ -21,3 +21,7 @@ g_OTEL_ENDPOINT="--otel-endpoint http://localhost:4317/v1/traces"
 #g_OTEL_ENDPOINT="--otel-endpoint http://172.16.113.245:4317/v1/traces"       # HiFi
 #g_OTEL_ENDPOINT="--otel-endpoint http://146.199.207.182:4317/v1/traces"      # MyPC
 #g_OTEL_ENDPOINT=""
+
+g_OBSV_ADDRESS="127.0.0.1:2909"       # Local
+#g_OBSV_ADDRESS="172.16.113.245:29090"       # Dev4
+

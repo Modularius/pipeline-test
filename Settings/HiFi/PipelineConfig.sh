@@ -1,21 +1,24 @@
 # Use This Broker
-BROKER="130.246.55.29:9092"
+g_BROKER="130.246.55.29:9092"
 
 # Broker Topics
-TRACE_TOPIC=daq-traces-in
-DAT_EVENT_TOPIC=daq-events
-FRAME_EVENT_TOPIC=frame-events
-CONTROL_TOPIC=ics-control-change
-LOGS_TOPIC=ics-metadata
-SELOGS_TOPIC=ics-metadata
-ALARMS_TOPIC=ics-alarms
+g_TRACE_TOPIC=daq-traces-in
+g_DAT_EVENT_TOPIC=daq-events
+g_FRAME_EVENT_TOPIC=frame-events
+g_CONTROL_TOPIC=ics-control-change
+g_LOGS_TOPIC=ics-metadata
+g_SELOGS_TOPIC=ics-metadata
+g_ALARMS_TOPIC=ics-alarms
 
 # Trace Source Dependent Event Formation Settings
-TTE_POLARITY=positive
-TTE_BASELINE=0
+g_TTE_POLARITY=positive
+g_TTE_BASELINE=0
 
 # Digitisers Expected from Broker
-DIGITIZERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
+g_DIGITIZERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
+g_FRAME_TTL_MS=1000
 
 # Output Path
-NEXUS_OUTPUT_PATH="/mnt/archive/incoming/hifi/via-local"
+g_NEXUS_OUTPUT_PATH="Output/Local"
+g_NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/hifi/via-local"
+g_RUN_TTL_MS=500

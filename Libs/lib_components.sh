@@ -1,4 +1,9 @@
 ## Fully Functional
+# build_trace_to_events_command TRACE_TO_EVENTS
+#   BROKER GROUP TRACE_TOPIC DAT_EVENT_TOPIC
+#   OBSV_ADDRESS OTEL_ENDPOINT OTEL_LEVEL
+#   TTE_POLARITY TTE_BASELINE TTE_INPUT_MODE
+
 build_trace_to_events_command() {
 
     TRACE_TO_EVENTS=$1;shift;
@@ -14,11 +19,20 @@ build_trace_to_events_command() {
 
     TTE_POLARITY=$1;shift;
     TTE_BASELINE=$1;shift;
-    TTE_INPUT_MODE=$1;shift;
+    TTE_INPUT_MODE=$@
 
-    echo "Using detector settings '$TTE_INPUT_MODE'"
+    echo "--" "Executing Event Formation : $TRACE_TO_EVENTS, with properties:"
+    echo "--" "-" "broker = $BROKER"
+    echo "--" "-" "consumer-group = $GROUP_EVENT_FORMATION"
+    echo "--" "-" "observability-address = $OBSV_ADDRESS"0
+    echo "--" "-" "trace-topic = $TRACE_TOPIC"
+    echo "--" "-" "event-topic = $DAT_EVENT_TOPIC"
+    echo "--" "-" "polarity = $TTE_POLARITY"
+    echo "--" "-" "baseline = $TTE_BASELINE"
+    echo "$OTEL_ENDPOINT"
+    echo "$OTEL_LEVEL"
+    echo "$TTE_INPUT_MODE"
 
-    echo "--" "--" "Executing Event Formation : $TRACE_TO_EVENTS"
     $TRACE_TO_EVENTS \
         --broker $BROKER --consumer-group $GROUP_EVENT_FORMATION \
         --observability-address "$OBSV_ADDRESS"0 \
@@ -27,7 +41,7 @@ build_trace_to_events_command() {
         --polarity $TTE_POLARITY \
         --baseline $TTE_BASELINE \
         $OTEL_ENDPOINT \
-        $OTEL_LEVEL_EVENT_FORMATION \
+        $OTEL_LEVEL \
         $TTE_INPUT_MODE
 }
 
@@ -75,7 +89,6 @@ build_nexus_writer_command() {
     OTEL_ENDPOINT=$1;shift;
     OTEL_LEVEL=$1;shift;
 
-    DIGITIZERS=$1;shift;
     echo "--" "--" "Executing nexus-writer: $NEXUS_WRITER"
     
     $NEXUS_WRITER \

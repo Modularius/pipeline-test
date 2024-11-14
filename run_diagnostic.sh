@@ -9,4 +9,4 @@
 #. ./Settings/HiFi/PipelineConfig.sh
 
 # Diagnose Daq Traces
-${APPLICATION_PREFIX}/diagnostics daq-trace --broker $BROKER --topic $TRACE_TOPIC  --group vis-3
+${g_APPLICATION_PREFIX}/diagnostics daq-trace --broker $g_BROKER --topic $g_TRACE_TOPIC  --group vis-3
