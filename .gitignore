@@ -3,4 +3,5 @@ Logs/*
 .direnv/*
 *.pyc
 *.csv
+local.env
 Jupyter/cache/*.json

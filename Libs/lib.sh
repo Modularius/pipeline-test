@@ -19,10 +19,11 @@ kill_persistant_components() {
     pkill $PROCESS_WRITER
     pkill $PROCESS_AGGREGATOR
     pkill trace-archiver-
+
+    podman rm --all --force
 }
 
 run_persistant_components() {
-    kill_persistant_components
     run_trace_to_events
     run_aggregator
     run_nexus_writer

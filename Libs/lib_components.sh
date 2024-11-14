@@ -1,4 +1,20 @@
-run_trace_to_events() {
+build_trace_to_events_command() {
+
+    TRACE_TO_EVENTS=$1;shift;
+
+    BROKER=$1;shift;
+    GROUP=$1;shift;
+    TRACE_TOPIC=$1;shift;
+    DAT_EVENT_TOPIC=$1;shift;
+
+    OBSV_ADDRESS=$1;shift;
+    OTEL_ENDPOINT=$1;shift;
+    OTEL_LEVEL=$1;shift;
+
+    TTE_POLARITY=$1;shift;
+    TTE_BASELINE=$1;shift;
+    TTE_INPUT_MODE=$1;shift;
+
     echo "Using detector settings '$TTE_INPUT_MODE'"
 
     echo "--" "--" "Executing Event Formation : $TRACE_TO_EVENTS"

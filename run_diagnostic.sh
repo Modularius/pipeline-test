@@ -7,4 +7,4 @@
 . ./Settings/Local/PipelineConfig.sh
 
 # Diagnose Daq Traces
-${APPLICATION_PREFIX}/diagnostics daq-trace --broker $BROKER --topic $TRACE_TOPIC  --group vis-3
+${APPLICATION_PREFIX}diagnostics${APPLICATION_SUFFIX} daq-trace --broker $BROKER --topic $TRACE_TOPIC  --group vis-3
