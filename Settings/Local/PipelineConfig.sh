@@ -1,17 +1,17 @@
 # Use This Broker
-BROKER="localhost:9092"
+g_BROKER="localhost:9092"
 
 # Broker Topics
-TRACE_TOPIC=daq-traces-in
-DAT_EVENT_TOPIC=daq-events-in
-FRAME_EVENT_TOPIC=ics-_events
-CONTROL_TOPIC=ics-control-change
-LOGS_TOPIC=ics-metadata
-SELOGS_TOPIC=ics-metadata
-ALARMS_TOPIC=ics-alarms
+g_TRACE_TOPIC=daq-traces-in
+g_DAT_EVENT_TOPIC=daq-events-in
+g_FRAME_EVENT_TOPIC=ics-_events
+g_CONTROL_TOPIC=ics-control-change
+g_LOGS_TOPIC=ics-metadata
+g_SELOGS_TOPIC=ics-metadata
+g_ALARMS_TOPIC=ics-alarms
 
 # Digitisers Expected from Broker
-DIGITIZERS=$(build_digitiser_argument 7)
+g_DIGITIZERS=$(build_digitiser_argument 7)
 
 # Output Path
-NEXUS_OUTPUT_PATH="Output/Local"
+g_NEXUS_OUTPUT_PATH="Output/Local"
