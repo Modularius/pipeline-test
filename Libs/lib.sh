@@ -1,4 +1,4 @@
-RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+g_RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
 
 . ./Libs/lib_run_simulator.sh
 . ./Libs/lib_inputs.sh
@@ -15,9 +15,9 @@ build_digitiser_argument() {
 }
 
 kill_persistant_components() {
-    pkill $PROCESS_EVENT_FORMATION
-    pkill $PROCESS_WRITER
-    pkill $PROCESS_AGGREGATOR
+    pkill $g_PROCESS_EVENT_FORMATION
+    pkill $g_PROCESS_WRITER
+    pkill $g_PROCESS_AGGREGATOR
     pkill trace-archiver-
 }
 

@@ -1,23 +1,23 @@
-APPLICATION_PREFIX="../supermusr-data-pipeline/target/release/"
-#APPLICATION_PREFIX="cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
+g_APPLICATION_PREFIX="../supermusr-data-pipeline/target/release/"
+#g_APPLICATION_PREFIX="cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
 
-RUN_SIMULATOR="${APPLICATION_PREFIX}run-simulator"
-SIMULATOR="${APPLICATION_PREFIX}simulator"
-TRACE_READER="${APPLICATION_PREFIX}trace-reader"
-TRACE_TO_EVENTS="${APPLICATION_PREFIX}trace-to-events"
-EVENT_AGGREGATOR="${APPLICATION_PREFIX}digitiser-aggregator"
-NEXUS_WRITER="${APPLICATION_PREFIX}/nexus-writer"
+g_RUN_SIMULATOR="${g_APPLICATION_PREFIX}run-simulator"
+g_SIMULATOR="${g_APPLICATION_PREFIX}simulator"
+g_TRACE_READER="${g_APPLICATION_PREFIX}trace-reader"
+g_TRACE_TO_EVENTS="${g_APPLICATION_PREFIX}trace-to-events"
+g_EVENT_AGGREGATOR="${g_APPLICATION_PREFIX}digitiser-aggregator"
+g_NEXUS_WRITER="${g_APPLICATION_PREFIX}/nexus-writer"
 
 
-GROUP_WRITER=nexus-writer
-GROUP_AGGREGATOR=digitiser-aggregator
-GROUP_EVENT_FORMATION=trace-to-events
+g_GROUP_WRITER=nexus-writer
+g_GROUP_AGGREGATOR=digitiser-aggregator
+g_GROUP_EVENT_FORMATION=trace-to-events
 
-PROCESS_WRITER=nexus-writer
-PROCESS_AGGREGATOR=digitiser-aggre
-PROCESS_EVENT_FORMATION=trace-to-events
+g_PROCESS_WRITER=nexus-writer
+g_PROCESS_AGGREGATOR=digitiser-aggre
+g_PROCESS_EVENT_FORMATION=trace-to-events
 
-OTEL_ENDPOINT="--otel-endpoint http://localhost:4317/v1/traces"
-#OTEL_ENDPOINT="--otel-endpoint http://172.16.113.245:4317/v1/traces"       # HiFi
-#OTEL_ENDPOINT="--otel-endpoint http://146.199.207.182:4317/v1/traces"      # MyPC
-#OTEL_ENDPOINT=""
+g_OTEL_ENDPOINT="--otel-endpoint http://localhost:4317/v1/traces"
+#g_OTEL_ENDPOINT="--otel-endpoint http://172.16.113.245:4317/v1/traces"       # HiFi
+#g_OTEL_ENDPOINT="--otel-endpoint http://146.199.207.182:4317/v1/traces"      # MyPC
+#g_OTEL_ENDPOINT=""

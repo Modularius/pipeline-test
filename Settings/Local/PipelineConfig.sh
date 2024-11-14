@@ -1,22 +1,17 @@
 # Use This Broker
-BROKER="localhost:9092"
+g_BROKER="localhost:9092"
 
 # Broker Topics
-TRACE_TOPIC=Traces
-DAT_EVENT_TOPIC=Events
-FRAME_EVENT_TOPIC=FrameEvents
-CONTROL_TOPIC=Controls
-LOGS_TOPIC=Logs
-SELOGS_TOPIC=SELogs
-ALARMS_TOPIC=Alarms
-
-# Trace Source Dependent Event Formation Settings
-TTE_POLARITY=positive
-TTE_BASELINE=0
+g_TRACE_TOPIC=daq-traces-in
+g_DAT_EVENT_TOPIC=daq-events-in
+g_FRAME_EVENT_TOPIC=ics-_events
+g_CONTROL_TOPIC=ics-control-change
+g_LOGS_TOPIC=ics-metadata
+g_SELOGS_TOPIC=ics-metadata
+g_ALARMS_TOPIC=ics-alarms
 
 # Digitisers Expected from Broker
-DIGITIZERS=$(build_digitiser_argument $MAX_DIGITISER)
+g_DIGITIZERS=$(build_digitiser_argument 7)
 
 # Output Path
-NEXUS_OUTPUT_PATH="Output/Local"
-NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/local"
+g_NEXUS_OUTPUT_PATH="Output/Local"
