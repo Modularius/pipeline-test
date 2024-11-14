@@ -4,6 +4,7 @@ g_RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
 . ./Libs/lib_inputs.sh
 . ./Libs/lib_persistant.sh
 
+# Fully Functional
 build_digitiser_argument() {
     MAX_DIGITISER=$1
     DIGITIZERS=""
