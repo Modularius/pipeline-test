@@ -6,6 +6,7 @@
 build_trace_to_events_command() {
 
     TRACE_TO_EVENTS=$1;shift;
+    INDEX=$1;shift; #This should be removed
 
     BROKER=$1;shift;
     GROUP=$1;shift;
@@ -26,7 +27,7 @@ build_trace_to_events_command() {
     echo "--" "-" "--consumer-group $GROUP"
     echo "--" "-" "--trace-topic $TRACE_TOPIC"
     echo "--" "-" "--event-topic $DAT_EVENT_TOPIC"
-    echo "--" "-" "--observability-address ${OBSV_ADDRESS}0"
+    echo "--" "-" "--observability-address ${OBSV_ADDRESS}${INDEX}"
     echo "$OTEL_ENDPOINT"
     echo "$OTEL_LEVEL"
     echo "--" "-" "--polarity $TTE_POLARITY"
@@ -36,7 +37,7 @@ build_trace_to_events_command() {
     CMD="$TRACE_TO_EVENTS \
         --broker $BROKER \
         --consumer-group $GROUP \
-        --observability-address ${OBSV_ADDRESS}0 \
+        --observability-address ${OBSV_ADDRESS}${INDEX} \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
         --polarity $TTE_POLARITY \
@@ -52,6 +53,7 @@ build_trace_to_events_command() {
 ## Fully Functional
 build_digitiser_aggregator_command() {
     EVENT_AGGREGATOR=$1;shift;
+    INDEX=$1;shift; #This should be removed
 
     BROKER=$1;shift;
     GROUP=$1;shift;
@@ -71,7 +73,7 @@ build_digitiser_aggregator_command() {
     echo "--" "-" "--group $GROUP"
     echo "--" "-" "--input-topic $DAT_EVENT_TOPIC"
     echo "--" "-" "--output-topic $FRAME_EVENT_TOPIC"
-    echo "--" "-" "--observability-address ${OBSV_ADDRESS}1"
+    echo "--" "-" "--observability-address ${OBSV_ADDRESS}${INDEX}"
     echo "--" "-" "--frame-ttl-ms $FRAME_TTL_MS"
     echo "--" "-" "$OTEL_ENDPOINT"
     echo "--" "-" "$OTEL_LEVEL"
@@ -80,7 +82,7 @@ build_digitiser_aggregator_command() {
     CMD="$EVENT_AGGREGATOR \
         --broker $BROKER --group $GROUP \
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
-        --observability-address ${OBSV_ADDRESS}1 \
+        --observability-address ${OBSV_ADDRESS}${INDEX} \
         --frame-ttl-ms $FRAME_TTL_MS \
         $OTEL_ENDPOINT \
         $OTEL_LEVEL \
@@ -92,6 +94,7 @@ build_digitiser_aggregator_command() {
 ## Fully Functional
 build_nexus_writer_command() {
     NEXUS_WRITER=$1;shift;
+    INDEX=$1;shift; #This should be removed
 
     BROKER=$1;shift;
     GROUP=$1;shift;
@@ -110,7 +113,7 @@ build_nexus_writer_command() {
     echo "--" "-" "$NEXUS_WRITER"
     echo "--" "-" "--broker $BROKER"
     echo "--" "-" "--consumer-group "$GROUP""
-    echo "--" "-" "--observability-address ${OBSV_ADDRESS}2"
+    echo "--" "-" "--observability-address ${OBSV_ADDRESS}${INDEX}"
     echo "--" "-" "--control-topic $CONTROL_TOPIC"
     echo "--" "-" "--frame-event-topic $FRAME_EVENT_TOPIC"
     echo "--" "-" "--log-topic $CONTROL_TOPIC"
@@ -125,7 +128,7 @@ build_nexus_writer_command() {
     CMD="$NEXUS_WRITER \
         --broker $BROKER \
         --consumer-group ${GROUP} \
-        --observability-address ${OBSV_ADDRESS}2 \
+        --observability-address ${OBSV_ADDRESS}${INDEX} \
         --control-topic $CONTROL_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --log-topic $CONTROL_TOPIC \
