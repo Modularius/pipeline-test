@@ -1,0 +1,29 @@
+# docker-compose.yml file
+version: "3.5"
+services:
+  redpanda_console:
+    container_name: kafka_console
+    image: docker.redpanda.com/redpandadata/console:v2.2.4
+    entrypoint: /bin/sh
+    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
+    # We don't need the console in general, so the following command only
+    # includes it if --profile include_redpanda_console is set
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["127.0.0.1:9092"]
+          schemaRegistry:
+            enabled: true
+            urls: ["http://127.0.0.1:8081"]
+        redpanda:
+          adminApi:
+            enabled: true
+            urls: ["http://127.0.0.1:9644"]
+        connect:
+          enabled: true
+          clusters:
+            - name: local-connect-cluster
+              url: http://127.0.0.1:8083
+    ports:
+      - 8080:8080

@@ -1,0 +1,85 @@
+Current Time: 10:20:45
+Tearing down pipeline: pipeline1
+9369533dc160d60890fb030df14d0982d021de979876b005d7acb7e2cdf79c20
+95d62dfa8bcb303dc160e4a691a3ad9084998407b06ea1a501681ff50cd2b1d7
+12cd72d28116e328a7fff24863c80314c0a600827ae9182d07af1ea535f659c4
+Tearing down consumer groups for pipeline: pipeline1
+GROUP                           STATUS
+pipeline1-digitiser-aggregator  OK
+pipeline1-nexus-writer          OK
+pipeline1-trace-to-events       OK
+deploying pipeline with 8 digitisers: -d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7
+Deploying containerised pipeline with name pipeline1 with properties:
+- EF_MEM =  8g
+- DA_MEM =  2g
+- NW_MEM =  8g
+- ARCHIVE_FOLDER =  local
+- TTE_INPUT_MODE =  fixed-threshold-discriminator --threshold=2200 --duration=1 --cool-off=0
+TOPIC                  STATUS
+pipeline1-Events       TOPIC_ALREADY_EXISTS: The topic has already been created
+pipeline1-FrameEvents  TOPIC_ALREADY_EXISTS: The topic has already been created
+-- Executing Event Formation with properties:
+-- - sudo podman run -d         --memory 8g         --network=host         --restart on-failure         --name=pipeline1_event_formation         ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+-- - --broker localhost:9092
+-- - --consumer-group pipeline1-trace-to-events
+-- - --trace-topic Traces
+-- - --event-topic pipeline1-Events
+-- - --observability-address 127.0.0.1:29090
+--otel-endpoint http://localhost:4317/v1/traces
+--otel-level=info
+-- - --polarity positive
+-- - --baseline 0
+fixed-threshold-discriminator --threshold=2200 --duration=1 --cool-off=0
+sudo podman run -d --memory 8g --network=host --restart on-failure --name=pipeline1_event_formation ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main --broker localhost:9092 --consumer-group pipeline1-trace-to-events --observability-address 127.0.0.1:29090 --trace-topic Traces --event-topic pipeline1-Events --polarity positive --baseline 0 --otel-endpoint http://localhost:4317/v1/traces --otel-level=info fixed-threshold-discriminator --threshold=2200 --duration=1 --cool-off=0
+195a68612103c4d12551713a1f3baf0fa7f18e7dc13b0926967c2765a0056566
+-- Executing Digitiser Aggregator with properties:
+-- - sudo podman run -d         --memory 2g         --network=host         --restart on-failure         --name=pipeline1_digitiser_aggregator         ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
+-- - --broker localhost:9092
+-- - --group pipeline1-digitiser-aggregator
+-- - --input-topic pipeline1-Events
+-- - --output-topic pipeline1-FrameEvents
+-- - --observability-address 127.0.0.1:29091
+-- - --frame-ttl-ms 2000
+-- - --otel-endpoint http://localhost:4317/v1/traces
+-- - --otel-level=info
+-- - -d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7
+sudo podman run -d --memory 2g --network=host --restart on-failure --name=pipeline1_digitiser_aggregator ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main --broker localhost:9092 --group pipeline1-digitiser-aggregator --input-topic pipeline1-Events --output-topic pipeline1-FrameEvents --observability-address 127.0.0.1:29091 --frame-ttl-ms 2000 --otel-endpoint http://localhost:4317/v1/traces --otel-level=info -d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7
+05e94c59b888bac657e2705e1748ce0a1e0ccf16d6403c4477119d3a3e80a669
+-- Executing Nexus Writer with properties:
+-- - sudo podman run -d         --memory 8g         --network=host         --restart on-failure         --name=pipeline1_nexus_writer         -v ./archive/incoming/local_pipeline1:/archive -v ./Output/local_pipeline1:/local         ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
+-- - --broker localhost:9092
+-- - --consumer-group pipeline1-nexus-writer
+-- - --observability-address 127.0.0.1:29092
+-- - --control-topic Controls
+-- - --frame-event-topic pipeline1-FrameEvents
+-- - --log-topic Controls
+-- - --sample-env-topic Controls
+-- - --alarm-topic Controls
+-- - --cache-run-ttl-ms 2500
+-- - --otel-endpoint http://localhost:4317/v1/traces
+-- - --otel-level=info
+-- - --file-name local
+-- - --archive-name archive
+sudo podman run -d --memory 8g --network=host --restart on-failure --name=pipeline1_nexus_writer -v ./archive/incoming/local_pipeline1:/archive -v ./Output/local_pipeline1:/local ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main --broker localhost:9092 --consumer-group pipeline1-nexus-writer --observability-address 127.0.0.1:29092 --control-topic Controls --frame-event-topic pipeline1-FrameEvents --log-topic Controls --sample-env-topic Controls --alarm-topic Controls --cache-run-ttl-ms 2500 --otel-endpoint http://localhost:4317/v1/traces --otel-level=info --file-name local --archive-name archive
+438ff4460a4cabea11ae176d5987f76f3b56f3444a15436b56b2eaa2a2c5f891
+Pipeline Deployed
+
+deploying pipeline with 8 digitisers: -d0 -d1 -d2 -d3 -d4 -d5 -d6 -d7
+simulator start
+-- Executing Nexus Writer with properties:
+-- - podman run         -v ./Simulations:/Simulations         --network=host         -e g_RUN_NAME=LetsDoARunAgainOnceMore -e g_NUM_DIGITISERS=8 -e g_MAX_DIGITISER=7         --name=simulator         ghcr.io/stfc-icd-research-and-design/supermusr-simulator:main
+-- - --broker localhost:9092
+-- - --otel-endpoint http://localhost:4317/v1/traces
+-- - --otel-level=info
+-- - defined Simulations/test.json
+-- - --digitiser-trace-topic Traces
+-- - --digitiser-event-topic pipeline1-Events
+-- - --frame-event-topic pipeline1-FrameEvents
+-- - --control-topic Controls
+-- - --runlog-topic Controls
+-- - --selog-topic Controls
+-- - --alarm-topic Controls
+podman run -v ./Simulations:/Simulations --network=host -e g_RUN_NAME=LetsDoARunAgainOnceMore -e g_NUM_DIGITISERS=8 -e g_MAX_DIGITISER=7 --name=simulator ghcr.io/stfc-icd-research-and-design/supermusr-simulator:main --broker localhost:9092 --otel-endpoint http://localhost:4317/v1/traces --otel-level=info defined Simulations/test.json --digitiser-trace-topic Traces --digitiser-event-topic pipeline1-Events --frame-event-topic pipeline1-FrameEvents --control-topic Controls --runlog-topic Controls --selog-topic Controls --alarm-topic Controls
+simulator finished
+Tearing down simulator
+10e1cbcc91c27791bb5345affa77dcbffae1dae19b3b9991441ef3a9631f5c37

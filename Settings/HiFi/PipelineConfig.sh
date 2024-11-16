@@ -19,6 +19,6 @@ g_DIGITIZERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
 g_FRAME_TTL_MS=1000
 
 # Output Path
-g_NEXUS_OUTPUT_PATH="Output/Local"
+g_NEXUS_OUTPUT_PATH="Output/HiFi"
 g_NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/hifi/via-local"
 g_RUN_TTL_MS=500

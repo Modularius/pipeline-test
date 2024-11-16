@@ -26,24 +26,27 @@ build_trace_to_events_command() {
     echo "--" "-" "--consumer-group $GROUP"
     echo "--" "-" "--trace-topic $TRACE_TOPIC"
     echo "--" "-" "--event-topic $DAT_EVENT_TOPIC"
-    echo "--" "-" "--observability-address $OBSV_ADDRESS"0
+    echo "--" "-" "--observability-address ${OBSV_ADDRESS}0"
     echo "$OTEL_ENDPOINT"
     echo "$OTEL_LEVEL"
     echo "--" "-" "--polarity $TTE_POLARITY"
     echo "--" "-" "--baseline $TTE_BASELINE"
     echo "$TTE_INPUT_MODE"
 
-    $TRACE_TO_EVENTS \
+    CMD="$TRACE_TO_EVENTS \
         --broker $BROKER \
         --consumer-group $GROUP \
-        --observability-address "$OBSV_ADDRESS"0 \
+        --observability-address ${OBSV_ADDRESS}0 \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
         --polarity $TTE_POLARITY \
         --baseline $TTE_BASELINE \
         $OTEL_ENDPOINT \
         $OTEL_LEVEL \
-        $TTE_INPUT_MODE
+        $TTE_INPUT_MODE"
+    echo $CMD
+
+    $CMD
 }
 
 ## Fully Functional
@@ -60,29 +63,30 @@ build_digitiser_aggregator_command() {
     OTEL_ENDPOINT=$1;shift;
     OTEL_LEVEL=$1;shift;
 
-    DIGITIZERS=$1;shift;
+    DIGITIZERS=$@;
 
-    
     echo "--" "Executing Digitiser Aggregator with properties:"
     echo "--" "-" "$EVENT_AGGREGATOR"
     echo "--" "-" "--broker $BROKER"
     echo "--" "-" "--group $GROUP"
     echo "--" "-" "--input-topic $DAT_EVENT_TOPIC"
     echo "--" "-" "--output-topic $FRAME_EVENT_TOPIC"
-    echo "--" "-" "--observability-address "$OBSV_ADDRESS"1"
+    echo "--" "-" "--observability-address ${OBSV_ADDRESS}1"
     echo "--" "-" "--frame-ttl-ms $FRAME_TTL_MS"
     echo "--" "-" "$OTEL_ENDPOINT"
     echo "--" "-" "$OTEL_LEVEL"
     echo "--" "-" "$DIGITIZERS"
 
-    $EVENT_AGGREGATOR \
+    CMD="$EVENT_AGGREGATOR \
         --broker $BROKER --group $GROUP \
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
-        --observability-address "$OBSV_ADDRESS"1 \
+        --observability-address ${OBSV_ADDRESS}1 \
         --frame-ttl-ms $FRAME_TTL_MS \
         $OTEL_ENDPOINT \
         $OTEL_LEVEL \
-        $DIGITIZERS
+        $DIGITIZERS"
+    echo $CMD
+    $CMD
 }
 
 ## Fully Functional
@@ -94,6 +98,7 @@ build_nexus_writer_command() {
     CONTROL_TOPIC=$1;shift;
     FRAME_EVENT_TOPIC=$1;shift;
     RUN_TTL_MS=$1;shift;
+    
     NEXUS_OUTPUT_PATH=$1;shift;
     NEXUS_ARCHIVE_PATH=$1;shift;
 
@@ -103,8 +108,9 @@ build_nexus_writer_command() {
 
     echo "--" "Executing Nexus Writer with properties:"
     echo "--" "-" "$NEXUS_WRITER"
-    echo "--" "-" "--broker $BROKER --consumer-group "$GROUP""
-    echo "--" "-" "--observability-address "$OBSV_ADDRESS"2"
+    echo "--" "-" "--broker $BROKER"
+    echo "--" "-" "--consumer-group "$GROUP""
+    echo "--" "-" "--observability-address ${OBSV_ADDRESS}2"
     echo "--" "-" "--control-topic $CONTROL_TOPIC"
     echo "--" "-" "--frame-event-topic $FRAME_EVENT_TOPIC"
     echo "--" "-" "--log-topic $CONTROL_TOPIC"
@@ -112,15 +118,14 @@ build_nexus_writer_command() {
     echo "--" "-" "--alarm-topic $CONTROL_TOPIC"
     echo "--" "-" "--cache-run-ttl-ms $RUN_TTL_MS"
     echo "--" "-" "$OTEL_ENDPOINT"
-    echo "--" "-" "$OTEL_LEVEL_WRITER"
+    echo "--" "-" "$OTEL_LEVEL"
     echo "--" "-" "--file-name "$NEXUS_OUTPUT_PATH""
     echo "--" "-" "--archive-name "$NEXUS_ARCHIVE_PATH""
-
-    echo "--" "--" "Executing nexus-writer: $NEXUS_WRITER"
     
-    $NEXUS_WRITER \
-        --broker $BROKER --consumer-group "$GROUP" \
-        --observability-address "$OBSV_ADDRESS"2 \
+    CMD="$NEXUS_WRITER \
+        --broker $BROKER \
+        --consumer-group ${GROUP} \
+        --observability-address ${OBSV_ADDRESS}2 \
         --control-topic $CONTROL_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --log-topic $CONTROL_TOPIC \
@@ -128,8 +133,10 @@ build_nexus_writer_command() {
         --alarm-topic $CONTROL_TOPIC \
         --cache-run-ttl-ms $RUN_TTL_MS \
         $OTEL_ENDPOINT \
-        $OTEL_LEVEL_WRITER \
-        --file-name "$NEXUS_OUTPUT_PATH" \
-        --archive-name "$NEXUS_ARCHIVE_PATH"
+        $OTEL_LEVEL \
+        --file-name ${NEXUS_OUTPUT_PATH} \
+        --archive-name ${NEXUS_ARCHIVE_PATH}"
+    echo $CMD
+    $CMD
 }
 

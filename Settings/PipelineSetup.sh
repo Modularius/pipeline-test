@@ -6,7 +6,7 @@ g_SIMULATOR="${g_APPLICATION_PREFIX}simulator"
 g_TRACE_READER="${g_APPLICATION_PREFIX}trace-reader"
 g_TRACE_TO_EVENTS="${g_APPLICATION_PREFIX}trace-to-events"
 g_EVENT_AGGREGATOR="${g_APPLICATION_PREFIX}digitiser-aggregator"
-g_NEXUS_WRITER="${g_APPLICATION_PREFIX}/nexus-writer"
+g_NEXUS_WRITER="${g_APPLICATION_PREFIX}nexus-writer"
 
 
 g_GROUP_WRITER=nexus-writer
