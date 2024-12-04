@@ -10,6 +10,7 @@ run_trace_to_events() {
         --polarity $g_TTE_POLARITY \
         --baseline $g_TTE_BASELINE \
         $g_OTEL_ENDPOINT \
+        --otel-namespace=$g_PIPELINE_NAME \
         $g_OTEL_LEVEL_EVENT_FORMATION \
         $g_TTE_INPUT_MODE"
         #        --save-file Output/HiFi/output_ \
@@ -36,7 +37,9 @@ run_aggregator() {
         --input-topic $g_DAT_EVENT_TOPIC --output-topic $g_FRAME_EVENT_TOPIC \
         --observability-address 127.0.0.1:29091 \
         --frame-ttl-ms 2000 \
+        --send-frame-buffer-size 4000 \
         $g_OTEL_ENDPOINT \
+        --otel-namespace=$g_PIPELINE_NAME \
         $g_OTEL_LEVEL_AGGREGATOR \
         $g_DIGITIZERS"
         
@@ -57,6 +60,7 @@ run_nexus_writer() {
         --alarm-topic $g_CONTROL_TOPIC \
         --cache-run-ttl-ms 5000 \
         $g_OTEL_ENDPOINT \
+        --otel-namespace=$g_PIPELINE_NAME \
         $g_OTEL_LEVEL_WRITER \
         --file-name ${g_NEXUS_OUTPUT_PATH} \
         --archive-name ${g_NEXUS_ARCHIVE_PATH}"

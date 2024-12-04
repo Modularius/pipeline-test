@@ -14,7 +14,7 @@ run_trace_simulator() {
 
     SIMULATOR_CONFIG_SOURCE=$1;shift;
 
-    echo "--" "Executing Nexus Writer with properties:"
+    echo "--" "Executing Simulator with properties:"
     echo "--" "-" "$SIMULATOR"
     echo "--" "-" "--broker $BROKER"
     echo "--" "-" "$OTEL_ENDPOINT"
@@ -31,6 +31,7 @@ run_trace_simulator() {
     CMD="${SIMULATOR} \
         --broker $BROKER \
         $OTEL_ENDPOINT \
+        --otel-namespace=$g_PIPELINE_NAME \
         $OTEL_LEVEL \
         defined ${SIMULATOR_CONFIG_SOURCE} \
         --digitiser-trace-topic $TRACE_TOPIC \
@@ -42,7 +43,7 @@ run_trace_simulator() {
         --alarm-topic $CONTROL_TOPIC"
 
     echo $CMD
-    RUST_LOG=$g_RUST_LOG $CMD
+    RUST_LOG=$g_RUST_LOG g_RUN_NAME=$g_RUN_NAME $CMD
 }
 
 run_trace_reader() {

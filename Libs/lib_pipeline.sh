@@ -63,16 +63,19 @@ deploy_containerised_pipeline() {
     sudo mkdir $LOCAL_MOUNT --mode=666
 
     build_trace_to_events_command "$TRACE_TO_EVENTS_COMMAND" $EF_INDEX \
+        $PIPELINE_NAME \
         localhost:9092 $GROUP_EVENT_FORMATION $g_TRACE_TOPIC $DAT_EVENT_TOPIC \
         $g_OBSV_ADDRESS "$g_OTEL_ENDPOINT" "$g_OTEL_LEVEL_EVENT_FORMATION" \
         $g_TTE_POLARITY $g_TTE_BASELINE $TTE_INPUT_MODE
 
     build_digitiser_aggregator_command "$DIGITISER_AGGREGATOR_COMMAND" $DA_INDEX \
+        $PIPELINE_NAME \
         localhost:9092 $GROUP_AGGREGATOR $DAT_EVENT_TOPIC $FRAME_EVENT_TOPIC $g_FRAME_TTL_MS \
         $g_OBSV_ADDRESS "$g_OTEL_ENDPOINT" "$g_OTEL_LEVEL_AGGREGATOR" \
         $g_DIGITISERS
 
     build_nexus_writer_command "$NEXUS_WRITER_COMMAND" $NW_INDEX \
+        $PIPELINE_NAME \
         localhost:9092 $GROUP_WRITER $g_CONTROL_TOPIC $FRAME_EVENT_TOPIC $g_RUN_TTL_MS \
         "local" "archive" \
         $g_OBSV_ADDRESS "$g_OTEL_ENDPOINT" "$g_OTEL_LEVEL_WRITER"

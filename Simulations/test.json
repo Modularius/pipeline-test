@@ -24,7 +24,12 @@
                 }],
     "event-lists": [
         {
-            "pulses": [ {"weight": 1, "pulse-index": 0}, {"weight": 1, "pulse-index": 1} ],
+            "pulses": [ {"weight": 1, "pulse-index": 0} ],
+            "noises": [],
+            "num-pulses": { "random-type": "constant", "value": { "int": 25 }}
+        },
+        {
+            "pulses": [ {"weight": 1, "pulse-index": 1} ],
             "noises": [],
             "num-pulses": { "random-type": "constant", "value": { "int": 25 }}
         }
@@ -34,10 +39,11 @@
         { "ensure-delay-ms": 0 },
         { "send-run-start" : { "name": { "text-env": "g_RUN_NAME" }, "instrument": { "text": "MuSR" }}},
         { "wait-ms": 100 },
-        { "generate-trace": { "event-list-index": 0, "repeat": 18}},
+        { "generate-trace": { "event-list-index": 1, "repeat": 20}},
+        { "set-timestamp": { "advance-by-ms": 200}},
         { "frame-loop" : {
                 "start": { "int": 0 },
-                "end": { "int": 5 },
+                "end": { "int": 10 },
                 "schedule" : [
                     { "set-timestamp": { "advance-by-ms": 20}},
                     {
@@ -45,7 +51,7 @@
                             "start": { "int": 0 },
                             "end": { "int-env" : "g_MAX_DIGITISER" },
                             "schedule" : [
-                                { "send-digitiser-trace": "replace-random"}
+                                { "send-digitiser-trace": "replace-random" }
                             ]
                         }
                     },
@@ -55,6 +61,7 @@
         },
         { "wait-ms": 100 },
         { "set-timestamp": { "advance-by-ms": 100}},
-        { "send-run-stop": { "name": { "text-env": "g_RUN_NAME" }}}
+        { "send-run-stop": { "name": { "text-env": "g_RUN_NAME" } } },
+        { "wait-ms": 100 }
     ]
 }

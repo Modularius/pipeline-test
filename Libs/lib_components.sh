@@ -7,6 +7,7 @@ build_trace_to_events_command() {
 
     TRACE_TO_EVENTS=$1;shift;
     INDEX=$1;shift; #This should be removed
+    PIPELINE_NAME=$1;shift;
 
     BROKER=$1;shift;
     GROUP=$1;shift;
@@ -43,6 +44,7 @@ build_trace_to_events_command() {
         --polarity $TTE_POLARITY \
         --baseline $TTE_BASELINE \
         $OTEL_ENDPOINT \
+        --otel-pipeline-tag $PIPELINE_NAME \
         $OTEL_LEVEL \
         $TTE_INPUT_MODE"
     echo $CMD
@@ -54,6 +56,7 @@ build_trace_to_events_command() {
 build_digitiser_aggregator_command() {
     EVENT_AGGREGATOR=$1;shift;
     INDEX=$1;shift; #This should be removed
+    PIPELINE_NAME=$1;shift;
 
     BROKER=$1;shift;
     GROUP=$1;shift;
@@ -85,6 +88,7 @@ build_digitiser_aggregator_command() {
         --observability-address ${OBSV_ADDRESS}${INDEX} \
         --frame-ttl-ms $FRAME_TTL_MS \
         $OTEL_ENDPOINT \
+        --otel-pipeline-tag $PIPELINE_NAME \
         $OTEL_LEVEL \
         $DIGITIZERS"
     echo $CMD
@@ -95,6 +99,7 @@ build_digitiser_aggregator_command() {
 build_nexus_writer_command() {
     NEXUS_WRITER=$1;shift;
     INDEX=$1;shift; #This should be removed
+    PIPELINE_NAME=$1;shift;
 
     BROKER=$1;shift;
     GROUP=$1;shift;
@@ -136,6 +141,7 @@ build_nexus_writer_command() {
         --alarm-topic $CONTROL_TOPIC \
         --cache-run-ttl-ms $RUN_TTL_MS \
         $OTEL_ENDPOINT \
+        --otel-pipeline-tag $PIPELINE_NAME \
         $OTEL_LEVEL \
         --file-name ${NEXUS_OUTPUT_PATH} \
         --archive-name ${NEXUS_ARCHIVE_PATH}"

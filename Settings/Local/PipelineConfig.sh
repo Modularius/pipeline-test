@@ -19,6 +19,6 @@ g_DIGITIZERS=$(build_digitiser_argument $g_MAX_DIGITISER)
 g_FRAME_TTL_MS=2000
 
 # Output Path
-g_NEXUS_OUTPUT_PATH="Output/local_pipeline1"
-g_NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/local_pipeline1"
+g_NEXUS_OUTPUT_PATH="Output/local"
+g_NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/local"
 g_RUN_TTL_MS=2500
