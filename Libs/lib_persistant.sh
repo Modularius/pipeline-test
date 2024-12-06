@@ -4,14 +4,15 @@ run_trace_to_events() {
     echo "--" "--" "Executing Event Formation : $TRACE_TO_EVENTS"
     $TRACE_TO_EVENTS \
         --broker $BROKER --consumer-group $GROUP_EVENT_FORMATION \
-        --observability-address "$OBSV_ADDRESS"0 \
+        --observability-address "$OBSV_ADDRESS" \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
         --polarity $TTE_POLARITY \
         --baseline $TTE_BASELINE \
         $OTEL_ENDPOINT \
+        --otel-namespace $PIPELINE_NAME \
         $OTEL_LEVEL_EVENT_FORMATION \
-        $TTE_INPUT_MODE
+        $TTE_INPUT_MODE &
 }
 #--save-file output_ \
 
@@ -31,27 +32,33 @@ run_aggregator() {
     $EVENT_AGGREGATOR \
         --broker $BROKER --group $GROUP_AGGREGATOR \
         --input-topic $DAT_EVENT_TOPIC --output-topic $FRAME_EVENT_TOPIC \
-        --observability-address "$OBSV_ADDRESS"1 \
-        --frame-ttl-ms 2000 \
+        --observability-address "$OBSV_ADDRESS" \
+        --frame-ttl-ms $FRAME_TTL_MS \
+        --send-frame-buffer-size $FRAME_BUFFER_SIZE \
         $OTEL_ENDPOINT \
+        --otel-namespace $PIPELINE_NAME \
         $OTEL_LEVEL_AGGREGATOR \
-        $DIGITIZERS &
+        $DIGITIZERS
 }
 
 run_nexus_writer() {
     echo "--" "--" "Executing nexus-writer: $NEXUS_WRITER"
+
+    echo "OTEL WRITER: $OTEL_LEVEL_WRITER"
     
     $NEXUS_WRITER \
         --broker $BROKER --consumer-group "$GROUP_WRITER" \
-        --observability-address "$OBSV_ADDRESS"2 \
+        --observability-address "$OBSV_ADDRESS" \
         --control-topic $CONTROL_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --log-topic $CONTROL_TOPIC \
         --sample-env-topic $CONTROL_TOPIC \
         --alarm-topic $CONTROL_TOPIC \
-        --cache-run-ttl-ms 5000 \
+        --cache-run-ttl-ms $RUN_TTL_MS \
         $OTEL_ENDPOINT \
+        --otel-namespace $PIPELINE_NAME \
         $OTEL_LEVEL_WRITER \
+        --configuration-options "${CONFIGURATION_OPTIONS}" \
         --file-name "$NEXUS_OUTPUT_PATH" \
         --archive-name "$NEXUS_ARCHIVE_PATH"
 }

@@ -24,6 +24,7 @@ SIMULATOR="${APPLICATION_PREFIX}simulator${APPLICATION_SUFFIX}"
 TRACE_READER="${APPLICATION_PREFIX}trace-reader${APPLICATION_SUFFIX}"
 TRACE_TO_EVENTS="${FORMATION_PREFIX}trace-to-events${APPLICATION_SUFFIX}"
 EVENT_AGGREGATOR="${AGGREGATOR_PREFIX}digitiser-aggregator${APPLICATION_SUFFIX}"
+EVENT_AGGREGATOR="../supermusr-data-pipeline/target/release/digitiser-aggregator"
 NEXUS_WRITER="${NEXUS_WRITER_PREFIX}nexus-writer${APPLICATION_SUFFIX}"
 
 GROUP_WRITER=nexus-writer
@@ -33,6 +34,10 @@ GROUP_EVENT_FORMATION=trace-to-events
 PROCESS_WRITER=nexus-writer
 PROCESS_AGGREGATOR=digitiser-aggre
 PROCESS_EVENT_FORMATION=trace-to-events
+
+FRAME_TTL_MS=2000
+FRAME_BUFFER_SIZE=10000
+RUN_TTL_MS=10000
 
 #OTEL_ENDPOINT="--otel-endpoint http://localhost:4317/v1/traces"            # Local
 OTEL_ENDPOINT="--otel-endpoint http://172.16.113.245:4317/v1/traces"       # Dev4

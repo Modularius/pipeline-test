@@ -28,6 +28,7 @@
               nfs-utils
               hdf5_1_10
               kcat
+              podman-compose
             ] ++ (
               with python312Packages; [
                 pip

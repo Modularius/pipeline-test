@@ -1,0 +1,81 @@
+version: '3'
+services:
+  event-formation:
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    restart: on-failure
+    resources:
+      limits:
+        memory: ${EF_MEMORY}
+    logging: 
+      driver: json-file
+      options:  
+        max-size: ${EF_LOG_MAXSIZE}
+    command:
+      - --observability-address=${OBSV_ADDRESS}
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - --otel-namespace=${PIPELINE_NAME}
+      - --otel-level=${EF_OTEL_LEVEL}
+      - --broker=${BROKER}
+      - --group=${EF_GROUP}
+      - --trace-topic=${TRACE_TOPIC}
+      - --event-topic=${DAT_EVENT_TOPIC}
+      - --polarity=${TTE_POLARITY}
+      - --baseline=${TTE_BASELINE}
+      - ${TTE_INPUT_MODE}
+  digitiser-aggregator:
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    restart: on-failure
+    resources:
+      limits:
+        memory: ${DA_MEMORY}
+    logging: 
+      driver: json-file
+      options:  
+        max-size: ${DA_LOG_MAXSIZE}
+    command:
+      - --observability-address=${OBSV_ADDRESS}
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - --otel-namespace=${PIPELINE_NAME}
+      - --otel-level=${DA_OTEL_LEVEL}
+      - --broker ${BROKER}
+      - --group ${DA_GROUP}
+      - --input-topic ${DAT_EVENT_TOPIC}
+      - --output-topic ${FRAME_EVENT_TOPIC}
+      - --frame-ttl-ms ${FRAME_TTL_MS}
+      - --send-frame-buffer-size ${FRAME_BUFFER_SIZE} \
+      - ${DIGITIZERS}
+  nexus-writer:
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    restart: on-failure
+    volume:
+      - $NEXUS_ARCHIVE_MOUNT:$NEXUS_ARCHIVE_PATH
+      - $NEXUS_LOCAL_MOUNT:$NEXUS_LOCAL_PATH
+    resources:
+      limits:
+        memory: ${NW_MEMORY}
+    logging: 
+      driver: json-file
+      options:  
+        max-size: ${NW_LOG_MAXSIZE}
+    command:
+      - --observability-address=${OBSV_ADDRESS}
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - --otel-namespace=${PIPELINE_NAME}
+      - --otel-level=${NW_OTEL_LEVEL}
+      - --broker ${BROKER}
+      - --consumer-group "${NW_GROUP}"
+      - --control-topic ${CONTROL_TOPIC}
+      - --frame-event-topic ${FRAME_EVENT_TOPIC}
+      - --log-topic ${CONTROL_TOPIC}
+      - --sample-env-topic ${CONTROL_TOPIC}
+      - --alarm-topic ${CONTROL_TOPIC}
+      - --cache-run-ttl-ms ${RUN_TTL_MS}
+      - --configuration-options "${CONFIGURATION_OPTIONS}"
+      - --file-name ${NEXUS_OUTPUT_PATH}
+      - --archive-name ${NEXUS_ARCHIVE_PATH}
