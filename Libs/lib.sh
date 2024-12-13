@@ -16,10 +16,10 @@ build_digitiser_argument() {
 }
 
 kill_persistant_components() {
-    pkill $g_PROCESS_EVENT_FORMATION
-    pkill $g_PROCESS_WRITER
-    pkill $g_PROCESS_AGGREGATOR
-    pkill trace-archiver-
+    pkill --signal SIGINT $g_PROCESS_EVENT_FORMATION
+    pkill --signal SIGINT $g_PROCESS_WRITER
+    pkill --signal SIGINT $g_PROCESS_AGGREGATOR
+    pkill --signal SIGINT trace-archiver-
 }
 
 run_persistant_components() {

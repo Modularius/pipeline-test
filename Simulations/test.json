@@ -43,7 +43,7 @@
         { "set-timestamp": { "advance-by-ms": 200}},
         { "frame-loop" : {
                 "start": { "int": 0 },
-                "end": { "int": 10 },
+                "end": { "int": 200 },
                 "schedule" : [
                     { "set-timestamp": { "advance-by-ms": 20}},
                     {
