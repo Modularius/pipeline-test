@@ -9,9 +9,7 @@
 #NEXUS_WRITER_PREFIX=${APPLICATION_PREFIX}
 
 ## For running from podman
-ARCHIVE_MOUNT=./archive/incoming/hifi
-LOCAL_MOUNT=./Output/Local/
-COMMAND_PREFIX="sudo podman run --rm -d --memory 15g --restart on-failure"
+COMMAND_PREFIX="podman run --rm -d --memory 15g --restart on-failure"
 IMAGE_PREFIX=ghcr.io/stfc-icd-research-and-design/supermusr-
 APPLICATION_PREFIX="$COMMAND_PREFIX $IMAGE_PREFIX"
 APPLICATION_SUFFIX=":main"
@@ -46,3 +44,6 @@ OTEL_ENDPOINT="--otel-endpoint http://172.16.113.245:4317/v1/traces"       # Dev
 
 OBSV_ADDRESS="127.0.0.1:2909"       # Local
 #OBSV_ADDRESS="172.16.113.245:29090"       # Dev4
+
+RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+RUST_LOG=off,digitiser_aggregator=warn,nexus_writer=error,trace_to_events=warn,$RUST_LOG_OFF

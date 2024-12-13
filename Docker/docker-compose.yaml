@@ -1,14 +1,22 @@
 version: '3'
+networks:
+  hifi:
+    driver: bridge
+
 services:
   event-formation:
     image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
     environment:
       - RUST_LOG=${RUST_LOG}
     restart: on-failure
+    networks:
+      - hifi
+    volumes:
+      - ./logs/event-formation:/home/logs
     resources:
       limits:
         memory: ${EF_MEMORY}
-    logging: 
+    logging:
       driver: json-file
       options:  
         max-size: ${EF_LOG_MAXSIZE}
@@ -18,17 +26,21 @@ services:
       - --otel-namespace=${PIPELINE_NAME}
       - --otel-level=${EF_OTEL_LEVEL}
       - --broker=${BROKER}
-      - --group=${EF_GROUP}
+      - --group="${EF_GROUP}${PIPELINE_SUFFIX}"
       - --trace-topic=${TRACE_TOPIC}
-      - --event-topic=${DAT_EVENT_TOPIC}
-      - --polarity=${TTE_POLARITY}
-      - --baseline=${TTE_BASELINE}
-      - ${TTE_INPUT_MODE}
+      - --event-topic="${DAT_EVENT_TOPIC}${PIPELINE_SUFFIX}"
+      - --polarity=${EF_POLARITY}
+      - --baseline=${EF_BASELINE}
+      - ${EF_INPUT_MODE}
   digitiser-aggregator:
     image: ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
     environment:
       - RUST_LOG=${RUST_LOG}
     restart: on-failure
+    networks:
+      - hifi
+    volumes:
+      - ./logs/digitiser-aggregator:/home/logs
     resources:
       limits:
         memory: ${DA_MEMORY}
@@ -42,9 +54,9 @@ services:
       - --otel-namespace=${PIPELINE_NAME}
       - --otel-level=${DA_OTEL_LEVEL}
       - --broker ${BROKER}
-      - --group ${DA_GROUP}
+      - --group "${DA_GROUP}${PIPELINE_SUFFIX}"
       - --input-topic ${DAT_EVENT_TOPIC}
-      - --output-topic ${FRAME_EVENT_TOPIC}
+      - --output-topic "${FRAME_EVENT_TOPIC}${PIPELINE_SUFFIX}"
       - --frame-ttl-ms ${FRAME_TTL_MS}
       - --send-frame-buffer-size ${FRAME_BUFFER_SIZE} \
       - ${DIGITIZERS}
@@ -53,9 +65,12 @@ services:
     environment:
       - RUST_LOG=${RUST_LOG}
     restart: on-failure
-    volume:
+    networks:
+      - hifi
+    volumes:
       - $NEXUS_ARCHIVE_MOUNT:$NEXUS_ARCHIVE_PATH
       - $NEXUS_LOCAL_MOUNT:$NEXUS_LOCAL_PATH
+      - ./logs/nexus-writer:/home/logs
     resources:
       limits:
         memory: ${NW_MEMORY}
@@ -71,7 +86,7 @@ services:
       - --broker ${BROKER}
       - --consumer-group "${NW_GROUP}"
       - --control-topic ${CONTROL_TOPIC}
-      - --frame-event-topic ${FRAME_EVENT_TOPIC}
+      - --frame-event-topic "${FRAME_EVENT_TOPIC}${PIPELINE_SUFFIX}"
       - --log-topic ${CONTROL_TOPIC}
       - --sample-env-topic ${CONTROL_TOPIC}
       - --alarm-topic ${CONTROL_TOPIC}

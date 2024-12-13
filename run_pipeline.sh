@@ -23,6 +23,7 @@ export RUST_LOG=off,digitiser_aggregator=warn,nexus_writer=error,trace_to_events
 ## Main Script
 
 ./Scripts/multiple_pipelines.sh
+#./Scripts/compose.sh
 
 #sleep 1
 

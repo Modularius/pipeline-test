@@ -50,6 +50,7 @@ To mount the archive, run
 mount -t cifs \
    -o username=SuperMusr_mgr -o password=******** \
    -o domain=ISIS -o vers=2.1 -o noserverino -o _netdev \
+   -o uid=*****,gid=*****,rw,auto,file_mode=0766,dir_mode=0775 \
    //ISISARVR55.isis.cclrc.ac.uk/SuperMusrTestDataBackup$ \
    /mnt/archive
 ```

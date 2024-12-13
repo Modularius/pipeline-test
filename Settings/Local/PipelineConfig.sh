@@ -11,14 +11,18 @@ SELOGS_TOPIC=ics-metadata
 ALARMS_TOPIC=ics-alarms
 
 # Trace Source Dependent Event Formation Settings
-TTE_POLARITY=positive
-TTE_BASELINE=0
+EF_POLARITY=positive
+EF_BASELINE=0
 
 # Digitisers Expected from Broker
 DIGITIZERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
 
-# Output Path
-NEXUS_OUTPUT_PATH="local"
-NEXUS_ARCHIVE_PATH="archive"
-#NEXUS_OUTPUT_PATH="Output/Local"
-#NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/hifi"
+# Where the Nexus Files go (according to the host)
+NEXUS_ARCHIVE_MOUNT=./archive/incoming/hifi
+NEXUS_LOCAL_MOUNT=./Output/Local
+
+# Where the Nexus Files go (according to their containers)
+#NEXUS_ARCHIVE_PATH="archive"
+#NEXUS_LOCAL_PATH="local"
+NEXUS_ARCHIVE_PATH=./archive/incoming/hifi
+NEXUS_LOCAL_PATH=./Output/Test

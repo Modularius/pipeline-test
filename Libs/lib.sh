@@ -25,8 +25,8 @@ kill_persistant_components() {
 
 run_persistant_components() {
     #run_trace_to_events
-    run_aggregator
-    #run_nexus_writer
+    #run_aggregator
+    run_nexus_writer
 }
 
 wait_for_input() {

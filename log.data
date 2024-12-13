@@ -1,0 +1,28 @@
+time="2024-12-11T15:23:33Z" level=warning msg="Error validating CNI config file /home/dankirk/.config/cni/net.d/docker_default.conflist: [plugin firewall does not support config version \"1.0.0\"]"
+time="2024-12-11T15:23:33Z" level=warning msg="Error validating CNI config file /home/dankirk/.config/cni/net.d/docker_hifi.conflist: [plugin firewall does not support config version \"1.0.0\"]"
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.690067s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.738166s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.739991s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.742715s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.745633s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.748653s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.755839s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  2.14%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.768163s  2.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  0.18%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.776977s  0.09%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  0.18%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.786159s  0.12%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  0.16%       518.9MB / 524.3MB  98.96%      -- / --     -- / --     22          6m11.794395s  0.13%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  0.18%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.803327s  0.14%
+ID            NAME            CPU %       MEM USAGE / LIMIT  MEM %       NET IO      BLOCK IO    PIDS        CPU TIME      AVG CPU %
+ae2946dbeb6d  nexus_writer_1  0.21%       518.7MB / 524.3MB  98.94%      -- / --     -- / --     22          6m11.813759s  0.15%

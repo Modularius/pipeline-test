@@ -7,12 +7,12 @@ run_trace_to_events() {
         --observability-address "$OBSV_ADDRESS" \
         --trace-topic $TRACE_TOPIC \
         --event-topic $DAT_EVENT_TOPIC \
-        --polarity $TTE_POLARITY \
-        --baseline $TTE_BASELINE \
+        --polarity $EF_POLARITY \
+        --baseline $EF_BASELINE \
         $OTEL_ENDPOINT \
         --otel-namespace $PIPELINE_NAME \
         $OTEL_LEVEL_EVENT_FORMATION \
-        $TTE_INPUT_MODE &
+        $EF_INPUT_MODE
 }
 #--save-file output_ \
 
@@ -47,7 +47,7 @@ run_nexus_writer() {
     echo "OTEL WRITER: $OTEL_LEVEL_WRITER"
     
     $NEXUS_WRITER \
-        --broker $BROKER --consumer-group "$GROUP_WRITER" \
+        --broker $BROKER --consumer-group "test" \
         --observability-address "$OBSV_ADDRESS" \
         --control-topic $CONTROL_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
@@ -59,7 +59,7 @@ run_nexus_writer() {
         --otel-namespace $PIPELINE_NAME \
         $OTEL_LEVEL_WRITER \
         --configuration-options "${CONFIGURATION_OPTIONS}" \
-        --file-name "$NEXUS_OUTPUT_PATH" \
+        --file-name "$NEXUS_LOCAL_PATH" \
         --archive-name "$NEXUS_ARCHIVE_PATH"
 }
 
