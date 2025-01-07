@@ -1,34 +1,34 @@
+set -a
+
 ## Include Library Scripts
-. ./Libs/lib.sh
-. ./Libs/lib_pipeline.sh
+source ./Libs/lib.sh
+source ./Libs/lib_pipeline.sh
 
 ## Setup Pipeline
-. ./Settings/PipelineSetup.sh
+source ./Settings/Pipeline.sh
 
 ### Enact Event Formation Configuration
-. ./Settings/EventFormationConfig.sh
+source ./Settings/EventFormation.sh
+
+### Enact Observability and Logging Configuration
+source ./Settings/Observability.sh
+
+### Enact Execution Configuration
+source ./Settings/Execution.sh
+
 
 ### Enact Pipeline Configuration for Chosen Broker
 #### Local
 g_MAX_DIGITISER=7
-. ./Settings/Local/PipelineConfig.sh
+source ./Settings/Local/Broker.sh
 #### HiFi
-#. ./Settings/HiFi/PipelineConfig.sh
-
-## OpenTelemetry Observability Levels
-export g_OTEL_LEVEL_EVENT_FORMATION="--otel-level=info"
-export g_OTEL_LEVEL_AGGREGATOR="--otel-level=info"
-export g_OTEL_LEVEL_WRITER="--otel-level=info"
-export g_OTEL_LEVEL_SIM="--otel-level=off"
-
-## Stdout Observability Levels
-export RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,$g_RUST_LOG_OFF
+#source ./Settings/HiFi/Broker.sh
 
 echo "Current Time: $(date +"%T")"
 
 ## Main Script
 
 #### Local
-. ./Scripts/local_no_docker.sh
+source ./Scripts/local_containerised.sh
 #### HiFi
-#. ./Scripts/hifi.sh
+#source ./Scripts/hifi.sh
