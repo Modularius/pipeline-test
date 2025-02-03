@@ -93,3 +93,39 @@ services:
       - ../${NEXUS_LOCAL_HOST_PATH}:/local
       - ../${NEXUS_ARCHIVE_HOST_PATH}:/archive
       - ../${NEXUS_ARCHIVE_HOST_PATH}/logs:/logs
+
+
+  nexus-writer-test:
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 350m
+    restart: on-failure
+    logging:
+      options:
+        path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/nexus-writer.log
+    image: localhost/supermusr-nexus-writer
+    environment:
+      - RUST_LOG=${g_RUST_LOG}
+    command:
+      - --broker=${BROKER}
+      - --consumer-group=nexus-writer-test
+      - --observability-address=${OBSV_ADDRESS_WRITER}
+      - --frame-event-topic=${FRAME_EVENT_TOPIC}
+      - --control-topic=${CONTROL_TOPIC}
+      - --log-topic=${LOGS_TOPIC}
+      - --sample-env-topic=${SELOGS_TOPIC}
+      - --alarm-topic=${ALARMS_TOPIC}
+      - --cache-run-ttl-ms=${RUN_TTL_MS}
+      - --event-list-chunk-size=16384
+      - ${OTEL_ENDPOINT}
+      - ${OTEL_LEVEL_WRITER}
+      - --otel-namespace=hifi-test
+      - --file-name=local
+      - --archive-name=archive
+    volumes:
+      - ../Output/Local_test:/local
+      - ../archive/incoming/hifi_test:/archive
+      - ../archive/incoming/hifi_test/logs:/logs
