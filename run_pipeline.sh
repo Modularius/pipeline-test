@@ -2,30 +2,23 @@
 . ./Libs/lib.sh
 
 ## Setup Pipeline
-. ./Settings/PipelineSetup.sh
+. ./Settings/Pipeline.sh
 
 ### Enact Event Formation Configuration
-. ./Settings/EventFormationConfig.sh
+. ./Settings/EventFormation.sh
 
-### Enact Pipeline Configuration for Chosen Broker
-. ./Settings/Local/PipelineConfig.sh
+### Enact Observability and Logging Configuration
+. ./Settings/Observability.sh
 
-## OpenTelemetry Observability Levels
-export OTEL_BSP_MAX_QUEUE_SIZE=8192
-export OTEL_LEVEL_EVENT_FORMATION="--otel-level=info"
-export OTEL_LEVEL_AGGREGATOR="--otel-level=info"
-export OTEL_LEVEL_WRITER="--otel-level=info"
-export OTEL_LEVEL_SIM="--otel-level=off"
+### Enact Execution Configuration
+. ./Settings/Execution.sh
 
-## Stdout Observability Levels
-export RUST_LOG=off,digitiser_aggregator=warn,nexus_writer=error,trace_to_events=warn,$RUST_LOG_OFF
+### Enact Broker Configuration
+. ./Settings/Local/Broker.sh
 
 ## Main Script
 
-./Scripts/multiple_pipelines.sh
-#./Scripts/compose.sh
+echo "Current Time: $(date +"%T")"
 
-#sleep 1
-
-#./Scripts/RunSimulator.sh
-#./Scripts/SimultateRuns.sh
+#./Scripts/multiple_pipelines.sh
+./Scripts/local_compose.sh

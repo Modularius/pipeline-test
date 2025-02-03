@@ -1,0 +1,95 @@
+services:
+  event-formation:
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 500m
+    restart: on-failure
+    logging:
+      options:
+        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/event-formation.log
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    environment:
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,
+    command:
+      - --broker=130.246.55.29:9092
+      - --consumer-group=trace-to-events
+      - --trace-topic=daq-traces-in
+      - --event-topic=daq-events
+      - --observability-address=127.0.0.1:29090
+      - --otel-endpoint=http://172.16.113.245:4317/v1/traces
+      - --otel-level=info
+      - --otel-namespace=hifi_1
+      - --polarity=positive
+      - --baseline=0
+      - fixed-threshold-discriminator
+      - --threshold=2100
+      - --duration=1
+      - --cool-off=0
+    volumes:
+      - .././archive/incoming/hifi_1/logs:/logs
+
+  frame-aggregation:
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 500m
+    restart: on-failure
+    logging:
+      options:
+        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/digitiser-aggregator.log
+    image: localhost/supermusr-digitiser-aggregator
+    environment:
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,
+    command:
+      - --broker=130.246.55.29:9092
+      - --group=digitiser-aggregator
+      - --observability-address=127.0.0.1:29091
+      - --input-topic=daq-events
+      - --output-topic=frame-events
+      - --otel-endpoint=http://172.16.113.245:4317/v1/traces
+      - --otel-level=info
+      - --otel-namespace=hifi_1
+      - --frame-ttl-ms=2000
+      - -d4,5,6,7,8,9,10,11
+    volumes:
+      - .././archive/incoming/hifi_1/logs:/logs
+
+  nexus-writer:
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 350m
+    restart: on-failure
+    logging:
+      options:
+        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/nexus-writer.log
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
+    environment:
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,
+    command:
+      - --broker=130.246.55.29:9092
+      - --consumer-group=nexus-writer
+      - --observability-address=127.0.0.1:29092
+      - --frame-event-topic=frame-events
+      - --control-topic=ics-control-change
+      - --log-topic=ics-metadata
+      - --sample-env-topic=ics-metadata
+      - --alarm-topic=ics-alarms
+      - --cache-run-ttl-ms=2500
+      - --event-list-chunk-size=16384
+      - --otel-endpoint=http://172.16.113.245:4317/v1/traces
+      - --otel-level=info
+      - --otel-namespace=hifi_1
+      - --file-name=local
+      - --archive-name=archive
+    volumes:
+      - .././Output/Local_1:/local
+      - .././archive/incoming/hifi_1:/archive
+      - .././archive/incoming/hifi_1/logs:/logs
