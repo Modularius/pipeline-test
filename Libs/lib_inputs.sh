@@ -43,7 +43,7 @@ run_trace_simulator() {
         --alarm-topic $CONTROL_TOPIC"
 
     echo $CMD
-    RUST_LOG=$g_RUST_LOG g_RUN_NAME=$g_RUN_NAME $CMD
+    RUST_LOG=$g_RUST_LOG NUM_DIGITISERS=$g_NUM_DIGITISERS MAX_DIGITISER=$g_MAX_DIGITISER RUN_NAME=$g_RUN_NAME $CMD
 }
 
 run_trace_reader() {

@@ -4,17 +4,6 @@ g_RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
 . ./Libs/lib_inputs.sh
 . ./Libs/lib_persistant.sh
 
-# Fully Functional
-build_digitiser_argument() {
-    MAX_DIGITISER=$1
-    DIGITIZERS=""
-    for I in $(seq 0 1 $MAX_DIGITISER)
-    do
-        DIGITIZERS=$DIGITIZERS" -d$I"
-    done
-    echo "$DIGITIZERS"
-}
-
 kill_persistant_components() {
     pkill --signal SIGINT $g_PROCESS_EVENT_FORMATION
     pkill --signal SIGINT $g_PROCESS_WRITER

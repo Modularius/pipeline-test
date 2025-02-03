@@ -13,8 +13,9 @@
     "schedule" : [
         { "set-timestamp": "now"},
         { "ensure-delay-ms": 0 },
-        { "send-run-start" : { "name": { "text": "RunLogsManyOnly" }, "instrument": { "text": "MuSR" }}},
-        { "wait-ms": 200 },
+        { "send-run-start" : { "name": { "text-env": "RUN_NAME" }, "instrument": { "text": "MuSR" }}},
+        { "set-timestamp": { "advance-by-ms": 100}},
+        { "wait-ms": 100 },
         { "send-run-log-data" : {
             "source-name" : { "text" : "A-Double-Value" },
             "value-type" : "float64",
@@ -41,7 +42,7 @@
             "value" : ["-540"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-UShort-Value" },
+            "source-name" : { "text" : "A-UByte-Value" },
             "value-type" : "uint16",
             "value" : ["524"]
         } },
@@ -58,6 +59,13 @@
         { "send-run-log-data" : {
             "source-name" : { "text" : "A-Long-Value" },
             "value-type" : "int64",
+            "value" : ["-42111111111345400"]
+        } },
+        { "wait-ms": 100 },
+        { "set-timestamp": { "advance-by-ms": 100}},
+        { "send-run-log-data" : {
+            "source-name" : { "text" : "A-Long-Value" },
+            "value-type" : "int64",
             "value" : ["-22111111111345400"]
         } },
         { "send-run-log-data" : {
@@ -66,58 +74,8 @@
             "value" : ["53524000000000"]
         } },
         { "wait-ms": 100 },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Double-Value" },
-            "value-type" : "float64",
-            "value" : ["770"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Float-Value" },
-            "value-type" : "float32",
-            "value" : ["-8"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Byte-Value" },
-            "value-type" : "int8",
-            "value" : ["-5"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-UByte-Value" },
-            "value-type" : "uint8",
-            "value" : ["2"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Short-Value" },
-            "value-type" : "int16",
-            "value" : ["-40"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-UShort-Value" },
-            "value-type" : "uint16",
-            "value" : ["52"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Int-Value" },
-            "value-type" : "int32",
-            "value" : ["-2240"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-UInt-Value" },
-            "value-type" : "uint32",
-            "value" : ["524"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Long-Value" },
-            "value-type" : "int64",
-            "value" : ["-400"]
-        } },
-        { "send-run-log-data" : {
-            "source-name" : { "text" : "A-ULong-Value" },
-            "value-type" : "uint64",
-            "value" : ["50000000"]
-        } },
-        { "wait-ms": 100 },
-        { "set-timestamp": { "advance-by-ms": 10000}},
-        { "send-run-stop": { "name": { "text": "RunLogsManyOnly" }}}
+        { "set-timestamp": { "advance-by-ms": 100}},
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME" } } },
+        { "wait-ms": 100 }
     ]
 }

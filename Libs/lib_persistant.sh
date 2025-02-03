@@ -1,10 +1,10 @@
 run_trace_to_events() {
-    echo "Using detector settings '$g_TTE_INPUT_MODE'"
+    echo "Using detector settings '$g_TTE_INPUT_COMMAND'"
 
     echo "--" "--" "Executing Event Formation"
     CMD="$g_TRACE_TO_EVENTS \
         --broker $g_BROKER --consumer-group $g_GROUP_EVENT_FORMATION \
-        --observability-address 127.0.0.1:29094 \
+        --observability-address 127.0.0.1:29095 \
         --trace-topic $g_TRACE_TOPIC \
         --event-topic $g_DAT_EVENT_TOPIC \
         --polarity $g_TTE_POLARITY \
@@ -12,21 +12,11 @@ run_trace_to_events() {
         $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
         $g_OTEL_LEVEL_EVENT_FORMATION \
-        $g_TTE_INPUT_MODE"
+        $g_TTE_INPUT_COMMAND"
         #        --save-file Output/HiFi/output_ \
         
     echo $CMD
     RUST_LOG=$g_RUST_LOG $CMD | tee trace.log &
-}
-
-build_digitiser_argument() {
-    MAX_DIGITISER=$1
-    DIGITIZERS=""
-    for I in $(seq 0 1 $MAX_DIGITISER)
-    do
-        DIGITIZERS=$DIGITIZERS" -d$I"
-    done
-    echo "$DIGITIZERS"
 }
 
 run_aggregator() {
@@ -36,12 +26,12 @@ run_aggregator() {
         --broker $g_BROKER --group $g_GROUP_AGGREGATOR \
         --input-topic $g_DAT_EVENT_TOPIC --output-topic $g_FRAME_EVENT_TOPIC \
         --observability-address 127.0.0.1:29091 \
-        --frame-ttl-ms 2000 \
+        --frame-ttl-ms $g_FRAME_TTL_MS \
         --send-frame-buffer-size 4000 \
         $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
         $g_OTEL_LEVEL_AGGREGATOR \
-        $g_DIGITIZERS"
+        $g_DIGITISERS"
         
     echo $CMD
     RUST_LOG=$g_RUST_LOG $CMD | tee aggregator.log &

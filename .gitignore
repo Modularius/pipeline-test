@@ -4,3 +4,4 @@ Logs/*
 *.pyc
 *.csv
 Jupyter/cache/*.json
+Jaeger/kibanadata/*

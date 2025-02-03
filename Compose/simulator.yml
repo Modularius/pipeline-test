@@ -1,0 +1,27 @@
+services:
+  simulator:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-simulator:main
+    environment:
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - MAX_DIGITISER=7
+      - NUM_DIGITISERS=8
+      - RUN_NAME=LetsDoARunBabe
+    command:
+     - --broker=localhost:9092
+     - --otel-namespace=localpipeline
+     - --otel-endpoint=--otel-endpoint http://localhost:4317/v1/traces
+     - --otel-level=info
+     - defined
+     - "/home/test.json"
+     - --digitiser-trace-topic=Traces
+     - --digitiser-event-topic=Events
+     - --frame-event-topic=FrameEvents
+     - --control-topic=Controls
+     - --runlog-topic=Controls
+     - --selog-topic=Controls
+     - --alarm-topic=Controls
+    volumes:
+      - ../Simulations:/home

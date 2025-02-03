@@ -1,0 +1,68 @@
+services:
+  event-formation:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: $g_IMAGE_EVENT_FORMATION
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    command:
+      - --broker=${BROKER}
+      - --consumer-group=${GROUP_EVENT_FORMATION}
+      - --trace-topic=${TRACE_TOPIC}
+      - --event-topic=${DAT_EVENT_TOPIC}
+      - --observability-address=${OBSV_ADDRESS_EVENT_FORMATION}
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - ${OTEL_LEVEL_EVENT_FORMATION}
+      - --polarity=${TTE_POLARITY}
+      - --baseline=${TTE_BASELINE}
+      - --otel-namespace=${PIPELINE_NAME}
+      - ${TTE_INPUT_MODE}
+      - --threshold=${TTE_FTD_THRESHOLD}
+      - --duration=${TTE_FTD_DURATION}
+      - --cool-off=${TTE_FTD_COOLOFF}
+
+  frame-aggregation:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: $g_IMAGE_AGGREGATOR
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    command:
+      - --broker=${BROKER}
+      - --group=${GROUP_AGGREGATOR}
+      - --observability-address=${OBSV_ADDRESS_AGGREGATOR}
+      - --input-topic=${DAT_EVENT_TOPIC}
+      - --output-topic=${FRAME_EVENT_TOPIC}
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - --otel-namespace=${PIPELINE_NAME}
+      - ${OTEL_LEVEL_AGGREGATOR}
+      - --frame-ttl-ms=${FRAME_TTL_MS}
+      - ${DIGITISERS}
+
+  nexus-writer:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: $g_IMAGE_WRITER
+    environment:
+      - RUST_LOG=${g_RUST_LOG}
+    command:
+      - --broker=${BROKER}
+      - --consumer-group=${GROUP_WRITER}
+      - --observability-address=${OBSV_ADDRESS_WRITER}
+      - --frame-event-topic=${FRAME_EVENT_TOPIC}
+      - --control-topic=${CONTROL_TOPIC}
+      - --log-topic=${LOGS_TOPIC}
+      - --sample-env-topic=${SELOGS_TOPIC}
+      - --alarm-topic=${ALARMS_TOPIC}
+      - --cache-run-ttl-ms=${RUN_TTL_MS}
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - --otel-namespace=${PIPELINE_NAME}
+      - ${OTEL_LEVEL_WRITER}
+      - --file-name=local
+      - --archive-name=archive
+    volumes:
+      - ../${NEXUS_OUTPUT_PATH}:/local
+      - ../${NEXUS_ARCHIVE_PATH}:/archive

@@ -1,34 +1,36 @@
 set -a
 
 ## Include Library Scripts
-source ./Libs/lib.sh
-source ./Libs/lib_pipeline.sh
+. ./Libs/lib.sh
+. ./Libs/lib_pipeline.sh
 
 ## Setup Pipeline
-source ./Settings/Pipeline.sh
+. ./Settings/Pipeline.sh
 
 ### Enact Event Formation Configuration
-source ./Settings/EventFormation.sh
+. ./Settings/EventFormation.sh
 
 ### Enact Observability and Logging Configuration
-source ./Settings/Observability.sh
+. ./Settings/Observability.sh
 
 ### Enact Execution Configuration
-source ./Settings/Execution.sh
+. ./Settings/Execution.sh
 
 
 ### Enact Pipeline Configuration for Chosen Broker
 #### Local
-g_MAX_DIGITISER=7
-source ./Settings/Local/Broker.sh
+g_NUM_DIGITISERS=8
+g_MAX_DIGITISER=$(($g_NUM_DIGITISERS - 1))
+. ./Settings/Local/Broker.sh
 #### HiFi
-#source ./Settings/HiFi/Broker.sh
+#. ./Settings/HiFi/Broker.sh
 
 echo "Current Time: $(date +"%T")"
 
 ## Main Script
 
 #### Local
-source ./Scripts/local_containerised.sh
+#. ./Scripts/local_compose.sh
+. ./Scripts/local_no_docker.sh
 #### HiFi
-#source ./Scripts/hifi.sh
+#. ./Scripts/hifi.sh

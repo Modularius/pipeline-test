@@ -1,0 +1,68 @@
+services:
+  event-formation:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: supermusr-trace-to-events:latest
+    environment:
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+    command:
+      - --broker=130.246.55.29:9092
+      - --consumer-group=trace-to-events-test
+      - --trace-topic=daq-traces-in
+      - --event-topic=daq-events
+      - --observability-address=127.0.0.1:29090
+      - --otel-endpoint=--otel-endpoint http://localhost:4317/v1/traces
+      - --otel-level=info
+      - --polarity=positive
+      - --baseline=0
+      - --otel-namespace=localpipeline
+      - fixed-threshold-discriminator
+      - --threshold=10
+      - --duration=1
+      - --cool-off=0
+
+  frame-aggregation:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: supermusr-digitiser-aggregator:latest
+    environment:
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+    command:
+      - --broker=130.246.55.29:9092
+      - --group=digitiser-aggregator-test
+      - --observability-address=127.0.0.1:29091
+      - --input-topic=daq-events
+      - --output-topic=frame-events
+      - --otel-endpoint=--otel-endpoint http://localhost:4317/v1/traces
+      - --otel-namespace=localpipeline
+      - --otel-level=info
+      - --frame-ttl-ms=1000
+      - -d4,5,6,7,8,9,10,11
+
+  nexus-writer:
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: supermusr-nexus-writer:latest
+    environment:
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+    command:
+      - --broker=130.246.55.29:9092
+      - --consumer-group=nexus-writer-test
+      - --observability-address=127.0.0.1:29092
+      - --frame-event-topic=frame-events
+      - --control-topic=ics-control-change
+      - --log-topic=ics-metadata
+      - --sample-env-topic=ics-metadata
+      - --alarm-topic=ics-alarms
+      - --cache-run-ttl-ms=500
+      - --otel-endpoint=--otel-endpoint http://localhost:4317/v1/traces
+      - --otel-namespace=localpipeline
+      - --otel-level=info
+      - --file-name=local
+      - --archive-name=archive
+    volumes:
+      - ../Output/HiFi_pipeline:/local
+      - ..//mnt/archive/incoming/hifi/via-local_pipeline:/archive

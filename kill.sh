@@ -1,7 +1,7 @@
-. ./Settings/PipelineSetup.sh
+. ./Settings/Execution.sh
 . ./Libs/lib.sh
 . ./Libs/lib_pipeline.sh
 
 kill_persistant_components
 
-$g_CONTAINER_ENGINE stop --all
+#$g_CONTAINER_ENGINE stop --all

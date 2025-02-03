@@ -1,2 +1,6 @@
 #g_TTE_INPUT_MODE="advanced-muon-detector --muon-onset=0.1 --muon-fall=-0.1 --muon-termination=0.01 --duration=10 --smoothing-window-size=10"
-g_TTE_INPUT_MODE="fixed-threshold-discriminator --threshold=10 --duration=1 --cool-off=0"
+g_TTE_INPUT_MODE="fixed-threshold-discriminator"
+g_TTE_FTD_THRESHOLD="10"
+g_TTE_FTD_DURATION="1"
+g_TTE_FTD_COOLOFF="0"
+g_TTE_INPUT_COMMAND="fixed-threshold-discriminator --threshold ${g_TTE_FTD_THRESHOLD} --duration ${g_TTE_FTD_DURATION} --cool-off ${g_TTE_FTD_COOLOFF}"

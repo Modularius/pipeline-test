@@ -4,7 +4,7 @@
     "sample-rate": 1000000000,
     "digitiser-config": {
         "auto-digitisers": {
-            "num-digitisers": { "int-env" : "NUM_DIGITISERS" },
+            "num-digitisers": { "int" : 8 },
             "num-channels-per-digitiser": { "int" : 8 }
         }
     },
@@ -26,12 +26,12 @@
         {
             "pulses": [ {"weight": 1, "pulse-index": 0} ],
             "noises": [],
-            "num-pulses": { "random-type": "constant", "value": { "int": 25 }}
+            "num-pulses": { "random-type": "constant", "value": { "int": 50 }}
         },
         {
             "pulses": [ {"weight": 1, "pulse-index": 1} ],
             "noises": [],
-            "num-pulses": { "random-type": "constant", "value": { "int": 25 }}
+            "num-pulses": { "random-type": "constant", "value": { "int": 50 }}
         }
     ],
     "schedule" : [
@@ -43,16 +43,52 @@
         { "set-timestamp": { "advance-by-ms": 200}},
         { "frame-loop" : {
                 "start": { "int": 0 },
-                "end": { "int": 449 },
+                "end": { "int": 49 },
                 "schedule" : [
                     { "set-timestamp": { "advance-by-ms": 20}},
                     {
                         "digitiser-loop" : {
                             "start": { "int": 0 },
-                            "end": { "int-env" : "MAX_DIGITISER" },
+                            "end": { "int" : 7 },
                             "schedule" : [
                                 { "send-digitiser-trace": "replace-random" },
-                                { "wait-ms": 10 }
+                                { "wait-ms": 1 }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        { "frame-loop" : {
+                "start": { "int": 50 },
+                "end": { "int": 99 },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": { "int": 0 },
+                            "end": { "int" : 6 },
+                            "schedule" : [
+                                { "send-digitiser-trace": "replace-random" },
+                                { "wait-ms": 1 }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        { "frame-loop" : {
+                "start": { "int": 100 },
+                "end": { "int": 149 },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": { "int": 0 },
+                            "end": { "int" : 7 },
+                            "schedule" : [
+                                { "send-digitiser-trace": "replace-random" },
+                                { "wait-ms": 1 }
                             ]
                         }
                     }

@@ -15,7 +15,9 @@ g_TTE_POLARITY=positive
 g_TTE_BASELINE=0
 
 # Digitisers Expected from Broker
-g_DIGITIZERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
+g_NUM_DIGITISERS=8
+g_MAX_DIGITISER=7
+g_DIGITISERS="-d4,5,6,7,8,9,10,11"
 g_FRAME_TTL_MS=1000
 
 # Output Path
