@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     pipeline.url = "github:STFC-ICD-Research-and-Design/supermusr-data-pipeline";
     #pipeline.url = "/home/ubuntu/SuperMuSRDataPipeline?dir=supermusr-data-pipeline";
   };
@@ -39,6 +39,7 @@
                 ipykernel
                 ipywidgets
                 h5py
+                elasticsearch
               ]
             );
             inputsFrom  = [

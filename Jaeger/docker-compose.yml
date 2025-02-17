@@ -108,7 +108,7 @@ services:
     mem_limit: 8g
     volumes:
       - ./certs:/usr/share/elasticsearch/config/certs
-      - /mnt/extension/esdata3:/usr/share/elasticsearch/data
+      - /mnt/extension/esdata4:/usr/share/elasticsearch/data
 
   kibana:
     depends_on:
@@ -158,12 +158,14 @@ services:
     mem_limit: 2g
     command: [
       "--es.server-urls=${HTTP_PROTOCOL}://es01:9200",
-      "--es.num-shards=1",
+      "--es.num-shards=5",
       "--es.num-replicas=0",
       "--es.username=elastic",
       "--es.password=password",
       "--es.version=8",
-      "--log-level=error"
+      "--es.index-rollover-frequency-spans=hour",
+      "--log-level=error",
+      "--es.tags-as-fields.all=true",
     ]
     depends_on:
       es01:
@@ -183,9 +185,13 @@ services:
     restart: on-failure
     command: [
       "--es.server-urls=${HTTP_PROTOCOL}://es01:9200",
+      "--es.num-shards=5",
+      "--es.num-replicas=0",
       "--es.username=elastic",
       "--es.password=password",
       "--span-storage.type=elasticsearch",
+      "--es.index-rollover-frequency-spans=hour",
+      "--es.tags-as-fields.all=true",
       "--es.version=8",
       "--log-level=debug"
     ]

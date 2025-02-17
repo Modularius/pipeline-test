@@ -11,12 +11,11 @@ run_trace_to_events() {
         --baseline $g_TTE_BASELINE \
         $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
-        $g_OTEL_LEVEL_EVENT_FORMATION \
         $g_TTE_INPUT_COMMAND"
         #        --save-file Output/HiFi/output_ \
         
     echo $CMD
-    RUST_LOG=$g_RUST_LOG $CMD | tee trace.log &
+    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD | tee trace.log &
 }
 
 run_aggregator() {
@@ -30,11 +29,10 @@ run_aggregator() {
         --send-frame-buffer-size 4000 \
         $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
-        $g_OTEL_LEVEL_AGGREGATOR \
         $g_DIGITISERS"
         
     echo $CMD
-    RUST_LOG=$g_RUST_LOG $CMD | tee aggregator.log &
+    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD | tee aggregator.log &
 }
 
 run_nexus_writer() {
@@ -51,10 +49,9 @@ run_nexus_writer() {
         --cache-run-ttl-ms 5000 \
         $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
-        $g_OTEL_LEVEL_WRITER \
         --file-name ${g_NEXUS_OUTPUT_PATH} \
         --archive-name ${g_NEXUS_ARCHIVE_PATH}"
 
     echo $CMD
-    RUST_LOG=$g_RUST_LOG $CMD | tee writer.log &
+    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD | tee writer.log &
 }

@@ -10,7 +10,6 @@ run_trace_simulator() {
 
     OBSV_ADDRESS=$1;shift;
     OTEL_ENDPOINT=$1;shift;
-    OTEL_LEVEL=$1;shift;
 
     SIMULATOR_CONFIG_SOURCE=$1;shift;
 
@@ -32,7 +31,6 @@ run_trace_simulator() {
         --broker $BROKER \
         $OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
-        $OTEL_LEVEL \
         defined ${SIMULATOR_CONFIG_SOURCE} \
         --digitiser-trace-topic $TRACE_TOPIC \
         --digitiser-event-topic $DAT_EVENT_TOPIC \
@@ -43,7 +41,7 @@ run_trace_simulator() {
         --alarm-topic $CONTROL_TOPIC"
 
     echo $CMD
-    RUST_LOG=$g_RUST_LOG NUM_DIGITISERS=$g_NUM_DIGITISERS MAX_DIGITISER=$g_MAX_DIGITISER RUN_NAME=$g_RUN_NAME $CMD
+    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR NUM_DIGITISERS=$g_NUM_DIGITISERS MAX_DIGITISER=$g_MAX_DIGITISER RUN_NAME=$g_RUN_NAME $CMD
 }
 
 run_trace_reader() {
