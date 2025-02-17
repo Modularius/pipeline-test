@@ -5,3 +5,4 @@ Logs/*
 *.csv
 local.env
 Jupyter/cache/*.json
+archive
