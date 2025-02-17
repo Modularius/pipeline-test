@@ -29,6 +29,7 @@
               hdf5_1_10
               kcat
               podman-compose
+              netdata
             ] ++ (
               with python312Packages; [
                 pip

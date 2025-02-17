@@ -19,7 +19,7 @@ g_EF_BASELINE=0
 # Digitisers Expected from Broker
 #g_DIGITISERS="-d4 -d5 -d6 -d7 -d8 -d9 -d10 -d11"
 g_DIGITISERS="-d4,5,6,7,8,9,10,11"
-g_FRAME_TTL_MS=2000
+g_FRAME_TTL_MS=200
 
 # Where the Nexus Files go (according to the host)
 g_NEXUS_ARCHIVE_HOST_PATH=./archive/incoming/hifi

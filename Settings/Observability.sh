@@ -17,6 +17,11 @@ g_OTEL_LEVEL_AGGREGATOR="--otel-level=info"
 g_OTEL_LEVEL_WRITER="--otel-level=info"
 g_OTEL_LEVEL_SIM="--otel-level=info"
 
-## Stdout Observability Levels
-g_RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,$g_RUST_LOG_OFF
+## Tell the logger not to use ansi colours (comment out to enable them)
+g_NO_COLOR=true
 
+## Stdout Observability Levels
+g_RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,$g_RUST_LOG_OFF
+
+## Otel Observability Levels
+g_OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn

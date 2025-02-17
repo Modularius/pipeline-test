@@ -1,5 +1,10 @@
 services:
   event-formation:
+    profiles:
+      - main
+      - main-and-test-event-formation
+      - main-and-test-digitiser-aggregator
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -10,9 +15,11 @@ services:
     logging:
       options:
         path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/event-formation.log
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    image: localhost/supermusr-trace-to-events
     environment:
       - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LOG=${OTEL_LOG}
     command:
       - --broker=${BROKER}
       - --consumer-group=${GROUP_EVENT_FORMATION}
@@ -20,7 +27,6 @@ services:
       - --event-topic=${DAT_EVENT_TOPIC}
       - --observability-address=${OBSV_ADDRESS_EVENT_FORMATION}
       - ${OTEL_ENDPOINT}
-      - ${OTEL_LEVEL_EVENT_FORMATION}
       - --otel-namespace=${PIPELINE_NAME}
       - --polarity=${EF_POLARITY}
       - --baseline=${EF_BASELINE}
@@ -32,6 +38,11 @@ services:
       - ../${NEXUS_ARCHIVE_HOST_PATH}/logs:/logs
 
   frame-aggregation:
+    profiles:
+      - main
+      - main-and-test-event-formation
+      - main-and-test-digitiser-aggregator
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -45,6 +56,8 @@ services:
     image: localhost/supermusr-digitiser-aggregator
     environment:
       - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LOG=${OTEL_LOG}
     command:
       - --broker=${BROKER}
       - --group=${GROUP_AGGREGATOR}
@@ -60,6 +73,11 @@ services:
       - ../${NEXUS_ARCHIVE_HOST_PATH}/logs:/logs
 
   nexus-writer:
+    profiles:
+      - main
+      - main-and-test-event-formation
+      - main-and-test-digitiser-aggregator
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -72,7 +90,9 @@ services:
         path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/nexus-writer.log
     image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
     environment:
-      - RUST_LOG=${g_RUST_LOG}
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LOG=${OTEL_LOG}
     command:
       - --broker=${BROKER}
       - --consumer-group=${GROUP_WRITER}
@@ -94,8 +114,9 @@ services:
       - ../${NEXUS_ARCHIVE_HOST_PATH}:/archive
       - ../${NEXUS_ARCHIVE_HOST_PATH}/logs:/logs
 
-
   nexus-writer-test:
+    profiles:
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -108,7 +129,9 @@ services:
         path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/nexus-writer.log
     image: localhost/supermusr-nexus-writer
     environment:
-      - RUST_LOG=${g_RUST_LOG}
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LOG=${OTEL_LOG}
     command:
       - --broker=${BROKER}
       - --consumer-group=nexus-writer-test

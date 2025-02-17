@@ -1,1 +1,0 @@
-podman-compose --env-file Docker/env/local_broker.env --env-file Docker/env/local_setup.env --env-file Docker/env/pipeline.env -f Docker/docker-compose.yaml --dry-run up

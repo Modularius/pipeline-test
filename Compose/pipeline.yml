@@ -1,5 +1,10 @@
 services:
   event-formation:
+    profiles:
+      - main
+      - main-and-test-event-formation
+      - main-and-test-digitiser-aggregator
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -10,9 +15,11 @@ services:
     logging:
       options:
         path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/event-formation.log
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    image: localhost/supermusr-trace-to-events
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
+      - NO_COLOR=true
+      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=trace-to-events
@@ -20,7 +27,6 @@ services:
       - --event-topic=daq-events
       - --observability-address=127.0.0.1:29090
       - --otel-endpoint=http://172.16.113.245:4317/v1/traces
-      - --otel-level=info
       - --otel-namespace=hifi_1
       - --polarity=positive
       - --baseline=0
@@ -32,6 +38,11 @@ services:
       - .././archive/incoming/hifi_1/logs:/logs
 
   frame-aggregation:
+    profiles:
+      - main
+      - main-and-test-event-formation
+      - main-and-test-digitiser-aggregator
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -44,7 +55,9 @@ services:
         path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/digitiser-aggregator.log
     image: localhost/supermusr-digitiser-aggregator
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
+      - NO_COLOR=true
+      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --group=digitiser-aggregator
@@ -54,12 +67,17 @@ services:
       - --otel-endpoint=http://172.16.113.245:4317/v1/traces
       - --otel-level=info
       - --otel-namespace=hifi_1
-      - --frame-ttl-ms=2000
+      - --frame-ttl-ms=200
       - -d4,5,6,7,8,9,10,11
     volumes:
       - .././archive/incoming/hifi_1/logs:/logs
 
   nexus-writer:
+    profiles:
+      - main
+      - main-and-test-event-formation
+      - main-and-test-digitiser-aggregator
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -72,7 +90,9 @@ services:
         path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/nexus-writer.log
     image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
+      - NO_COLOR=true
+      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=nexus-writer
@@ -94,8 +114,9 @@ services:
       - .././archive/incoming/hifi_1:/archive
       - .././archive/incoming/hifi_1/logs:/logs
 
-
   nexus-writer-test:
+    profiles:
+      - main-and-test-nexus-writer
     deploy:
       mode: replicated
       replicas: 1
@@ -108,7 +129,9 @@ services:
         path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/nexus-writer.log
     image: localhost/supermusr-nexus-writer
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
+      - NO_COLOR=true
+      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=nexus-writer-test
@@ -129,3 +152,22 @@ services:
       - ../Output/Local_test:/local
       - ../archive/incoming/hifi_test:/archive
       - ../archive/incoming/hifi_test/logs:/logs
+
+  prometheus-exporter:
+    profiles:
+      - main
+      - main-and-test-event-formation
+      - main-and-test-digitiser-aggregator
+      - main-and-test-nexus-writer
+      - prometheus-explorer
+    deploy:
+      mode: replicated
+      replicas: 1
+    restart: on-failure
+    image: quay.io/navidys/prometheus-podman-exporter:v1.1.0
+    ports:
+      - 9882:9882
+    environment:
+      - CONTAINER_HOST=unix:///run/podman/podman.sock
+    volumes:
+      - /run/user/30034/podman/podman.sock:/run/podman/podman.sock

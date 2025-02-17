@@ -25,6 +25,8 @@ set_pipeline_local_variables() {
 
     # Observability
     RUST_LOG=${g_RUST_LOG}
+    NO_COLOR=${g_NO_COLOR}
+    OTEL_LOG=${g_OTEL_LOG}
     
     OBSV_ADDRESS_EVENT_FORMATION=${g_OBSV_ADDRESS_EVENT_FORMATION}
     OBSV_ADDRESS_AGGREGATOR=${g_OBSV_ADDRESS_AGGREGATOR}
@@ -60,7 +62,7 @@ teardown_pipeline() {
     LOCAL_PIPELINE_NAME=$1;shift;
     PIPELINE_NAME=${g_PIPELINE_NAME}_${LOCAL_PIPELINE_NAME}
 
-    podman-compose -f Compose/pipeline.yml -p ${PIPELINE_NAME} --profile="pipeline" down
+    podman-compose -f Compose/pipeline.yml -p ${PIPELINE_NAME} --profile main down
 }
 
 deploy_pipeline() {
@@ -78,11 +80,12 @@ deploy_pipeline() {
     rpk topic create $DAT_EVENT_TOPIC $FRAME_EVENT_TOPIC
 
     cat Compose/pipeline.template.yml | envsubst > Compose/pipeline.yml
-    podman-compose -f Compose/pipeline.yml -p ${PIPELINE_NAME} up -d
+    podman-compose -f Compose/pipeline.yml --profile main -p ${PIPELINE_NAME} up -d
 }
 
 teardown_pipeline "1"
 
-sleep 1
+#sleep 1
 
+#systemctl start --user podman.socket
 deploy_pipeline "1"
