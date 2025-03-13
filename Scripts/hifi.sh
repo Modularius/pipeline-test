@@ -55,6 +55,6 @@ set_pipeline_local_variables() {
 
 mkdir $NEXUS_OUTPUT_PATH $NEXUS_ARCHIVE_PATH
 
-set_pipeline_local_variables hifi
+set_pipeline_local_variables test
 
 run_persistant_components

@@ -1,27 +1,74 @@
 from elasticsearch import Elasticsearch
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 type Doc = Dict[str,Any]
 type Docs = List[Doc]
 
-class FrameAssembler:
-    def __init__(self,client, namespace: str, index_filter : str = "", size: int = 10000):
+class esSearcher:
+    def __init__(self, client, namespace: str, index_filter : str = "", size: int = 10000):
         self.namespace = namespace
         self.client = client
         self.size = size
         self.index = "jaeger-span-" + index_filter + "*"
 
-    def do_bool_search(self, index : str, size : int, musts : Docs, shoulds : Docs = [], filters : Docs = []):
-        filters.append({ "term": { "process.tag.service@namespace": "hifi_1" } })
+    def do_bool_search(self, index : str, size : int, musts : Docs, shoulds : Docs = [], filters : Docs = [], must_nots: Docs = [], time_from: Optional[str] = None, time_to: Optional[str] = None) -> Docs:
+        filters.append({ "term": { "process.tag.service@namespace": self.namespace } })
         query = {
             "bool" : {
                 "filter": filters,
                 "must": musts,
-                "should": shoulds
+                "should": shoulds,
+                "must_not": must_nots
             }
         }
         return self.client.search(index=index, query=query, size=size, source=False, timeout=None)["hits"]["hits"]
+
+    def find_documents(self, ids : List[str], time_from: Optional[str] = None, time_to: Optional[str] = None) -> Docs:
+        query = {
+            "ids": { "values": ids }
+        }
+        results = self.client.search(index=self.index, query=query, size=self.size, timeout=None)["hits"]["hits"]
+        return [result["_source"] for result in results]
+
+    def find_children(self, docs : Docs, operationName : str) -> Docs:
+        musts = [
+            { "term": { "operationName": operationName } },
+            { "terms": { "parentSpanID": [doc["spanID"] for doc in docs] } }
+        ]
+        return self.do_bool_search(self.index, self.size, musts)
+
+    def find_parents(self, docs : Docs, operationName : str) -> Docs:
+        for doc in docs:
+            if "parentSpanID" not in doc:
+                print(doc)
+        musts = [
+            { "term": { "operationName": operationName } },
+            { "terms": { "spanID": [doc["parentSpanID"] for doc in docs] } }
+        ]
+        return self.do_bool_search(self.index, self.size, musts)
+
+    def find_follows_froms(self, docs : Docs, operationName : str) -> Docs:
+        refSpanIDs = [next(ref["spanID"] for ref in doc["references"] if ref["refType"] == "FOLLOWS_FROM") for doc in docs]
+        musts = [
+            { "term": { "operationName": operationName } },
+            { "terms": { "spanID": refSpanIDs } }
+        ]
+        return self.do_bool_search(self.index, self.size, musts)
+
+
+class FrameAssembler(esSearcher):
+    def __init__(self, client, namespace: str, index_filter : str = "", size: int = 10000):
+        esSearcher.__init__(self, client, namespace, index_filter, size)
+
+    def find_missing_process_digitiser_event_list_message(self, frames : Docs, existing_docs: List[str]) -> Docs:
+        metadata_timestamps = [frame["tag"]["metadata_timestamp"] for frame in frames]
+        musts = [
+            { "term": { "operationName": "process_digitiser_event_list_message" } },
+            { "terms": { "tag.metadata_timestamp": metadata_timestamps } }
+        ]
+        must_nots = [{ "ids": { "values": existing_docs } }]
+        return self.do_bool_search(index=self.index, size=self.size, musts=musts, shoulds=[], filters=[], must_nots=must_nots)
 
 
     def find_frames(self, musts : Docs, shoulds : Docs = [], filters : Docs = [], index_filter: str = "", size: int = 10000):
@@ -41,6 +88,10 @@ class FrameAssembler:
         id_docs = self.find_follows_froms(self.digitiser_event_lists, "process_digitiser_event_list_message")
         ids = [doc["_id"] for doc in id_docs]
         self.process_digitiser_event_list_messages = self.find_documents(ids)
+
+        extra_id_docs = self.find_missing_process_digitiser_event_list_message(self.frames, ids)
+        ids = [doc["_id"] for doc in extra_id_docs]
+        self.missing_process_digitiser_event_list_messages = self.find_documents(ids)
 
         print("Finding process_kafka_message (digitiser-aggregator)")
         id_docs = self.find_parents(self.process_digitiser_event_list_messages, "process_kafka_message")
@@ -67,31 +118,11 @@ class FrameAssembler:
         ids = [doc["_id"] for doc in id_docs]
         self.process_kafka_messages_writer = self.find_documents(ids)
 
-    def find_documents(self, ids : List[str]) -> Docs:
-        query = {
-            "ids": { "values": ids }
-        }
-        results = self.client.search(index=self.index, query=query, size=self.size, timeout=None)["hits"]["hits"]
-        return [result["_source"] for result in results]
-
-    def find_children(self, docs : Docs, operationName : str) -> Docs:
-        musts = [
-            { "term": { "operationName": operationName } },
-            { "terms": { "parentSpanID": [doc["spanID"] for doc in docs] } }
-        ]
-        return self.do_bool_search(self.index, self.size, musts)
-
-    def find_parents(self, docs : Docs, operationName : str) -> Docs:
-        musts = [
-            { "term": { "operationName": operationName } },
-            { "terms": { "spanID": [doc["parentSpanID"] for doc in docs] } }
-        ]
-        return self.do_bool_search(self.index, self.size, musts)
-
-    def find_follows_froms(self, docs : Docs, operationName : str) -> Docs:
-        refSpanIDs = [next(ref["spanID"] for ref in doc["references"] if ref["refType"] == "FOLLOWS_FROM") for doc in docs]
-        musts = [
-            { "term": { "operationName": operationName } },
-            { "terms": { "spanID": refSpanIDs } }
-        ]
-        return self.do_bool_search(self.index, self.size, musts)
+    def print_summary(self):
+        print(f"{len(self.frames)} frames")
+        print(f"{len(self.process_kafka_messages_writer)} process_kafka_messages_writer")
+        print(f"{len(self.process_digitiser_event_list_messages)} process_digitiser_event_list_messages")
+        print(f"{len(self.process_kafka_messages_aggregator)} process_kafka_messages_aggregator")
+        print(f"{len(self.process_digitiser_trace_messages)} process_digitiser_trace_messages")
+        print(f"{len(self.process_kafka_messages_events)} process_kafka_messages_events")
+        print(f"{len(self.process_events)} process_events")
