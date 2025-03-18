@@ -6,16 +6,15 @@ g_RUST_LOG_OFF=tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
 
 kill_persistant_components() {
     pkill --signal SIGINT $g_PROCESS_EVENT_FORMATION
-    #pkill --signal SIGINT $g_PROCESS_WRITER
-    #pkill --signal SIGINT $g_PROCESS_AGGREGATOR
-    #pkill --signal SIGINT trace-archiver-
+    pkill --signal SIGINT $g_PROCESS_WRITER
+    pkill --signal SIGINT $g_PROCESS_AGGREGATOR
 }
 
 run_persistant_components() {
     kill_persistant_components
-    run_trace_to_events
+    #run_trace_to_events
     #run_aggregator
-    #run_nexus_writer
+    run_nexus_writer
 }
 
 wait_for_input() {

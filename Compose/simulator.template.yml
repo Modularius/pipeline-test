@@ -3,17 +3,19 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    network_mode: "host"
     image: ghcr.io/stfc-icd-research-and-design/supermusr-simulator:main
     environment:
       - RUST_LOG=${RUST_LOG}
       - MAX_DIGITISER=${MAX_DIGITISER}
       - NUM_DIGITISERS=${NUM_DIGITISERS}
       - RUN_NAME=${RUN_NAME}
+      - NO_COLOR=true
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
      - --broker=${BROKER}
      - --otel-namespace=${PIPELINE_NAME}
      - --otel-endpoint=${OTEL_ENDPOINT}
-     - ${OTEL_LEVEL_SIM}
      - defined
      - "/home/${SIMULATOR_SOURCE}"
      - --digitiser-trace-topic=${TRACE_TOPIC}

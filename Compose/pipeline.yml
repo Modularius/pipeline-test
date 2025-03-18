@@ -1,11 +1,17 @@
 services:
   event-formation:
+    profiles:
+      - event-formation-only
+      - all
+    network_mode: "host"
     deploy:
       mode: replicated
       replicas: 1
-    image: supermusr-trace-to-events:latest
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - NO_COLOR=true
+      - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=trace-to-events-test
@@ -13,22 +19,27 @@ services:
       - --event-topic=daq-events
       - --observability-address=127.0.0.1:29090
       - --otel-endpoint=--otel-endpoint http://localhost:4317/v1/traces
-      - --otel-level=info
       - --polarity=positive
       - --baseline=0
-      - --otel-namespace=localpipeline
+      - --otel-namespace=localtest
       - fixed-threshold-discriminator
       - --threshold=10
       - --duration=1
       - --cool-off=0
 
   frame-aggregation:
+    profiles:
+      - frame-aggregation-only
+      - all
     deploy:
       mode: replicated
       replicas: 1
-    image: supermusr-digitiser-aggregator:latest
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
+    network_mode: "host"
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - NO_COLOR=true
+      - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --group=digitiser-aggregator-test
@@ -36,18 +47,23 @@ services:
       - --input-topic=daq-events
       - --output-topic=frame-events
       - --otel-endpoint=--otel-endpoint http://localhost:4317/v1/traces
-      - --otel-namespace=localpipeline
-      - --otel-level=info
-      - --frame-ttl-ms=1000
+      - --otel-namespace=localtest
+      - --frame-ttl-ms=5000
       - -d4,5,6,7,8,9,10,11
 
   nexus-writer:
+    profiles:
+     - nexus-writer-only
+     - all
     deploy:
       mode: replicated
       replicas: 1
     image: supermusr-nexus-writer:latest
+    network_mode: "host"
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=off,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - NO_COLOR=true
+      - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=nexus-writer-test
@@ -55,14 +71,13 @@ services:
       - --frame-event-topic=frame-events
       - --control-topic=ics-control-change
       - --log-topic=ics-metadata
-      - --sample-env-topic=ics-metadata
+      - --sample-env-topic=HIFI_sampleEnv
       - --alarm-topic=ics-alarms
       - --cache-run-ttl-ms=500
       - --otel-endpoint=--otel-endpoint http://localhost:4317/v1/traces
-      - --otel-namespace=localpipeline
-      - --otel-level=info
+      - --otel-namespace=localtest
       - --file-name=local
       - --archive-name=archive
     volumes:
-      - ../Output/HiFi_pipeline:/local
-      - ..//mnt/archive/incoming/hifi/via-local_pipeline:/archive
+      - ../Output/HiFi_test:/local
+      - ../archive/incoming/hifi-via-local_test:/archive

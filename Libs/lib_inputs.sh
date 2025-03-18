@@ -17,7 +17,6 @@ run_trace_simulator() {
     echo "--" "-" "$SIMULATOR"
     echo "--" "-" "--broker $BROKER"
     echo "--" "-" "$OTEL_ENDPOINT"
-    echo "--" "-" "$OTEL_LEVEL"
     echo "--" "-" "defined "$SIMULATOR_CONFIG_SOURCE""
     echo "--" "-" "--digitiser-trace-topic $TRACE_TOPIC"
     echo "--" "-" "--digitiser-event-topic $DAT_EVENT_TOPIC"

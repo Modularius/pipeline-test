@@ -4,19 +4,19 @@ run_trace_to_events() {
     echo "--" "--" "Executing Event Formation"
     CMD="$g_TRACE_TO_EVENTS \
         --broker $g_BROKER --consumer-group $g_GROUP_EVENT_FORMATION \
-        --observability-address 127.0.0.1:29095 \
+        --observability-address $g_OBSV_ADDRESS_EVENT_FORMATION \
         --trace-topic $g_TRACE_TOPIC \
         --event-topic $g_DAT_EVENT_TOPIC \
         --polarity $g_TTE_POLARITY \
         --baseline $g_TTE_BASELINE \
         $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
-        --save-file Output/MuSR/output_ \
         $g_TTE_INPUT_COMMAND"
         
     echo $CMD
     RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD &
 }
+#--save-file Output/MuSR/output_ \
 
 run_aggregator() {
     echo "--" "--" "Executing aggregator"
@@ -24,7 +24,7 @@ run_aggregator() {
     CMD="$g_EVENT_AGGREGATOR \
         --broker $g_BROKER --group $g_GROUP_AGGREGATOR \
         --input-topic $g_DAT_EVENT_TOPIC --output-topic $g_FRAME_EVENT_TOPIC \
-        --observability-address 127.0.0.1:29091 \
+        --observability-address $g_OBSV_ADDRESS_AGGREGATOR \
         --frame-ttl-ms $g_FRAME_TTL_MS \
         --send-frame-buffer-size 4000 \
         $g_OTEL_ENDPOINT \
@@ -40,7 +40,7 @@ run_nexus_writer() {
     
     CMD="$g_NEXUS_WRITER \
         --broker $g_BROKER --consumer-group $g_GROUP_WRITER \
-        --observability-address 127.0.0.1:29090 \
+        --observability-address $g_OBSV_ADDRESS_WRITER \
         --control-topic $g_CONTROL_TOPIC \
         --frame-event-topic $g_FRAME_EVENT_TOPIC \
         --log-topic $g_CONTROL_TOPIC \
@@ -51,7 +51,9 @@ run_nexus_writer() {
         --otel-namespace=$g_PIPELINE_NAME \
         --file-name ${g_NEXUS_OUTPUT_PATH} \
         --archive-name ${g_NEXUS_ARCHIVE_PATH}"
+#        --local-path ${g_NEXUS_OUTPUT_PATH} \
+#        --archive-path ${g_NEXUS_ARCHIVE_PATH}"
 
     echo $CMD
-    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD &
+    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD > nexus.log &
 }

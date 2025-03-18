@@ -19,14 +19,14 @@ execute_run() {
     #mkdir $g_NEXUS_ARCHIVE_PATH --mode=766
     #mkdir $g_NEXUS_OUTPUT_PATH --mode=766
 
-    kill_persistant_components
+    #kill_persistant_components
 
-    sleep 3
+    #sleep 1
 
-    g_PIPELINE_NAME=local1-${g_RUN_NAME}
-    run_persistant_components
+    #g_PIPELINE_NAME=local1-${g_RUN_NAME}
+    #run_persistant_components
 
-    sleep 3
+    #sleep 1
 
     
     MAX_DIGITISER=$g_MAX_DIGITISER
@@ -44,7 +44,11 @@ execute_run() {
 
 rm /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/archive/incoming/local/*.nxs
 rm /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/Output/local/*.nxs
+rm /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/Output/local/completed/*.nxs
 
+g_PIPELINE_NAME=local
+run_persistant_components
+sleep 3
 
 execute_run 8 Test1 "Simulations/test.json"
 sleep 7
@@ -58,6 +62,6 @@ execute_run 8 RunLogTest "Simulations/Tests/Logs/runlog.json"
 sleep 7
 execute_run 8 SELogTest "Simulations/Tests/Logs/selog.json"
 sleep 7
-#execute_run 8 SELogAndAlarmTest "Simulations/Tests/Logs/selog_and_alarm.json"
+execute_run 8 SELogAndAlarmTest "Simulations/Tests/Logs/selog_and_alarm.json"
 #docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=all down
 #docker compose --env-file ./configs/.env.local -f "./configs/docker-compose.yaml" --profile=no-broker up -d

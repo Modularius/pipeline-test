@@ -22,5 +22,5 @@ g_FRAME_TTL_MS=5000
 
 # Output Path
 g_NEXUS_OUTPUT_PATH="Output/HiFi"
-g_NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/hifi/via-local"
+g_NEXUS_ARCHIVE_PATH="archive/incoming/hifi-via-local"
 g_RUN_TTL_MS=500

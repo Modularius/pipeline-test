@@ -51,8 +51,7 @@
                             "start": { "int": 0 },
                             "end": { "int" : 7 },
                             "schedule" : [
-                                { "send-digitiser-trace": "replace-random" },
-                                { "wait-ms": 1 }
+                                { "send-digitiser-trace": "replace-random" }
                             ]
                         }
                     }
@@ -69,8 +68,7 @@
                             "start": { "int": 0 },
                             "end": { "int" : 6 },
                             "schedule" : [
-                                { "send-digitiser-trace": "replace-random" },
-                                { "wait-ms": 1 }
+                                { "send-digitiser-trace": "replace-random" }
                             ]
                         }
                     }
@@ -88,17 +86,15 @@
                             "start": { "int": 7 },
                             "end": { "int" : 7 },
                             "schedule" : [
-                                { "send-digitiser-trace": "replace-random" },
-                                { "wait-ms": 1 }
+                                { "send-digitiser-trace": "replace-random" }
                             ]
                         }
                     }
                 ]
             }
         },
-        { "wait-ms": 100 },
+        { "wait-ms": 300 },
         { "set-timestamp": { "advance-by-ms": 100}},
-        { "send-run-stop": { "name": { "text-env": "RUN_NAME" } } },
-        { "wait-ms": 100 }
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME" } } }
     ]
 }

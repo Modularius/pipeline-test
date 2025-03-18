@@ -16,9 +16,9 @@ g_TTE_BASELINE=0
 
 # Digitisers Expected from Broker
 g_DIGITISERS=-d$(seq -s"," 0 $g_MAX_DIGITISER)
-g_FRAME_TTL_MS=1500
+g_FRAME_TTL_MS=3500
 
 # Output Path
 g_NEXUS_OUTPUT_PATH="Output/local"
-g_NEXUS_ARCHIVE_PATH="/mnt/archive/incoming/local"
-g_RUN_TTL_MS=4000
+g_NEXUS_ARCHIVE_PATH="archive/incoming/local"
+g_RUN_TTL_MS=9000

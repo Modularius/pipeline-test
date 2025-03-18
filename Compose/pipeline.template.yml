@@ -1,11 +1,17 @@
 services:
   event-formation:
+    profiles:
+      - event-formation-only
+      - all
+    network_mode: "host"
     deploy:
       mode: replicated
       replicas: 1
     image: $g_IMAGE_EVENT_FORMATION
     environment:
       - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=true
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
       - --broker=${BROKER}
       - --consumer-group=${GROUP_EVENT_FORMATION}
@@ -13,7 +19,6 @@ services:
       - --event-topic=${DAT_EVENT_TOPIC}
       - --observability-address=${OBSV_ADDRESS_EVENT_FORMATION}
       - --otel-endpoint=${OTEL_ENDPOINT}
-      - ${OTEL_LEVEL_EVENT_FORMATION}
       - --polarity=${TTE_POLARITY}
       - --baseline=${TTE_BASELINE}
       - --otel-namespace=${PIPELINE_NAME}
@@ -23,12 +28,18 @@ services:
       - --cool-off=${TTE_FTD_COOLOFF}
 
   frame-aggregation:
+    profiles:
+      - frame-aggregation-only
+      - all
     deploy:
       mode: replicated
       replicas: 1
     image: $g_IMAGE_AGGREGATOR
+    network_mode: "host"
     environment:
       - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=true
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
       - --broker=${BROKER}
       - --group=${GROUP_AGGREGATOR}
@@ -37,17 +48,22 @@ services:
       - --output-topic=${FRAME_EVENT_TOPIC}
       - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
-      - ${OTEL_LEVEL_AGGREGATOR}
       - --frame-ttl-ms=${FRAME_TTL_MS}
       - ${DIGITISERS}
 
   nexus-writer:
+    profiles:
+     - nexus-writer-only
+     - all
     deploy:
       mode: replicated
       replicas: 1
     image: $g_IMAGE_WRITER
+    network_mode: "host"
     environment:
       - RUST_LOG=${g_RUST_LOG}
+      - NO_COLOR=true
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
       - --broker=${BROKER}
       - --consumer-group=${GROUP_WRITER}
@@ -60,7 +76,6 @@ services:
       - --cache-run-ttl-ms=${RUN_TTL_MS}
       - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
-      - ${OTEL_LEVEL_WRITER}
       - --file-name=local
       - --archive-name=archive
     volumes:
