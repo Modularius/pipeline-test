@@ -24,6 +24,7 @@ set_pipeline_local_variables() {
     # Observability
     RUST_LOG=${g_RUST_LOG}
     OTEL_LEVEL=${g_OTEL_LEVEL}
+    NO_COLOR=${g_NO_COLOR}
 
     OTEL_ENDPOINT=${g_OTEL_ENDPOINT}
 }
@@ -127,10 +128,11 @@ execute_run() {
 }
 
 
-#teardown_pipeline test nexus-writer-only
+teardown_pipeline test all
 
-deploy_pipeline test nexus-writer-only
+deploy_pipeline test all
+#deploy_pipeline test nexus-writer-only
 
-#sleep 3
+sleep 3
 
-#execute_run my_pipe LetsDoARunBaby
+execute_run test LetsDoARunBaby

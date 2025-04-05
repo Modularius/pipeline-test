@@ -12,8 +12,8 @@ kill_persistant_components() {
 
 run_persistant_components() {
     kill_persistant_components
-    #run_trace_to_events
-    #run_aggregator
+    run_trace_to_events
+    run_aggregator
     run_nexus_writer
 }
 

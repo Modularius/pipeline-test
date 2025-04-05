@@ -10,7 +10,7 @@ services:
       - MAX_DIGITISER=${MAX_DIGITISER}
       - NUM_DIGITISERS=${NUM_DIGITISERS}
       - RUN_NAME=${RUN_NAME}
-      - NO_COLOR=true
+      - NO_COLOR=${NO_COLOR}
       - OTEL_LEVEL=${OTEL_LEVEL}
     command:
      - --broker=${BROKER}
@@ -27,3 +27,5 @@ services:
      - --alarm-topic=${ALARMS_TOPIC}
     volumes:
       - ../${SIMULATOR_PATH}:/home
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

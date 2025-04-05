@@ -9,7 +9,7 @@ run_trace_to_events() {
         --event-topic $g_DAT_EVENT_TOPIC \
         --polarity $g_TTE_POLARITY \
         --baseline $g_TTE_BASELINE \
-        $g_OTEL_ENDPOINT \
+        --otel-endpoint $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
         $g_TTE_INPUT_COMMAND"
         
@@ -27,7 +27,7 @@ run_aggregator() {
         --observability-address $g_OBSV_ADDRESS_AGGREGATOR \
         --frame-ttl-ms $g_FRAME_TTL_MS \
         --send-frame-buffer-size 4000 \
-        $g_OTEL_ENDPOINT \
+        --otel-endpoint $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
         $g_DIGITISERS"
         
@@ -47,13 +47,13 @@ run_nexus_writer() {
         --sample-env-topic $g_SELOGS_TOPIC \
         --alarm-topic $g_CONTROL_TOPIC \
         --cache-run-ttl-ms 5000 \
-        $g_OTEL_ENDPOINT \
+        --otel-endpoint $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
-        --file-name ${g_NEXUS_OUTPUT_PATH} \
-        --archive-name ${g_NEXUS_ARCHIVE_PATH}"
-#        --local-path ${g_NEXUS_OUTPUT_PATH} \
-#        --archive-path ${g_NEXUS_ARCHIVE_PATH}"
+        --local-path ${g_NEXUS_OUTPUT_PATH} \
+        --archive-path ${g_NEXUS_ARCHIVE_PATH}"
+#        --file-name ${g_NEXUS_OUTPUT_PATH} \
+#        --archive-name ${g_NEXUS_ARCHIVE_PATH}"
 
     echo $CMD
-    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD > nexus.log &
+    RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD &
 }

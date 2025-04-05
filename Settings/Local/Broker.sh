@@ -1,5 +1,5 @@
 # Use This Broker
-g_BROKER="localhost:9092"
+g_BROKER="${g_LOCALHOST}:9092"
 
 # Broker Topics
 g_TRACE_TOPIC=Traces

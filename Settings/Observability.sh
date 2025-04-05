@@ -1,8 +1,8 @@
 set -a
 
-g_OTEL_ENDPOINT="--otel-endpoint http://localhost:4317/v1/traces"
-#g_OTEL_ENDPOINT="--otel-endpoint http://172.16.113.245:4317/v1/traces"       # HiFi
-#g_OTEL_ENDPOINT="--otel-endpoint http://146.199.207.182:4317/v1/traces"      # MyPC
+g_OTEL_ENDPOINT="http://${g_LOCALHOST}:4317/v1/traces"
+#g_OTEL_ENDPOINT="http://172.16.113.245:4317/v1/traces"       # HiFi
+#g_OTEL_ENDPOINT="http://146.199.207.182:4317/v1/traces"      # MyPC
 #g_OTEL_ENDPOINT=""
 
 g_OBSV_ADDRESS_EVENT_FORMATION="127.0.0.1:29090"       # Local
@@ -21,7 +21,7 @@ g_OBSV_ADDRESS_SIM="127.0.0.1:29093"       # Local
 g_NO_COLOR=true
 
 ## Stdout Observability Levels
-g_RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,$g_RUST_LOG_OFF
+g_RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,$g_RUST_LOG_OFF
 
 ## Otel Observability Levels
 g_OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn

@@ -28,7 +28,7 @@ run_trace_simulator() {
 
     CMD="${SIMULATOR} \
         --broker $BROKER \
-        $OTEL_ENDPOINT \
+        --otel-endpoint $OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
         defined ${SIMULATOR_CONFIG_SOURCE} \
         --digitiser-trace-topic $TRACE_TOPIC \
