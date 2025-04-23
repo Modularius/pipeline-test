@@ -6,9 +6,9 @@ g_TRACE_TOPIC=Traces
 g_DAT_EVENT_TOPIC=Events
 g_FRAME_EVENT_TOPIC=FrameEvents
 g_CONTROL_TOPIC=Controls
-g_LOGS_TOPIC=Controls
-g_SELOGS_TOPIC=Controls
-g_ALARMS_TOPIC=Controls
+g_LOGS_TOPIC=Logs
+g_SELOGS_TOPIC=SELogs
+g_ALARMS_TOPIC=Alarms
 
 # Trace Source Dependent Event Formation Settings
 g_TTE_POLARITY=positive

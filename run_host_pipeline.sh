@@ -34,8 +34,6 @@ echo "Current Time: $(date +"%T")"
 ## Main Script
 
 #### Local
-. ./Scripts/local_compose.sh
-#. ./Scripts/local_no_docker.sh
-#. ./Scripts/simulation.sh
+. ./Scripts/local_no_docker.sh
 #### HiFi
 #. ./Scripts/hifi.sh

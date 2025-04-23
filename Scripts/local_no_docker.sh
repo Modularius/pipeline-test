@@ -36,8 +36,9 @@ execute_run() {
     export NUM_DIGITISERS
     export RUN_NAME
 
-    run_trace_simulator "$g_SIMULATOR" \
-        $g_BROKER $g_CONTROL_TOPIC $g_TRACE_TOPIC $g_DAT_EVENT_TOPIC $g_FRAME_EVENT_TOPIC \
+    run_trace_simulator "$g_SIMULATOR" $g_BROKER \
+    $g_CONTROL_TOPIC $g_LOGS_TOPIC $g_SELOGS_TOPIC $g_ALARMS_TOPIC \
+        $g_TRACE_TOPIC $g_DAT_EVENT_TOPIC $g_FRAME_EVENT_TOPIC \
         $g_OBSV_ADDRESS_SIM "$g_OTEL_ENDPOINT" \
         $g_SIMULATOR_CONFIG_SOURCE
 }
@@ -51,6 +52,12 @@ run_persistant_components
 sleep 3
 
 execute_run 8 Test1 "Simulations/test.json"
+sleep 7
+export RUN_NAME_1=TwoRunTest1
+export RUN_NAME_2=TwoRunTest2
+execute_run 8 TwoRunTest "Simulations/Tests/SanityChecking/two_runs_and_selogs.json"
+sleep 7
+execute_run 8 DuplicateDigitisers "Simulations/Tests/DuplicateDigitiserMessages/test.json"
 sleep 7
 execute_run 8 Test2 "Simulations/Tests/IncompleteFrames/test1.json"
 sleep 7

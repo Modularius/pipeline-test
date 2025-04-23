@@ -83,8 +83,8 @@ services:
       - --cache-run-ttl-ms=${RUN_TTL_MS}
       - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
-      - --file-name=local
-      - --archive-name=archive
+      - --local-path=local
+      - --archive-path=archive
     volumes:
       - ../${NEXUS_OUTPUT_PATH}:/local
       - ../${NEXUS_ARCHIVE_PATH}:/archive

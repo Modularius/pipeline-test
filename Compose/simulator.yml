@@ -13,18 +13,18 @@ services:
       - NO_COLOR=true
       - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
-     - --broker=host.docker.internal:9092
+     - --broker=130.246.55.29:9092
      - --otel-namespace=localtest
-     - --otel-endpoint=http://host.docker.internal:4317/v1/traces
+     - --otel-endpoint=http://localhost:4317/v1/traces
      - defined
      - "/home/test.json"
-     - --digitiser-trace-topic=Traces
-     - --digitiser-event-topic=Events
-     - --frame-event-topic=FrameEvents
-     - --control-topic=Controls
-     - --runlog-topic=Controls
-     - --selog-topic=Controls
-     - --alarm-topic=Controls
+     - --digitiser-trace-topic=daq-traces-in
+     - --digitiser-event-topic=daq-events
+     - --frame-event-topic=frame-events
+     - --control-topic=ics-control-change
+     - --runlog-topic=ics-metadata
+     - --selog-topic=HIFI_sampleEnv
+     - --alarm-topic=ics-alarms
     volumes:
       - ../Simulations:/home
     extra_hosts:

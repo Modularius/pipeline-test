@@ -17,59 +17,59 @@
         { "set-timestamp": { "advance-by-ms": 100}},
         { "wait-ms": 100 },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Double-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-Double-Value" },
             "value-type" : "float64",
             "value" : ["0"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Float-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-Float-Value" },
             "value-type" : "float32",
             "value" : ["-58"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Byte-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-Byte-Value" },
             "value-type" : "int8",
             "value" : ["-54"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-UByte-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-UByte-Value" },
             "value-type" : "uint8",
             "value" : ["52"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Short-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-Short-Value" },
             "value-type" : "int16",
             "value" : ["-540"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-UByte-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-UShort-Value" },
             "value-type" : "uint16",
             "value" : ["524"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Int-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-Int-Value" },
             "value-type" : "int32",
             "value" : ["-2234540"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-UInt-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-UInt-Value" },
             "value-type" : "uint32",
             "value" : ["53524"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Long-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-Long-Value" },
             "value-type" : "int64",
             "value" : ["-42111111111345400"]
         } },
         { "wait-ms": 100 },
         { "set-timestamp": { "advance-by-ms": 100}},
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-Long-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-Long-Value" },
             "value-type" : "int64",
             "value" : ["-22111111111345400"]
         } },
         { "send-run-log-data" : {
-            "source-name" : { "text" : "A-ULong-Value" },
+            "source-name" : { "text" : "PrePrefix:Prefix:A-ULong-Value" },
             "value-type" : "uint64",
             "value" : ["53524000000000"]
         } },

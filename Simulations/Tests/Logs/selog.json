@@ -17,14 +17,14 @@
         { "set-timestamp": { "advance-by-ms": 100}},
         { "wait-ms": 100 },
         { "send-sample-env-log" : {
-            "name" : { "text" : "Earth's Core" },
+            "name" : { "text" : "PrePrefix:Prefix:Earth_Core" },
             "values-type" : "uint64",
             "location": "unknown",
             "time-delta": 1.0,
             "values" : ["36", "36", "36"]
         } },
         { "send-sample-env-log" : {
-            "name" : { "text" : "Earth's Other Core" },
+            "name" : { "text" : "PrePrefix:Prefix:Earth_Other_Core" },
             "values-type" : "uint64",
             "location": "unknown",
             "time-delta": 1.0,

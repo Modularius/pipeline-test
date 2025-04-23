@@ -14,12 +14,12 @@ services:
     ports:
       - 127.0.0.1:29090:9090
     command:
-      - --broker=host.docker.internal:9092
+      - --broker=130.246.55.29:9092
       - --consumer-group=trace-to-events-test
-      - --trace-topic=Traces
-      - --event-topic=Events
+      - --trace-topic=daq-traces-in
+      - --event-topic=daq-events
       - --observability-address=127.0.0.1:9090
-      - --otel-endpoint=http://host.docker.internal:4317/v1/traces
+      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --polarity=positive
       - --baseline=0
       - --otel-namespace=localtest
@@ -45,15 +45,15 @@ services:
     ports:
       - 127.0.0.1:29091:9090
     command:
-      - --broker=host.docker.internal:9092
+      - --broker=130.246.55.29:9092
       - --group=digitiser-aggregator-test
       - --observability-address=127.0.0.1:9090
-      - --input-topic=Events
-      - --output-topic=FrameEvents
-      - --otel-endpoint=http://host.docker.internal:4317/v1/traces
+      - --input-topic=daq-events
+      - --output-topic=frame-events
+      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=localtest
-      - --frame-ttl-ms=3500
-      - -d0,1,2,3,4,5,6,7
+      - --frame-ttl-ms=5000
+      - -d4,5,6,7,8,9,10,11
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -72,21 +72,21 @@ services:
     ports:
       - 127.0.0.1:29092:9090
     command:
-      - --broker=host.docker.internal:9092
+      - --broker=130.246.55.29:9092
       - --consumer-group=nexus-writer-test
       - --observability-address=127.0.0.1:9090
-      - --frame-event-topic=FrameEvents
-      - --control-topic=Controls
-      - --log-topic=Controls
-      - --sample-env-topic=Controls
-      - --alarm-topic=Controls
-      - --cache-run-ttl-ms=9000
-      - --otel-endpoint=http://host.docker.internal:4317/v1/traces
+      - --frame-event-topic=frame-events
+      - --control-topic=ics-control-change
+      - --log-topic=ics-metadata
+      - --sample-env-topic=HIFI_sampleEnv
+      - --alarm-topic=ics-alarms
+      - --cache-run-ttl-ms=500
+      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=localtest
-      - --file-name=local
-      - --archive-name=archive
+      - --local-path=local
+      - --archive-path=archive
     volumes:
-      - ../Output/local_test:/local
-      - ../archive/incoming/local_test:/archive
+      - ../Output/HiFi_test:/local
+      - ../archive/incoming/hifi-via-local_test:/archive
     extra_hosts:
       - "host.docker.internal:host-gateway"

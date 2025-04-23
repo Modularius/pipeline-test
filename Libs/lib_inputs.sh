@@ -4,6 +4,9 @@ run_trace_simulator() {
     SIMULATOR=$1;shift;
     BROKER=$1;shift;
     CONTROL_TOPIC=$1;shift;
+    LOGS_TOPIC=$1;shift;
+    SELOGS_TOPIC=$1;shift;
+    ALARMS_TOPIC=$1;shift;
     TRACE_TOPIC=$1;shift;
     DAT_EVENT_TOPIC=$1;shift;
     FRAME_EVENT_TOPIC=$1;shift;
@@ -12,19 +15,6 @@ run_trace_simulator() {
     OTEL_ENDPOINT=$1;shift;
 
     SIMULATOR_CONFIG_SOURCE=$1;shift;
-
-    echo "--" "Executing Simulator with properties:"
-    echo "--" "-" "$SIMULATOR"
-    echo "--" "-" "--broker $BROKER"
-    echo "--" "-" "$OTEL_ENDPOINT"
-    echo "--" "-" "defined "$SIMULATOR_CONFIG_SOURCE""
-    echo "--" "-" "--digitiser-trace-topic $TRACE_TOPIC"
-    echo "--" "-" "--digitiser-event-topic $DAT_EVENT_TOPIC"
-    echo "--" "-" "--frame-event-topic $FRAME_EVENT_TOPIC"
-    echo "--" "-" "--control-topic $CONTROL_TOPIC"
-    echo "--" "-" "--runlog-topic $CONTROL_TOPIC"
-    echo "--" "-" "--selog-topic $CONTROL_TOPIC"
-    echo "--" "-" "--alarm-topic $CONTROL_TOPIC"
 
     CMD="${SIMULATOR} \
         --broker $BROKER \
@@ -35,10 +25,11 @@ run_trace_simulator() {
         --digitiser-event-topic $DAT_EVENT_TOPIC \
         --frame-event-topic $FRAME_EVENT_TOPIC \
         --control-topic $CONTROL_TOPIC \
-        --runlog-topic $CONTROL_TOPIC \
-        --selog-topic $CONTROL_TOPIC \
-        --alarm-topic $CONTROL_TOPIC"
+        --runlog-topic $LOGS_TOPIC \
+        --selog-topic $SELOGS_TOPIC \
+        --alarm-topic $ALARMS_TOPIC"
 
+    echo "--" "Executing Simulator with properties:"
     echo $CMD
     RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR NUM_DIGITISERS=$g_NUM_DIGITISERS MAX_DIGITISER=$g_MAX_DIGITISER RUN_NAME=$g_RUN_NAME $CMD
 }

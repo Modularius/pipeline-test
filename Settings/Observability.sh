@@ -1,6 +1,7 @@
 set -a
 
-g_OTEL_ENDPOINT="http://${g_LOCALHOST}:4317/v1/traces"
+#g_OTEL_ENDPOINT="http://${g_LOCALHOST}:4317/v1/traces"
+g_OTEL_ENDPOINT="http://172.16.105.83:4317/v1/traces"          # OTel VM
 #g_OTEL_ENDPOINT="http://172.16.113.245:4317/v1/traces"       # HiFi
 #g_OTEL_ENDPOINT="http://146.199.207.182:4317/v1/traces"      # MyPC
 #g_OTEL_ENDPOINT=""

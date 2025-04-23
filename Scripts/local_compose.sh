@@ -128,11 +128,11 @@ execute_run() {
 }
 
 
-teardown_pipeline test all
+teardown_pipeline test nexus-writer-only
 
-deploy_pipeline test all
-#deploy_pipeline test nexus-writer-only
+#deploy_pipeline test all
+deploy_pipeline test nexus-writer-only
 
 sleep 3
 
-execute_run test LetsDoARunBaby
+#execute_run test LetsDoARunBaby

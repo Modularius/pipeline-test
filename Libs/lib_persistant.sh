@@ -43,9 +43,9 @@ run_nexus_writer() {
         --observability-address $g_OBSV_ADDRESS_WRITER \
         --control-topic $g_CONTROL_TOPIC \
         --frame-event-topic $g_FRAME_EVENT_TOPIC \
-        --log-topic $g_CONTROL_TOPIC \
+        --log-topic $g_LOGS_TOPIC \
         --sample-env-topic $g_SELOGS_TOPIC \
-        --alarm-topic $g_CONTROL_TOPIC \
+        --alarm-topic $g_ALARMS_TOPIC \
         --cache-run-ttl-ms 5000 \
         --otel-endpoint $g_OTEL_ENDPOINT \
         --otel-namespace=$g_PIPELINE_NAME \
