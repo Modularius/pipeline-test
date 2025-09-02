@@ -84,13 +84,21 @@ teardown_pipeline() {
     LOCAL_PIPELINE_NAME=$1;shift;
     PROFILE=$1;shift;
 
-    docker compose -f Compose/pipeline.yml -p ${LOCAL_PIPELINE_NAME} --profile $PROFILE down
+    podman-compose -f Compose/pipeline.yml -p ${LOCAL_PIPELINE_NAME} --profile $PROFILE down
+}
+
+teardown_broker() {
+    podman-compose -f "Compose/redpanda.yml" -p "local_broker" down
+}
+
+deploy_broker() {
+    podman-compose -f "Compose/redpanda.yml" -p "local_broker" up -d
 }
 
 deploy_pipeline() {
     set -a
 
-    LOCAL_PIPELINE_NAME=$1;shift;
+    LOCAL_PIPELINE_NAME=$1;shift; 
     PROFILE=$1;shift;
 
     echo deploying pipeline $LOCAL_PIPELINE_NAME
@@ -98,14 +106,14 @@ deploy_pipeline() {
     set_pipeline_local_variables $LOCAL_PIPELINE_NAME
     set_persistant_pipeline_local_variables $LOCAL_PIPELINE_NAME
     
-    #mkdir $NEXUS_ARCHIVE_PATH $NEXUS_OUTPUT_PATH
-    
     cat Compose/pipeline.template.yml | envsubst > Compose/pipeline.yml
-    docker compose -f Compose/pipeline.yml -p ${LOCAL_PIPELINE_NAME} --profile $PROFILE up -d
+    podman-compose -f Compose/pipeline.yml -p ${LOCAL_PIPELINE_NAME} --profile $PROFILE up -d
 }
 
 execute_run() {
     set -a
+
+    podman-compose -f "Compose/simulator.yml" -p "${LOCAL_PIPELINE_NAME}_simulator" down
 
     LOCAL_PIPELINE_NAME=$1;shift;
     # Simulation 
@@ -121,18 +129,17 @@ execute_run() {
     set_simulator_local_variables $RUN_NAME
 
     cat Compose/simulator.template.yml | envsubst > Compose/simulator.yml
-    docker compose -f "Compose/simulator.yml" -p "${LOCAL_PIPELINE_NAME}" up
-    echo simulator finished
-
-    docker compose -f "Compose/simulator.yml" -p "${LOCAL_PIPELINE_NAME}" down
+    podman-compose -f "Compose/simulator.yml" -p "${LOCAL_PIPELINE_NAME}_simulator" up -d
+    #echo simulator finished
 }
 
+#teardown_broker
+teardown_pipeline test all
 
-teardown_pipeline test nexus-writer-only
+#deploy_broker
+#sleep 5
+deploy_pipeline test all
 
-#deploy_pipeline test all
-deploy_pipeline test nexus-writer-only
+#sleep 3
 
-sleep 3
-
-#execute_run test LetsDoARunBaby
+execute_run test LetsDoARunBaby

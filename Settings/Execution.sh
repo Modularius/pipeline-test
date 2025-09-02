@@ -13,9 +13,11 @@ g_PROCESS_AGGREGATOR=digitiser-aggre
 g_PROCESS_EVENT_FORMATION=trace-to-events
 
 #g_IMAGE_WRITER=ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
-g_IMAGE_AGGREGATOR=ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
-g_IMAGE_EVENT_FORMATION=ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+#g_IMAGE_AGGREGATOR=ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
+#g_IMAGE_EVENT_FORMATION=ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+#g_IMAGE_SIMULATOR=ghcr.io/stfc-icd-research-and-design/supermusr-simulator:main
 
 g_IMAGE_WRITER=supermusr-nexus-writer:latest
-#g_IMAGE_AGGREGATOR=supermusr-digitiser-aggregator:latest
-#g_IMAGE_EVENT_FORMATION=supermusr-trace-to-events:latest
+g_IMAGE_AGGREGATOR=supermusr-digitiser-aggregator:latest
+g_IMAGE_EVENT_FORMATION=supermusr-trace-to-events:latest
+g_IMAGE_SIMULATOR=supermusr-simulator:latest

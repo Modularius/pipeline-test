@@ -19,9 +19,10 @@ execute_run() {
     export MAX_DIGITISER
     export NUM_DIGITISERS
     export RUN_NAME
-
-    run_trace_simulator "$g_SIMULATOR" \
-        $g_BROKER $g_CONTROL_TOPIC $g_TRACE_TOPIC $g_DAT_EVENT_TOPIC $g_FRAME_EVENT_TOPIC \
+        
+    run_trace_simulator "$g_SIMULATOR" $g_BROKER \
+    $g_CONTROL_TOPIC $g_LOGS_TOPIC $g_SELOGS_TOPIC $g_ALARMS_TOPIC \
+        $g_TRACE_TOPIC $g_DAT_EVENT_TOPIC $g_FRAME_EVENT_TOPIC \
         $g_OBSV_ADDRESS_SIM "$g_OTEL_ENDPOINT" \
         $g_SIMULATOR_CONFIG_SOURCE
 }
@@ -34,5 +35,5 @@ g_PIPELINE_NAME=local
 run_persistant_components
 sleep 2
 
-execute_run 8 SelogTest "Simulations/for_anthony.json"
+execute_run 8 SelogTest "Simulations/noisy.json"
 

@@ -1,7 +1,7 @@
 set -a
 ### Set Local Host
-g_LOCALHOST=host.docker.internal
-#g_LOCALHOST=localhost
+#g_LOCALHOST=host.docker.internal
+g_LOCALHOST=localhost
 
 ## Include Library Scripts
 . ./Libs/lib.sh
@@ -22,11 +22,11 @@ g_LOCALHOST=host.docker.internal
 
 ### Enact Pipeline Configuration for Chosen Broker
 #### Local
-#g_NUM_DIGITISERS=8
-#g_MAX_DIGITISER=$(($g_NUM_DIGITISERS - 1))
-#. ./Settings/Local/Broker.sh
+g_NUM_DIGITISERS=8
+g_MAX_DIGITISER=$(($g_NUM_DIGITISERS - 1))
+. ./Settings/Local/Broker.sh
 #### HiFi
-. ./Settings/HiFi/Broker.sh
+#. ./Settings/HiFi/Broker.sh
 #### MuSR
 #. ./Settings/MuSR/Broker.sh
 

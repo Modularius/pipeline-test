@@ -1,5 +1,6 @@
 # Use This Broker
-g_BROKER="${g_LOCALHOST}:9092"
+g_BROKER="${g_LOCALHOST}:19092"
+#g_BROKER="redpanda:19092"
 
 # Broker Topics
 g_TRACE_TOPIC=Traces

@@ -18,7 +18,7 @@ services:
       - --consumer-group=${GROUP_EVENT_FORMATION}
       - --trace-topic=${TRACE_TOPIC}
       - --event-topic=${DAT_EVENT_TOPIC}
-      - --observability-address=127.0.0.1:9090
+      - --observability-address=127.0.0.1:29091
       - --otel-endpoint=${OTEL_ENDPOINT}
       - --polarity=${TTE_POLARITY}
       - --baseline=${TTE_BASELINE}
@@ -27,12 +27,14 @@ services:
       - --threshold=${TTE_FTD_THRESHOLD}
       - --duration=${TTE_FTD_DURATION}
       - --cool-off=${TTE_FTD_COOLOFF}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   frame-aggregation:
     profiles:
       - frame-aggregation-only
+      - all-but-trace-to-events
       - all
     deploy:
       mode: replicated
@@ -47,19 +49,21 @@ services:
     command:
       - --broker=${BROKER}
       - --group=${GROUP_AGGREGATOR}
-      - --observability-address=127.0.0.1:9090
+      - --observability-address=127.0.0.1:29092
       - --input-topic=${DAT_EVENT_TOPIC}
       - --output-topic=${FRAME_EVENT_TOPIC}
       - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
       - --frame-ttl-ms=${FRAME_TTL_MS}
       - ${DIGITISERS}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   nexus-writer:
     profiles:
      - nexus-writer-only
+     - all-but-trace-to-events
      - all
     deploy:
       mode: replicated
@@ -74,7 +78,7 @@ services:
     command:
       - --broker=${BROKER}
       - --consumer-group=${GROUP_WRITER}
-      - --observability-address=127.0.0.1:9090
+      - --observability-address=127.0.0.1:29093
       - --frame-event-topic=${FRAME_EVENT_TOPIC}
       - --control-topic=${CONTROL_TOPIC}
       - --log-topic=${LOGS_TOPIC}
@@ -88,5 +92,6 @@ services:
     volumes:
       - ../${NEXUS_OUTPUT_PATH}:/local
       - ../${NEXUS_ARCHIVE_PATH}:/archive
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"

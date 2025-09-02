@@ -4,7 +4,7 @@ services:
       mode: replicated
       replicas: 1
     network_mode: "host"
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-simulator:main
+    image: ${g_IMAGE_SIMULATOR}
     environment:
       - RUST_LOG=${RUST_LOG}
       - MAX_DIGITISER=${MAX_DIGITISER}
@@ -27,5 +27,5 @@ services:
      - --alarm-topic=${ALARMS_TOPIC}
     volumes:
       - ../${SIMULATOR_PATH}:/home
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"

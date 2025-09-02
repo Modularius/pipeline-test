@@ -4,28 +4,28 @@ services:
       mode: replicated
       replicas: 1
     network_mode: "host"
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-simulator:main
+    image: supermusr-simulator:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - MAX_DIGITISER=7
       - NUM_DIGITISERS=8
       - RUN_NAME=LetsDoARunBaby
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
-     - --broker=130.246.55.29:9092
+     - --broker=localhost:19092
      - --otel-namespace=localtest
-     - --otel-endpoint=http://localhost:4317/v1/traces
+     - --otel-endpoint=http://172.16.105.83:4317/v1/traces
      - defined
      - "/home/test.json"
-     - --digitiser-trace-topic=daq-traces-in
-     - --digitiser-event-topic=daq-events
-     - --frame-event-topic=frame-events
-     - --control-topic=ics-control-change
-     - --runlog-topic=ics-metadata
-     - --selog-topic=HIFI_sampleEnv
-     - --alarm-topic=ics-alarms
+     - --digitiser-trace-topic=Traces
+     - --digitiser-event-topic=Events
+     - --frame-event-topic=FrameEvents
+     - --control-topic=Controls
+     - --runlog-topic=Logs
+     - --selog-topic=SELogs
+     - --alarm-topic=Alarms
     volumes:
       - ../Simulations:/home
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"

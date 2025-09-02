@@ -6,19 +6,19 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    image: supermusr-trace-to-events:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     ports:
       - 127.0.0.1:29090:9090
     command:
-      - --broker=130.246.55.29:9092
+      - --broker=localhost:19092
       - --consumer-group=trace-to-events-test
-      - --trace-topic=daq-traces-in
-      - --event-topic=daq-events
-      - --observability-address=127.0.0.1:9090
+      - --trace-topic=Traces
+      - --event-topic=Events
+      - --observability-address=127.0.0.1:29091
       - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --polarity=positive
       - --baseline=0
@@ -27,66 +27,71 @@ services:
       - --threshold=10
       - --duration=1
       - --cool-off=0
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   frame-aggregation:
     profiles:
       - frame-aggregation-only
+      - all-but-trace-to-events
       - all
     deploy:
       mode: replicated
       replicas: 1
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
+    image: supermusr-digitiser-aggregator:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     ports:
       - 127.0.0.1:29091:9090
     command:
-      - --broker=130.246.55.29:9092
+      - --broker=localhost:19092
       - --group=digitiser-aggregator-test
-      - --observability-address=127.0.0.1:9090
-      - --input-topic=daq-events
-      - --output-topic=frame-events
+      - --observability-address=127.0.0.1:29092
+      - --input-topic=Events
+      - --output-topic=FrameEvents
       - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=localtest
-      - --frame-ttl-ms=5000
-      - -d4,5,6,7,8,9,10,11
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - --frame-ttl-ms=3500
+      - -d0,1,2,3,4,5,6,7
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   nexus-writer:
     profiles:
      - nexus-writer-only
+     - all-but-trace-to-events
      - all
     deploy:
       mode: replicated
       replicas: 1
     image: supermusr-nexus-writer:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     ports:
       - 127.0.0.1:29092:9090
     command:
-      - --broker=130.246.55.29:9092
+      - --broker=localhost:19092
       - --consumer-group=nexus-writer-test
-      - --observability-address=127.0.0.1:9090
-      - --frame-event-topic=frame-events
-      - --control-topic=ics-control-change
-      - --log-topic=ics-metadata
-      - --sample-env-topic=HIFI_sampleEnv
-      - --alarm-topic=ics-alarms
-      - --cache-run-ttl-ms=500
+      - --observability-address=127.0.0.1:29093
+      - --frame-event-topic=FrameEvents
+      - --control-topic=Controls
+      - --log-topic=Logs
+      - --sample-env-topic=SELogs
+      - --alarm-topic=Alarms
+      - --cache-run-ttl-ms=9000
       - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=localtest
       - --local-path=local
       - --archive-path=archive
     volumes:
-      - ../Output/HiFi_test:/local
-      - ../archive/incoming/hifi-via-local_test:/archive
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - ../Output/local_test:/local:rw,z
+      - ../archive/incoming/local_test:/archive:rw,z
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"

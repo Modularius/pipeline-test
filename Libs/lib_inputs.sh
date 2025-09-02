@@ -16,22 +16,26 @@ run_trace_simulator() {
 
     SIMULATOR_CONFIG_SOURCE=$1;shift;
 
-    CMD="${SIMULATOR} \
-        --broker $BROKER \
-        --otel-endpoint $OTEL_ENDPOINT \
-        --otel-namespace=$g_PIPELINE_NAME \
-        defined ${SIMULATOR_CONFIG_SOURCE} \
-        --digitiser-trace-topic $TRACE_TOPIC \
-        --digitiser-event-topic $DAT_EVENT_TOPIC \
-        --frame-event-topic $FRAME_EVENT_TOPIC \
-        --control-topic $CONTROL_TOPIC \
-        --runlog-topic $LOGS_TOPIC \
-        --selog-topic $SELOGS_TOPIC \
-        --alarm-topic $ALARMS_TOPIC"
+    params=$(simulator_params)
+    CMD="${SIMULATOR} $params"
 
     echo "--" "Executing Simulator with properties:"
     echo $CMD
     RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR NUM_DIGITISERS=$g_NUM_DIGITISERS MAX_DIGITISER=$g_MAX_DIGITISER RUN_NAME=$g_RUN_NAME $CMD
+}
+
+simulator_params() {
+    echo "--broker $BROKER \
+    --otel-endpoint $OTEL_ENDPOINT \
+    --otel-namespace=$g_PIPELINE_NAME \
+    defined ${SIMULATOR_CONFIG_SOURCE} \
+    --digitiser-trace-topic $TRACE_TOPIC \
+    --digitiser-event-topic $DAT_EVENT_TOPIC \
+    --frame-event-topic $FRAME_EVENT_TOPIC \
+    --control-topic $CONTROL_TOPIC \
+    --runlog-topic $LOGS_TOPIC \
+    --selog-topic $SELOGS_TOPIC \
+    --alarm-topic $ALARMS_TOPIC"
 }
 
 run_trace_reader() {
