@@ -14,28 +14,26 @@ services:
     restart: on-failure
     logging:
       options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/event-formation.log
-    image: localhost/supermusr-trace-to-events
+        path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/event-formation.log
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
     environment:
       - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
       - NO_COLOR=true
-      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
-      - --consumer-group=trace-to-events
+      - --consumer-group=trace-to-events-test
       - --trace-topic=daq-traces-in
-      - --event-topic=daq-events
+      - --event-topic=daq-events-test
       - --observability-address=127.0.0.1:29090
-      - --otel-endpoint=http://172.16.113.245:4317/v1/traces
-      - --otel-namespace=hifi_1
+      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
+      - --otel-namespace=hifi_test
       - --polarity=positive
       - --baseline=0
       - fixed-threshold-discriminator
       - --threshold=2100
       - --duration=1
       - --cool-off=0
-    volumes:
-      - .././archive/incoming/hifi_1/logs:/logs
 
   frame-aggregation:
     profiles:
@@ -52,25 +50,22 @@ services:
     restart: on-failure
     logging:
       options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/digitiser-aggregator.log
-    image: localhost/supermusr-digitiser-aggregator
+        path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/digitiser-aggregator.log
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
     environment:
       - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
       - NO_COLOR=true
-      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
-      - --group=digitiser-aggregator
+      - --group=digitiser-aggregator-test
       - --observability-address=127.0.0.1:29091
-      - --input-topic=daq-events
-      - --output-topic=frame-events
-      - --otel-endpoint=http://172.16.113.245:4317/v1/traces
-      - --otel-level=info
-      - --otel-namespace=hifi_1
+      - --input-topic=daq-events-test
+      - --output-topic=frame-events-test
+      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
+      - --otel-namespace=hifi_test
       - --frame-ttl-ms=200
       - -d4,5,6,7,8,9,10,11
-    volumes:
-      - .././archive/incoming/hifi_1/logs:/logs
 
   nexus-writer:
     profiles:
@@ -87,32 +82,32 @@ services:
     restart: on-failure
     logging:
       options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/nexus-writer.log
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
+        path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/nexus-writer.log
+    image: localhost/supermusr-nexus-writer:latest
+#    image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
     environment:
       - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
       - NO_COLOR=true
-      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
-      - --consumer-group=nexus-writer
+      - --consumer-group=nexus-writer-test
       - --observability-address=127.0.0.1:29092
-      - --frame-event-topic=frame-events
+      - --frame-event-topic=frame-events-test
       - --control-topic=ics-control-change
       - --log-topic=ics-metadata
-      - --sample-env-topic=ics-metadata
+      - --sample-env-topic=HIFI_sampleEnv
       - --alarm-topic=ics-alarms
       - --cache-run-ttl-ms=2500
       - --event-list-chunk-size=16384
-      - --otel-endpoint=http://172.16.113.245:4317/v1/traces
-      - --otel-level=info
-      - --otel-namespace=hifi_1
-      - --file-name=local
-      - --archive-name=archive
+      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
+      - --otel-namespace=hifi_test
+      - --configuration-options=broker_settings:{broker:'130.246.55.29:9092', trace_to_events_group:'trace-to-events-test', digitiser_aggregator_group:'digitiser-aggregator-test', nexus_writer_group:'nexus-writer-test'}, topics:{trace:'daq-traces-in', dat_eventlists:'daq-events-test', frame_eventlist:'frame-events-test', control:'ics-control-change', logs:'ics-metadata', selogs:'HIFI_sampleEnv', alarms:'ics-alarms'}, event_formation:{polarity:'positive', baseline:0, input-mode:'fixed-threshold-discriminator', threshold:2100, duration:1, cooloff:0}, digitiser_aggregator:{digitisers:'-d4,5,6,7,8,9,10,11', frame_ttl_ms:200}, nexus_writer:{local_host_path:'./Output/Local_test', archive_host_path:'./archive/incoming/hifi_test', run_ttl_ms:2500}
+      - --local-path=/local
+      - --archive-path=/archive
     volumes:
-      - .././Output/Local_1:/local
-      - .././archive/incoming/hifi_1:/archive
-      - .././archive/incoming/hifi_1/logs:/logs
+      - .././Output/Local_test/:/local/
+      - .././archive/incoming/hifi_test/:/archive/
 
   nexus-writer-test:
     profiles:
@@ -131,43 +126,23 @@ services:
     environment:
       - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
       - NO_COLOR=true
-      - OTEL_LOG=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=nexus-writer-test
       - --observability-address=127.0.0.1:29092
-      - --frame-event-topic=frame-events
+      - --frame-event-topic=frame-events-test
       - --control-topic=ics-control-change
       - --log-topic=ics-metadata
-      - --sample-env-topic=ics-metadata
+      - --sample-env-topic=HIFI_sampleEnv
       - --alarm-topic=ics-alarms
       - --cache-run-ttl-ms=2500
       - --event-list-chunk-size=16384
-      - --otel-endpoint=http://172.16.113.245:4317/v1/traces
-      - --otel-level=info
+      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=hifi-test
-      - --file-name=local
-      - --archive-name=archive
+      - --local-path=local
+      - --archive-path=archive
     volumes:
       - ../Output/Local_test:/local
       - ../archive/incoming/hifi_test:/archive
       - ../archive/incoming/hifi_test/logs:/logs
-
-  prometheus-exporter:
-    profiles:
-      - main
-      - main-and-test-event-formation
-      - main-and-test-digitiser-aggregator
-      - main-and-test-nexus-writer
-      - prometheus-explorer
-    deploy:
-      mode: replicated
-      replicas: 1
-    restart: on-failure
-    image: quay.io/navidys/prometheus-podman-exporter:v1.1.0
-    ports:
-      - 9882:9882
-    environment:
-      - CONTAINER_HOST=unix:///run/podman/podman.sock
-    volumes:
-      - /run/user/30034/podman/podman.sock:/run/podman/podman.sock

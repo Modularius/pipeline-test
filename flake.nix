@@ -22,7 +22,6 @@
               nil
               nixd
               direnv
-              python312
               valgrind-light
               cifs-utils
               nfs-utils
@@ -30,18 +29,7 @@
               kcat
               podman-compose
               netdata
-            ] ++ (
-              with python312Packages; [
-                pip
-                requests
-                pandas
-                matplotlib
-                numpy
-                scipy
-                ipykernel
-                ipywidgets
-              ]
-            );
+            ];
             inputsFrom  = [
               pipeline.devShell.${system}
             ];

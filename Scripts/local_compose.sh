@@ -34,9 +34,7 @@ set_pipeline_local_variables() {
 
     OTEL_ENDPOINT=${g_OTEL_ENDPOINT}
     
-    OTEL_LEVEL_EVENT_FORMATION=${g_OTEL_LEVEL_EVENT_FORMATION}
-    OTEL_LEVEL_AGGREGATOR=${g_OTEL_LEVEL_AGGREGATOR}
-    OTEL_LEVEL_WRITER=${g_OTEL_LEVEL_WRITER}
+    OTEL_LEVEL=${g_OTEL_LEVEL}
 
     # Trace Source Dependent Event Formation Settings
     EF_POLARITY=${g_EF_POLARITY}
@@ -54,6 +52,47 @@ set_pipeline_local_variables() {
     NEXUS_LOCAL_HOST_PATH=${g_NEXUS_LOCAL_HOST_PATH}_${LOCAL_PIPELINE_NAME}
     NEXUS_ARCHIVE_HOST_PATH=${g_NEXUS_ARCHIVE_HOST_PATH}_${LOCAL_PIPELINE_NAME}
     RUN_TTL_MS=${g_RUN_TTL_MS}
+
+    set_config_opts
+}
+
+set_config_opts() {
+    set -a
+    CONFIGURATION_OPTIONS="
+broker_settings:{
+broker:'$BROKER', 
+trace_to_events_group:'$GROUP_EVENT_FORMATION', 
+digitiser_aggregator_group:'$GROUP_AGGREGATOR', 
+nexus_writer_group:'$GROUP_WRITER'
+}, 
+topics:{
+trace:'$TRACE_TOPIC', 
+dat_eventlists:'$DAT_EVENT_TOPIC', 
+frame_eventlist:'$FRAME_EVENT_TOPIC', 
+control:'$CONTROL_TOPIC', 
+logs:'$LOGS_TOPIC', 
+selogs:'$SELOGS_TOPIC', 
+alarms:'$ALARMS_TOPIC'
+}, 
+event_formation:{
+polarity:'$EF_POLARITY', 
+baseline:$EF_BASELINE, 
+input-mode:'$EF_INPUT_MODE', 
+threshold:$EF_FTD_THRESHOLD, 
+duration:$EF_FTD_DURATION, 
+cooloff:$EF_FTD_COOLOFF
+}, 
+digitiser_aggregator:{
+digitisers:'$DIGITISERS', 
+frame_ttl_ms:$FRAME_TTL_MS
+}, 
+nexus_writer:{
+local_host_path:'$NEXUS_LOCAL_HOST_PATH', 
+archive_host_path:'$NEXUS_ARCHIVE_HOST_PATH', 
+run_ttl_ms:$RUN_TTL_MS
+}
+"
+    CONFIGURATION_OPTIONS=${CONFIGURATION_OPTIONS//$'\n'/}
 }
 
 teardown_pipeline() {
@@ -74,18 +113,17 @@ deploy_pipeline() {
 
     set_pipeline_local_variables $LOCAL_PIPELINE_NAME
     
-    mkdir $NEXUS_ARCHIVE_HOST_PATH $NEXUS_LOCAL_HOST_PATH
+    mkdir $NEXUS_ARCHIVE_HOST_PATH $NEXUS_LOCAL_HOST_PATH $NEXUS_ARCHIVE_HOST_PATH/logs
     touch $NEXUS_ARCHIVE_HOST_PATH/logs/nexus-writer.log $NEXUS_ARCHIVE_HOST_PATH/logs/digitiser-aggregator.log $NEXUS_ARCHIVE_HOST_PATH/logs/event-formation.log
     
     rpk topic create $DAT_EVENT_TOPIC $FRAME_EVENT_TOPIC
 
     cat Compose/pipeline.template.yml | envsubst > Compose/pipeline.yml
-    podman-compose -f Compose/pipeline.yml --profile main -p ${PIPELINE_NAME} up -d
+    podman-compose -f Compose/pipeline.yml --profile main -p ${PIPELINE_NAME} --verbose up -d
 }
 
-teardown_pipeline "1"
+PIPELINE_NAME="test"
 
 #sleep 1
 
 #systemctl start --user podman.socket
-deploy_pipeline "1"

@@ -15,18 +15,18 @@ services:
     logging:
       options:
         path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/event-formation.log
-    image: localhost/supermusr-trace-to-events
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
-      - OTEL_LOG=${OTEL_LOG}
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
       - --broker=${BROKER}
       - --consumer-group=${GROUP_EVENT_FORMATION}
       - --trace-topic=${TRACE_TOPIC}
       - --event-topic=${DAT_EVENT_TOPIC}
       - --observability-address=${OBSV_ADDRESS_EVENT_FORMATION}
-      - ${OTEL_ENDPOINT}
+      - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
       - --polarity=${EF_POLARITY}
       - --baseline=${EF_BASELINE}
@@ -34,8 +34,6 @@ services:
       - --threshold=${EF_FTD_THRESHOLD}
       - --duration=${EF_FTD_DURATION}
       - --cool-off=${EF_FTD_COOLOFF}
-    volumes:
-      - ../${NEXUS_ARCHIVE_HOST_PATH}/logs:/logs
 
   frame-aggregation:
     profiles:
@@ -53,24 +51,21 @@ services:
     logging:
       options:
         path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/digitiser-aggregator.log
-    image: localhost/supermusr-digitiser-aggregator
+    image: ghcr.io/stfc-icd-research-and-design/supermusr-digitiser-aggregator:main
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
-      - OTEL_LOG=${OTEL_LOG}
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
       - --broker=${BROKER}
       - --group=${GROUP_AGGREGATOR}
       - --observability-address=${OBSV_ADDRESS_AGGREGATOR}
       - --input-topic=${DAT_EVENT_TOPIC}
       - --output-topic=${FRAME_EVENT_TOPIC}
-      - ${OTEL_ENDPOINT}
-      - ${OTEL_LEVEL_AGGREGATOR}
+      - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
       - --frame-ttl-ms=${FRAME_TTL_MS}
       - ${DIGITISERS}
-    volumes:
-      - ../${NEXUS_ARCHIVE_HOST_PATH}/logs:/logs
 
   nexus-writer:
     profiles:
@@ -88,11 +83,12 @@ services:
     logging:
       options:
         path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/nexus-writer.log
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
+    image: localhost/supermusr-nexus-writer:latest
+#    image: ghcr.io/stfc-icd-research-and-design/supermusr-nexus-writer:main
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
-      - OTEL_LOG=${OTEL_LOG}
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
       - --broker=${BROKER}
       - --consumer-group=${GROUP_WRITER}
@@ -104,15 +100,14 @@ services:
       - --alarm-topic=${ALARMS_TOPIC}
       - --cache-run-ttl-ms=${RUN_TTL_MS}
       - --event-list-chunk-size=16384
-      - ${OTEL_ENDPOINT}
-      - ${OTEL_LEVEL_WRITER}
+      - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
-      - --file-name=local
-      - --archive-name=archive
+      - --configuration-options=${CONFIGURATION_OPTIONS}
+      - --local-path=/local
+      - --archive-path=/archive
     volumes:
-      - ../${NEXUS_LOCAL_HOST_PATH}:/local
-      - ../${NEXUS_ARCHIVE_HOST_PATH}:/archive
-      - ../${NEXUS_ARCHIVE_HOST_PATH}/logs:/logs
+      - ../${NEXUS_LOCAL_HOST_PATH}/:/local/
+      - ../${NEXUS_ARCHIVE_HOST_PATH}/:/archive/
 
   nexus-writer-test:
     profiles:
@@ -131,7 +126,7 @@ services:
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
-      - OTEL_LOG=${OTEL_LOG}
+      - OTEL_LEVEL=${OTEL_LEVEL}
     command:
       - --broker=${BROKER}
       - --consumer-group=nexus-writer-test
@@ -143,11 +138,10 @@ services:
       - --alarm-topic=${ALARMS_TOPIC}
       - --cache-run-ttl-ms=${RUN_TTL_MS}
       - --event-list-chunk-size=16384
-      - ${OTEL_ENDPOINT}
-      - ${OTEL_LEVEL_WRITER}
+      - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=hifi-test
-      - --file-name=local
-      - --archive-name=archive
+      - --local-path=local
+      - --archive-path=archive
     volumes:
       - ../Output/Local_test:/local
       - ../archive/incoming/hifi_test:/archive
