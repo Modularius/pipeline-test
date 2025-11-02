@@ -15,25 +15,27 @@ services:
     logging:
       options:
         path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/event-formation.log
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    #image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    image: localhost/supermusr-trace-to-events:latest
     environment:
       - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,
       - NO_COLOR=true
       - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
-      - --consumer-group=trace-to-events-test
+      - --consumer-group=trace-to-events-test1
       - --trace-topic=daq-traces-in
-      - --event-topic=daq-events-test
+      - --event-topic=daq-events-test1
       - --observability-address=127.0.0.1:29090
       - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=hifi_test
       - --polarity=positive
       - --baseline=0
-      - fixed-threshold-discriminator
-      - --threshold=2100
-      - --duration=1
-      - --cool-off=0
+      - differential-threshold-discriminator
+      - 5
+      - 1
+      - 0
+      - 
 
   frame-aggregation:
     profiles:
@@ -58,9 +60,9 @@ services:
       - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
-      - --group=digitiser-aggregator-test
+      - --group=digitiser-aggregator-test1
       - --observability-address=127.0.0.1:29091
-      - --input-topic=daq-events-test
+      - --input-topic=daq-events-test1
       - --output-topic=frame-events-test
       - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=hifi_test
@@ -91,7 +93,7 @@ services:
       - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
       - --broker=130.246.55.29:9092
-      - --consumer-group=nexus-writer-test
+      - --consumer-group=nexus-writer-test1
       - --observability-address=127.0.0.1:29092
       - --frame-event-topic=frame-events-test
       - --control-topic=ics-control-change
@@ -102,12 +104,12 @@ services:
       - --event-list-chunk-size=16384
       - --otel-endpoint=http://172.16.105.83:4317/v1/traces
       - --otel-namespace=hifi_test
-      - --configuration-options=broker_settings:{broker:'130.246.55.29:9092', trace_to_events_group:'trace-to-events-test', digitiser_aggregator_group:'digitiser-aggregator-test', nexus_writer_group:'nexus-writer-test'}, topics:{trace:'daq-traces-in', dat_eventlists:'daq-events-test', frame_eventlist:'frame-events-test', control:'ics-control-change', logs:'ics-metadata', selogs:'HIFI_sampleEnv', alarms:'ics-alarms'}, event_formation:{polarity:'positive', baseline:0, input-mode:'fixed-threshold-discriminator', threshold:2100, duration:1, cooloff:0}, digitiser_aggregator:{digitisers:'-d4,5,6,7,8,9,10,11', frame_ttl_ms:200}, nexus_writer:{local_host_path:'./Output/Local_test', archive_host_path:'./archive/incoming/hifi_test', run_ttl_ms:2500}
+      - --configuration-options={"broker_settings":{"broker":"$BROKER", "trace_to_events_group":"$GROUP_EVENT_FORMATION", "digitiser_aggregator_group":"$GROUP_AGGREGATOR", "nexus_writer_group":"$GROUP_WRITER"}, "topics":{"trace":"$TRACE_TOPIC", "dat_eventlists":"$DAT_EVENT_TOPIC", "frame_eventlist":"$FRAME_EVENT_TOPIC", "control":"$CONTROL_TOPIC", "logs":"$LOGS_TOPIC", "selogs":"$SELOGS_TOPIC", "alarms":"$ALARMS_TOPIC"}, "event_formation":{"polarity":"$EF_POLARITY", "baseline":$EF_BASELINE, "input_command":"$EF_INPUT_COMMAND"}, "digitiser_aggregator":{"digitisers":"$DIGITISERS", "frame_ttl_ms":$FRAME_TTL_MS}, "nexus_writer":{"local_host_path":"$NEXUS_LOCAL_HOST_PATH", "archive_host_path":"$NEXUS_ARCHIVE_HOST_PATH", "run_ttl_ms":$RUN_TTL_MS}}
       - --local-path=/local
       - --archive-path=/archive
     volumes:
-      - .././Output/Local_test/:/local/
-      - .././archive/incoming/hifi_test/:/archive/
+      - .././Output/Local_test1/:/local/
+      - .././archive/incoming/hifi_test1/:/archive/
 
   nexus-writer-test:
     profiles:

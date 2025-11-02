@@ -1,3 +1,6 @@
+# Requires external env variable: `MY_PIPELINE_NAME`.
+# This is appended to `g_PIPELINE_NAME` defined in `./Settings/Pipeline.sh`.
+
 ## Include Library Scripts
 . ./Libs/lib.sh
 
@@ -21,6 +24,9 @@
 echo "Current Time: $(date +"%T")"
 
 #./Scripts/multiple_pipelines.sh
-. ./Scripts/local_compose.sh
+. ./Scripts/deploy.sh
+. ./Scripts/set_variables.sh
 
-deploy_pipeline $PIPELINE_NAME
+set_pipeline_local_variables
+reset_pipeline
+deploy_pipeline

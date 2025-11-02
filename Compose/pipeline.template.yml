@@ -15,7 +15,8 @@ services:
     logging:
       options:
         path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/event-formation.log
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    #image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-to-events:main
+    image: localhost/supermusr-trace-to-events:latest
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
@@ -31,9 +32,10 @@ services:
       - --polarity=${EF_POLARITY}
       - --baseline=${EF_BASELINE}
       - ${EF_INPUT_MODE}
-      - --threshold=${EF_FTD_THRESHOLD}
-      - --duration=${EF_FTD_DURATION}
-      - --cool-off=${EF_FTD_COOLOFF}
+      - ${EF_THRESHOLD}
+      - ${EF_DURATION}
+      - ${EF_COOLOFF}
+      - ${EF_CONSTANT_MULTIPLE}
 
   frame-aggregation:
     profiles:

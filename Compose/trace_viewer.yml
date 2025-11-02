@@ -8,14 +8,14 @@ services:
     environment:
       - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=trace
     ports:
       - 127.0.0.1:29090:9090
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=viewer
       - --trace-topic=daq-traces-in
-      - --digitiser-event-topic=daq-events
+      - --digitiser-event-topic=daq-events-test
       - --name=HiFi
       - --channels=14
       - --channels=50
