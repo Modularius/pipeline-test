@@ -87,11 +87,71 @@ services:
       - --cache-run-ttl-ms=${RUN_TTL_MS}
       - --otel-endpoint=${OTEL_ENDPOINT}
       - --otel-namespace=${PIPELINE_NAME}
-      - --local-path=local
-      - --archive-path=archive
+      - --local-path=/local
+      - --archive-path=/archive
     volumes:
       - ../${NEXUS_OUTPUT_PATH}:/local
       - ../${NEXUS_ARCHIVE_PATH}:/archive
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
+
+  event-formation-one:
+    profiles:
+      - event-formation-test
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: $g_IMAGE_EVENT_FORMATION
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    ports:
+      - ${OBSV_ADDRESS_EVENT_FORMATION}:9090
+    command:
+      - --broker=${BROKER}
+      - --consumer-group=${GROUP_EVENT_FORMATION}-one
+      - --trace-topic=${TRACE_TOPIC}
+      - --event-topic=${DAT_EVENT_TOPIC}-one
+      - --observability-address=127.0.0.1:29091
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - --polarity=${TTE_POLARITY}
+      - --baseline=${TTE_BASELINE}
+      - --otel-namespace=${PIPELINE_NAME}-one
+      - fixed-threshold-discriminator
+      - --threshold=2200
+      - --duration=1
+      - --cool-off=0
+    network_mode: "host"
+
+  event-formation-two:
+    profiles:
+      - event-formation-test
+    deploy:
+      mode: replicated
+      replicas: 1
+    image: $g_IMAGE_EVENT_FORMATION
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    ports:
+      - ${OBSV_ADDRESS_EVENT_FORMATION}:9090
+    command:
+      - --broker=${BROKER}
+      - --consumer-group=${GROUP_EVENT_FORMATION}-two
+      - --trace-topic=${TRACE_TOPIC}
+      - --event-topic=${DAT_EVENT_TOPIC}-two
+      - --observability-address=127.0.0.1:29092
+      - --otel-endpoint=${OTEL_ENDPOINT}
+      - --polarity=${TTE_POLARITY}
+      - --baseline=${TTE_BASELINE}
+      - --otel-namespace=${PIPELINE_NAME}-two
+      - differential-threshold-discriminator
+      - --threshold=5
+      - --duration=1
+      - --cool-off=0
     network_mode: "host"
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"

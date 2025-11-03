@@ -6,7 +6,7 @@ services:
     network_mode: "host"
     image: supermusr-simulator:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - MAX_DIGITISER=7
       - NUM_DIGITISERS=8
       - RUN_NAME=LetsDoARunBaby

@@ -133,13 +133,15 @@ execute_run() {
     #echo simulator finished
 }
 
+#podman-compose -f "Compose/trace_viewer.yml" -p "trace_viewer" up -d
+
 #teardown_broker
-teardown_pipeline test all
+teardown_pipeline test event-formation-test
 
 #deploy_broker
 #sleep 5
-deploy_pipeline test all
+#deploy_pipeline test event-formation-test
 
 #sleep 3
 
-execute_run test LetsDoARunBaby
+#execute_run test LetsDoARunBaby

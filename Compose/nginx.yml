@@ -1,0 +1,7 @@
+services:
+  nginx:
+    restart: always
+    image: nginx:1-alpine
+    volumes:
+      - ./nginx-only.conf:/etc/nginx/conf.d/default.conf
+    network_mode: "host"

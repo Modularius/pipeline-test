@@ -15,7 +15,6 @@ buildah bud -f Containerfile --build-arg component=nexus-writer -t supermusr-nex
 buildah bud -f Containerfile --build-arg component=simulator -t supermusr-simulator:latest
 cd ../pipeline-test
 
-buildah from  --name trace-to-events supermusr-trace-to-events
-buildah from  --name digitiser-aggregator supermusr-digitiser-aggregator
-buildah from  --name nexus-writer supermusr-nexus-writer
-buildah from  --name simulator supermusr-simulator
+cd ../supermusr-data-pipeline
+buildah bud -f trace-viewer/Containerfile -t supermusr-trace-viewer:latest --layers=true
+cd ../pipeline-test
