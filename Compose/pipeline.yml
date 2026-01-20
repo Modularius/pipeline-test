@@ -6,27 +6,14 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-    image: supermusr-trace-to-events:latest
+    image: supermusr-nexus-writer:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
     ports:
       - 127.0.0.1:29090:9090
-    command:
-      - --broker=130.246.55.29:9092
-      - --consumer-group=trace-to-events-test
-      - --trace-topic=daq-traces-in
-      - --event-topic=daq-events
-      - --observability-address=127.0.0.1:29091
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --polarity=positive
-      - --baseline=0
-      - --otel-namespace=localtest
-      - fixed-threshold-discriminator
-      - --threshold=10
-      - --duration=1
-      - --cool-off=0
+    command: [--broker,localhost:19092,--consumer-group,trace_to_events,--observability-address,127.0.0.1:29090,--trace-topic,Traces,--event-topic,Events,--polarity,positive,--baseline,0,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,local,differential-threshold-discriminator,--begin-threshold,5,--end-threshold,0,--begin-duration,2,--end-duration,0,--cool-off,0,--peak-height-mode,value-at-end-trigger,--peak-height-basis,trace-baseline]
     network_mode: "host"
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"
@@ -41,21 +28,12 @@ services:
       replicas: 1
     image: supermusr-digitiser-aggregator:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
     ports:
       - 127.0.0.1:29091:9090
-    command:
-      - --broker=130.246.55.29:9092
-      - --group=digitiser-aggregator-test
-      - --observability-address=127.0.0.1:29092
-      - --input-topic=daq-events
-      - --output-topic=frame-events
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --otel-namespace=localtest
-      - --frame-ttl-ms=5000
-      - -d4,5,6,7,8,9,10,11
+    command: [--broker,localhost:19092,--group,digitiser_aggregator,--observability-address,127.0.0.1:29091,--input-topic,Events,--output-topic,FrameEvents,--frame-ttl-ms,3500,--send-frame-buffer-size,4000,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,local,-d0,1,2,3,4,5,6,7]
     network_mode: "host"
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"
@@ -70,28 +48,15 @@ services:
       replicas: 1
     image: supermusr-nexus-writer:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
     ports:
       - 127.0.0.1:29092:9090
-    command:
-      - --broker=130.246.55.29:9092
-      - --consumer-group=nexus-writer-test
-      - --observability-address=127.0.0.1:29093
-      - --frame-event-topic=frame-events
-      - --control-topic=ics-control-change
-      - --log-topic=ics-metadata
-      - --sample-env-topic=HIFI_sampleEnv
-      - --alarm-topic=ics-alarms
-      - --cache-run-ttl-ms=500
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --otel-namespace=localtest
-      - --local-path=/local
-      - --archive-path=/archive
+    command: [--broker,localhost:19092,--consumer-group,nexus_writer,--observability-address,127.0.0.1:29092,--control-topic,Controls,--frame-event-topic,FrameEvents,--log-topic,Logs,--sample-env-topic,SELogs,--alarm-topic,Alarms,--cache-run-ttl-ms,9000,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,local,--local-path,Output/local,--archive-path,archive/incoming/local]
     volumes:
-      - ../Output/HiFi_test:/local
-      - ../archive/incoming/hifi-via-local_test:/archive
+      - ../:/local
+      - ../:/archive
     network_mode: "host"
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"
@@ -102,23 +67,23 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-    image: supermusr-trace-to-events:latest
+    image: 
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
     ports:
       - 127.0.0.1:29090:9090
     command:
-      - --broker=130.246.55.29:9092
-      - --consumer-group=trace-to-events-test-one
-      - --trace-topic=daq-traces-in
-      - --event-topic=daq-events-one
+      - --broker=
+      - --consumer-group=-one
+      - --trace-topic=
+      - --event-topic=-one
       - --observability-address=127.0.0.1:29091
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --polarity=positive
-      - --baseline=0
-      - --otel-namespace=localtest-one
+      - --otel-endpoint=
+      - --polarity=
+      - --baseline=
+      - --otel-namespace=-one
       - fixed-threshold-discriminator
       - --threshold=2200
       - --duration=1
@@ -131,23 +96,23 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-    image: supermusr-trace-to-events:latest
+    image: 
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
     ports:
       - 127.0.0.1:29090:9090
     command:
-      - --broker=130.246.55.29:9092
-      - --consumer-group=trace-to-events-test-two
-      - --trace-topic=daq-traces-in
-      - --event-topic=daq-events-two
+      - --broker=
+      - --consumer-group=-two
+      - --trace-topic=
+      - --event-topic=-two
       - --observability-address=127.0.0.1:29092
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --polarity=positive
-      - --baseline=0
-      - --otel-namespace=localtest-two
+      - --otel-endpoint=
+      - --polarity=
+      - --baseline=
+      - --otel-namespace=-two
       - differential-threshold-discriminator
       - --threshold=5
       - --duration=1

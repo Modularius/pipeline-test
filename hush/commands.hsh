@@ -1,0 +1,108 @@
+let args = std.args()
+let command = args[0]   #   pipeline_run/kill/clean_files
+let mode = args[1]
+
+#let Broker = std.import("brokers.hsh")(broker)
+
+let settings = std.import("settings.hsh")
+let constants = settings.constants
+
+function execute_component(dependents, component)
+    let prog = constants.execution_paths[component]
+    let args = dependents.build_arguments(component)
+    let otel_level = constants.env_vars.OTEL_LEVEL
+    let rust_log = constants.env_vars.RUST_LOG
+    return &{
+        echo RUST_LOG=$rust_log OTEL_LEVEL=$otel_level $prog $args;
+        RUST_LOG=$rust_log OTEL_LEVEL=$otel_level $prog $args
+    }
+end
+
+function execute_simulator(dependents, source)
+    let prog = constants.execution_paths["simulator"]
+    let args = dependents.build_simulator_arguments(source)
+    let otel_level = constants.env_vars.OTEL_LEVEL
+    let rust_log = constants.env_vars.RUST_LOG
+    return { 
+        echo RUST_LOG=$rust_log OTEL_LEVEL=$otel_level $prog $args;
+        RUST_LOG=$rust_log OTEL_LEVEL=$otel_level $prog $args
+    }
+end
+
+function kill_component(component)
+    let proc = constants.process_names[component]
+    { pkill $proc }
+end
+
+function populate_env_vars(dependents, component)
+    let env_vars = constants.container_images[component].env_vars
+    std.export(env_vars.image, constants.container_images[component].image)
+    std.export(env_vars.obsv_port, constants.observability[component])
+    std.export(env_vars.args, std.to_string(dependents.build_arguments(component)))
+end
+
+if command == "pipeline_run" then
+    let broker = args[2]
+    let execution = args[3]
+    settings.constants.env_vars.OTEL_LEVEL = "info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn"
+    #settings.constants.env_vars.RUST_LOG = "off"
+    let dependents = settings.dependents(broker, "settings1")
+    
+    # 
+    dependents.broker.pipeline_name = "TEST_020_50000"
+
+    if mode == "host" then
+        execute_component(dependents, "trace_to_events")
+        execute_component(dependents, "digitiser_aggregator")
+        execute_component(dependents, "nexus_writer")
+    end if mode == "containers" then
+        populate_env_vars(dependents, "trace_to_events")
+        populate_env_vars(dependents, "digitiser_aggregator")
+        populate_env_vars(dependents, "nexus_writer")
+        std.export("NO_COLOR", std.to_string(constants.env_vars.NO_COLOR))
+        std.export("RUST_LOG", constants.env_vars.RUST_LOG)
+        std.export("OTEL_LEVEL", constants.env_vars.OTEL_LEVEL)
+        {
+            cat Compose/pipeline.template.yml | envsubst > Compose/pipeline.yml;
+            podman-compose -f Compose/pipeline.yml -p "local" --profile all up -d
+        }
+    end
+
+    {sleep 1}
+
+    if execution == "benchmark" then
+        std.export("NUM_DIGITISERS", "8")
+        std.export("MAX_DIGITISER", "7")
+        std.export("RUN_NAME", "TestRun2")
+        execute_simulator(dependents, "Simulations/Benchmarks/timing.json")
+        #if mode == "host" then
+        #end if mode == "containers" then
+        #end
+    end
+    #execute_component(simulator)
+end if command == "kill" then
+    if mode == "host" then
+        kill_component("trace_to_events")
+        kill_component("digitiser_aggregator")
+        kill_component("nexus_writer")
+    end if mode == "containers" then
+        { podman-compose -f Compose/pipeline.yml -p "local" --profile all down }
+    end
+    kill_component("simulator")
+end if command == "clean_files" then
+    let broker = args[2]
+    let execution = args[3]
+    let dependents = settings.dependents(broker, "settings1")
+    let nexus_output = dependents.broker.paths.NEXUS_OUTPUT
+    let nexus_archive = dependents.broker.paths.NEXUS_ARCHIVE
+    let cd = std.cwd()
+    {
+        rm -f $cd/$nexus_archive/*.nxs
+        rm -f $cd/$nexus_output/*.nxs
+        rm -f $cd/$nexus_output/completed/*.nxs
+    }
+end
+
+
+#let Mode = std.import("modes.hsh")
+#let Execution = std.import("executions.hsh")

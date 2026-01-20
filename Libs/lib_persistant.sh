@@ -1,11 +1,11 @@
 run_trace_to_events() {
-    echo "Using detector settings '$g_TTE_INPUT_COMMAND'"
+    set -a
 
-    echo "--" "--" "Executing Event Formation"
+    echo_heading_item "Using detector settings" "$g_TTE_INPUT_COMMAND"
+
     params=$(trace_to_events_params)
     CMD="$g_TRACE_TO_EVENTS $params"
-        
-    echo $CMD
+    echo_heading_item "Executing Event Formation" "$CMD"
     RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD &
 }
 
@@ -21,16 +21,12 @@ trace_to_events_params() {
     $g_TTE_INPUT_COMMAND"
 }
 
-#        --save-file=Output/local_traces/output_ \
-
 run_aggregator() {
-    echo "--" "--" "Executing aggregator"
+    set -a
 
     params=$(aggregator_params)
     CMD="$g_EVENT_AGGREGATOR $params"
-        
-        
-    echo $CMD
+    echo_heading_item "Executing aggregator" "$CMD"
     RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD &
 }
 
@@ -46,11 +42,11 @@ aggregator_params() {
 }
 
 run_nexus_writer() {
-    echo "--" "--" "Executing nexus-writer"
+    set -a
     
     params=$(nexus_writer_params)
     CMD="$g_NEXUS_WRITER $params"
-    echo $CMD
+    echo_heading_item "Executing nexus-writer" "$CMD"
     RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR $CMD &
 
 }

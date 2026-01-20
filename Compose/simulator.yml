@@ -9,15 +9,15 @@ services:
       - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - MAX_DIGITISER=7
       - NUM_DIGITISERS=8
-      - RUN_NAME=LetsDoARunBaby
+      - RUN_NAME=ShortTest
       - NO_COLOR=true
       - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     command:
      - --broker=localhost:19092
-     - --otel-namespace=localtest
+     - --otel-namespace=TEST_011TEST_011
      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
      - defined
-     - "/home/test.json"
+     - "/home/Benchmarks/timing.json"
      - --digitiser-trace-topic=Traces
      - --digitiser-event-topic=Events
      - --frame-event-topic=FrameEvents

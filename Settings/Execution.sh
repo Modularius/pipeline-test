@@ -1,5 +1,5 @@
-#g_APPLICATION_PREFIX="../supermusr-data-pipeline/target/release/"
-g_APPLICATION_PREFIX="../supermusr-data-pipeline/target/debug/"
+g_APPLICATION_PREFIX="../digital-muon-pipeline/target/release/"
+#g_APPLICATION_PREFIX="../digital-muon-pipeline/target/debug/"
 #g_APPLICATION_PREFIX="cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
 
 g_RUN_SIMULATOR="${g_APPLICATION_PREFIX}run-simulator"

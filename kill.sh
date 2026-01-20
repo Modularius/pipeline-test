@@ -1,7 +1,18 @@
-. ./Settings/Execution.sh
+#!/bin/bash
+
+set -a
+
+###### Load Execution Functions
+. ./Executions/Pipeline/$1.sh
+
+## Include Library Scripts
 . ./Libs/lib.sh
-. ./Libs/lib_pipeline.sh
 
-kill_persistant_components
+### Enact Execution Configuration
+. ./Settings/Execution.sh
 
-#$g_CONTAINER_ENGINE stop --all
+echo_title "Killing Pipeline at: $(date +"%T")"
+
+##### Main Execution
+execution_pipeline_init_environment
+execution_pipeline_kill

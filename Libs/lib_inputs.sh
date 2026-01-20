@@ -1,6 +1,8 @@
 #Fully Functional
 #run_trace_simulator SIMULATOR BROKER CONTROL_TOPIC TRACE_TOPIC DAT_EVENT_TOPIC FRAME_EVENT_TOPIC OBSV_ADDRESS OTEL_ENDPOINT OTEL_LEVEL SIMULATOR_CONFIG_SOURCE
 run_trace_simulator() {
+    set -a
+    
     SIMULATOR=$1;shift;
     BROKER=$1;shift;
     CONTROL_TOPIC=$1;shift;
@@ -19,8 +21,7 @@ run_trace_simulator() {
     params=$(simulator_params)
     CMD="${SIMULATOR} $params"
 
-    echo "--" "Executing Simulator with properties:"
-    echo $CMD
+    echo_heading_item "Executing Simulator" "$CMD"
     RUST_LOG=$g_RUST_LOG OTEL_LEVEL=$g_OTEL_LEVEL NO_COLOR=$g_NO_COLOR NUM_DIGITISERS=$g_NUM_DIGITISERS MAX_DIGITISER=$g_MAX_DIGITISER RUN_NAME=$g_RUN_NAME $CMD
 }
 

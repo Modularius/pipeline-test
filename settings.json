@@ -1,0 +1,135 @@
+{
+  "constants": {
+    "no_color_env": true,
+    "otel_endpoint": "http://172.16.105.83:4317/v1/traces",
+    "components": {
+      "trace_to_events": {
+        "execution_path": "../digital-muon-pipeline/target/release/trace-to-events",
+        "process_name": "trace-to-events",
+        "container_image": "supermusr-nexus-writer:latest",
+        "image_env_vars": {
+          "image": "IMAGE_EVENT_FORMATION",
+          "obvs_port": "OBSV_ADDRESS_EVENT_FORMATION",
+          "args": "EVENT_FORMATION_ARGS"
+        },
+        "observability": {
+          "obsv_address": "127.0.0.1:29090",
+          "tracing_level": "info",
+          "otel_level": "info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn"
+        }
+      },
+      "digitiser_aggregator": {
+        "execution_path": "../digital-muon-pipeline/target/release/digitiser-aggregator",
+        "process_name": "digitiser-aggre",
+        "container_image": "supermusr-digitiser-aggregator:latest",
+        "image_env_vars": {
+          "image": "IMAGE_AGGREGATOR",
+          "obvs_port": "OBSV_ADDRESS_AGGREGATOR",
+          "args": "AGGREGATOR_ARGS"
+        },
+        "observability": {
+          "obsv_address": "127.0.0.1:29091",
+          "tracing_level": "info",
+          "otel_level": "info"
+        }
+      },
+      "nexus_writer": {
+        "execution_path": "../digital-muon-pipeline/target/release/nexus-writer",
+        "process_name": "nexus-writer",
+        "container_image": "supermusr-nexus-writer:latest",
+        "image_env_vars": {
+          "image": "IMAGE_WRITER",
+          "obvs_port": "OBSV_ADDRESS_WRITER",
+          "args": "WRITER_ARGS"
+        },
+        "observability": {
+          "obsv_address": "127.0.0.1:29092",
+          "tracing_level": "info",
+          "otel_level": "info"
+        }
+      },
+      "simulator": {
+        "execution_path": "../digital-muon-pipeline/target/release/simulator",
+        "process_name": "simulator",
+        "container_image": "supermusr-simulator:latest",
+        "image_env_vars": {
+          "image": "IMAGE_SIMULATOR",
+          "obvs_port": "OBSV_ADDRESS_SIMULATOR",
+          "args": "SIMULATOR_ARGS"
+        },
+        "observability": {
+          "obsv_address": "127.0.0.1:29093",
+          "tracing_level": "info",
+          "otel_level": "info"
+        }
+      }
+    }
+  },
+  "broker": {
+    "pipeline_name": "local",
+    "address": "localhost:19092",
+    "topics": {
+      "trace": "Traces",
+      "dat_event": "Events",
+      "frame_event": "FrameEvents",
+      "control": "Controls",
+      "logs": "Logs",
+      "selogs": "SELogs",
+      "alarms": "Alarms"
+    },
+    "consumer_groups": {
+      "trace_to_events": "trace_to_events",
+      "digitiser_aggregator": "digitiser_aggregator",
+      "nexus_writer": "nexus_writer"
+    },
+    "trace_to_events": {
+      "polarity": "positive",
+      "baseline": 0
+    },
+    "digitiser_aggregator": {
+      "digitiser_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "nexus_writer": {
+      "subdirectory": "local"
+    }
+  },
+  "pipeline": {
+    "digitiser_aggregator": {
+      "frame_ttl_ms": 3500,
+      "send_frame_buffer_size": 4000
+    },
+    "nexus_writer": {
+      "paths": {
+        "nexus_output": "Output",
+        "nexus_archive": "archive/incoming"
+      },
+      "run_ttl_ms": 9000
+    }
+  },
+  "detector": [
+    "differential-threshold-discriminator",
+    "--begin-threshold",
+    "5",
+    "--end-threshold",
+    "0",
+    "--begin-duration",
+    "2",
+    "--end-duration",
+    "0",
+    "--cool-off",
+    "0",
+    "--peak-height-mode",
+    "value-at-end-trigger",
+    "--peak-height-basis",
+    "trace-baseline"
+  ]
+}

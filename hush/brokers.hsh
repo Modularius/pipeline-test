@@ -1,0 +1,11 @@
+function(broker)
+    if broker == local then
+    end
+    return @[
+        local: @[
+            execute: function()
+                return nil
+            end
+        ]
+    ]
+end
