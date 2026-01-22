@@ -21,7 +21,6 @@
             buildInputs = with pkgs; [
               nil
               nixd
-              elvish
               direnv
               python312
               valgrind-light
@@ -29,10 +28,8 @@
               nfs-utils
               hdf5_1_10
               kcat
-              cargo-leptos
               dart-sass
               podman-compose
-              cargo
               nushell
             ] ++ (
               with python312Packages; [
@@ -51,13 +48,6 @@
             inputsFrom  = [
               pipeline.devShells.${system}
             ];
-            shellHook =
-              ''
-                echo "Hello shell"
-                export PATH=/home/ubuntu/.cargo/bin:$PATH
-                alias pipeline_run='hush hush/commands.hsh pipeline_run'
-                alias pipeline_kill='hush hush/commands.hsh kill'
-              '';
             
           };
         }

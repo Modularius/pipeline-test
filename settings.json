@@ -1,67 +1,69 @@
 {
   "constants": {
     "no_color_env": true,
-    "otel_endpoint": "http://172.16.105.83:4317/v1/traces",
-    "components": {
-      "trace_to_events": {
-        "execution_path": "../digital-muon-pipeline/target/release/trace-to-events",
-        "process_name": "trace-to-events",
-        "container_image": "supermusr-nexus-writer:latest",
-        "image_env_vars": {
-          "image": "IMAGE_EVENT_FORMATION",
-          "obvs_port": "OBSV_ADDRESS_EVENT_FORMATION",
-          "args": "EVENT_FORMATION_ARGS"
-        },
-        "observability": {
-          "obsv_address": "127.0.0.1:29090",
-          "tracing_level": "info",
-          "otel_level": "info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn"
-        }
+    "rust_log": "info",
+    "otel_level": "info",
+    "otel_endpoint": "http://172.16.105.83:4317/v1/traces"
+  },
+  "components": {
+    "trace_to_events": {
+      "execution_path": "../digital-muon-pipeline/target/release/trace-to-events",
+      "process_name": "trace-to-events",
+      "container_image": "supermusr-nexus-writer:latest",
+      "image_env_vars": {
+        "image": "IMAGE_EVENT_FORMATION",
+        "obvs_port": "OBSV_ADDRESS_EVENT_FORMATION",
+        "args": "EVENT_FORMATION_ARGS"
       },
-      "digitiser_aggregator": {
-        "execution_path": "../digital-muon-pipeline/target/release/digitiser-aggregator",
-        "process_name": "digitiser-aggre",
-        "container_image": "supermusr-digitiser-aggregator:latest",
-        "image_env_vars": {
-          "image": "IMAGE_AGGREGATOR",
-          "obvs_port": "OBSV_ADDRESS_AGGREGATOR",
-          "args": "AGGREGATOR_ARGS"
-        },
-        "observability": {
-          "obsv_address": "127.0.0.1:29091",
-          "tracing_level": "info",
-          "otel_level": "info"
-        }
+      "observability": {
+        "obsv_address": "127.0.0.1:29090",
+        "tracing_level": "info",
+        "otel_level": "info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn"
+      }
+    },
+    "digitiser_aggregator": {
+      "execution_path": "../digital-muon-pipeline/target/release/digitiser-aggregator",
+      "process_name": "digitiser-aggre",
+      "container_image": "supermusr-digitiser-aggregator:latest",
+      "image_env_vars": {
+        "image": "IMAGE_AGGREGATOR",
+        "obvs_port": "OBSV_ADDRESS_AGGREGATOR",
+        "args": "AGGREGATOR_ARGS"
       },
-      "nexus_writer": {
-        "execution_path": "../digital-muon-pipeline/target/release/nexus-writer",
-        "process_name": "nexus-writer",
-        "container_image": "supermusr-nexus-writer:latest",
-        "image_env_vars": {
-          "image": "IMAGE_WRITER",
-          "obvs_port": "OBSV_ADDRESS_WRITER",
-          "args": "WRITER_ARGS"
-        },
-        "observability": {
-          "obsv_address": "127.0.0.1:29092",
-          "tracing_level": "info",
-          "otel_level": "info"
-        }
+      "observability": {
+        "obsv_address": "127.0.0.1:29091",
+        "tracing_level": "info",
+        "otel_level": "info"
+      }
+    },
+    "nexus_writer": {
+      "execution_path": "../digital-muon-pipeline/target/release/nexus-writer",
+      "process_name": "nexus-writer",
+      "container_image": "supermusr-nexus-writer:latest",
+      "image_env_vars": {
+        "image": "IMAGE_WRITER",
+        "obvs_port": "OBSV_ADDRESS_WRITER",
+        "args": "WRITER_ARGS"
       },
-      "simulator": {
-        "execution_path": "../digital-muon-pipeline/target/release/simulator",
-        "process_name": "simulator",
-        "container_image": "supermusr-simulator:latest",
-        "image_env_vars": {
-          "image": "IMAGE_SIMULATOR",
-          "obvs_port": "OBSV_ADDRESS_SIMULATOR",
-          "args": "SIMULATOR_ARGS"
-        },
-        "observability": {
-          "obsv_address": "127.0.0.1:29093",
-          "tracing_level": "info",
-          "otel_level": "info"
-        }
+      "observability": {
+        "obsv_address": "127.0.0.1:29092",
+        "tracing_level": "info",
+        "otel_level": "info"
+      }
+    },
+    "simulator": {
+      "execution_path": "../digital-muon-pipeline/target/release/simulator",
+      "process_name": "simulator",
+      "container_image": "supermusr-simulator:latest",
+      "image_env_vars": {
+        "image": "IMAGE_SIMULATOR",
+        "obvs_port": "OBSV_ADDRESS_SIMULATOR",
+        "args": "SIMULATOR_ARGS"
+      },
+      "observability": {
+        "obsv_address": "127.0.0.1:29093",
+        "tracing_level": "info",
+        "otel_level": "info"
       }
     }
   },

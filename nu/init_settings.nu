@@ -1,5 +1,5 @@
-use ./settings.nu 'build settings'
+use ./settings.nu 'build_settings'
 
 def main [broker: string, pipeline: string, detector: string] : nothing -> nothing {
-    build settings $broker $pipeline $detector | save -f "settings.json"
+    build_settings $broker $pipeline $detector | save -f "settings.json"
 }
