@@ -16,7 +16,7 @@ def spawn_component_on_host [comp: string, args: list<string>] {
     print ($args | str join " ")
     job spawn {
         let prog = ($components | get $comp).execution_path
-        with-env $global_env_vars { ^$prog ...$args | print }
+        with-env $global_env_vars { ^$prog ...$args o+e> $"output.($comp)" }
     }
 }
 
@@ -72,7 +72,7 @@ let run_simulator_closures = {
 }
 
 let execution_closures = {
-    benchmark: {|deploy_pipeline, run_simulator| benchmark $deploy_pipeline $run_simulator }
+    benchmark: {|deploy_pipeline, run_simulator, kill_pipeline| benchmark $deploy_pipeline $run_simulator $kill_pipeline }
 }
 
 
@@ -81,8 +81,5 @@ def main [mode: string, execution: string] {
     let deploy_pipeline = $deploy_pipeline_closures | get $mode
     let run_simulator = $run_simulator_closures | get $mode
 
-    do ($execution_closures | get $execution) $deploy_pipeline $run_simulator
-
-    print "Type anything to quit"
-    let _ = input
+    do ($execution_closures | get $execution) $deploy_pipeline  $run_simulator { nu ./nu/kill.nu $mode }
 }

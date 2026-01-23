@@ -1,17 +1,17 @@
 {
     "voltage-transformation": {"scale": 1, "translate": 0 },
-    "time-bins": { "const": 50000 },
+    "time-bins": { "from-env-var": "TIME_BINS" },
     "sample-rate": { "const": 1000000000 },
     "digitiser-config": {
         "auto-digitisers": {
-            "num-digitisers": { "const" : 8 },
+            "num-digitisers": { "const" : 120 },
             "num-channels-per-digitiser": { "const" : 8 }
         }
     },
     "pulses": [
         {
             "pulse-type": "triangular",
-            "start":     { "random-type": "uniform-float", "min": { "const": 1 }, "max": { "const": 50000 } },
+            "start":     { "random-type": "uniform-float", "min": { "const": 1 }, "max": { "from-env-var": "TIME_BINS" } },
             "width":     { "random-type": "uniform-float", "min": { "const": 3 }, "max": { "const": 5 } },
             "peak_time": { "random-type": "uniform-float", "min": { "const": 0.25 }, "max": { "const": 0.75 } },
             "height":    { "random-type": "uniform-float", "min": { "const": 2000 }, "max": { "const": 4000 } }
@@ -21,7 +21,7 @@
         {
             "pulses": [ {"weight": 1, "pulse-index": 0} ],
             "noises": [],
-            "num-pulses": { "random-type": "uniform-int", "min": { "const": 1 }, "max": { "const": 500 }}
+            "num-pulses": { "random-type": "uniform-int", "min": { "const": 1 }, "max": { "const": 50 }}
         }
     ],
     "schedule" : [
@@ -38,7 +38,7 @@
                     {
                         "digitiser-loop" : {
                             "start": { "const": 0 },
-                            "end": { "const" : 7 },
+                            "end": { "const" : 119 },
                             "schedule" : [
                                 { "generate-trace": { "event-list-index": 0, "repeat": 8}},
                                 { "send-digitiser-trace": "pop-front" },
