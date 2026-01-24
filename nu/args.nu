@@ -39,6 +39,7 @@ export def "build_args trace_to_events" [settings: record, instance_settings: re
         "--event-topic", $topics.dat_event,
         "--polarity", $broker_component.polarity,
         "--baseline", ($broker_component.baseline | into string),
+        "--send-eventlist-buffer-size", ($settings.pipeline.trace_to_events.send_eventlist_buffer_size | into string)
         "--otel-endpoint", $constants.otel_endpoint,
         "--otel-namespace", $namespace
     ] | append $settings.detector

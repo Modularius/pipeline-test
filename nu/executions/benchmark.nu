@@ -22,5 +22,5 @@ export def main [deploy_pipeline: closure, run_simulator: closure, kill_pipeline
         #nu ./nu/clean.nu "benchmark"; sleep 1sec
     }
 
-    do $pipeline_and_simulation "test_23" "timing" {TIME_BINS: 30000, RUN_NAME: "New_Run" }
+    do $pipeline_and_simulation "test_3" "timing" {TIME_BINS: 10000, RUN_NAME: "New_Run" }
 }

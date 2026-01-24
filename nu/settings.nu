@@ -72,9 +72,12 @@ const detector_settings = {
 
 const pipeline_settings = {
     pipeline_1: {
+        trace_to_events: {
+            send_eventlist_buffer_size: 1024,
+        },
         digitiser_aggregator: {
             frame_ttl_ms: 3500,
-            send_frame_buffer_size: 4000
+            send_frame_buffer_size: 64
         }
         nexus_writer: {
             paths: {

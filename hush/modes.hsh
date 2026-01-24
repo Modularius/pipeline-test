@@ -1,6 +1,0 @@
-function host()
-    return @[
-        execute: function()
-        end
-    ]
-end
