@@ -1,6 +1,6 @@
 const prefix = "../digital-muon-pipeline/target/release/"
-#var prefix = "../digital-muon-pipeline/target/debug/"
-#var prefix = "cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
+#const prefix = "../digital-muon-pipeline/target/debug/"
+#const prefix = "cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
 
 export const components = {
     trace_to_events: {
@@ -92,6 +92,23 @@ const pipeline_settings = {
 #### Brokers
 const brokers = {
     local: {
+        pipeline_name: "local",
+        address: "localhost:19092",
+        topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [0,1,2,3,4,5,6,7]
+        },
+        nexus_writer: {
+            subdirectory: "local",
+        }
+    },
+    superlocal: {
         pipeline_name: "local",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },

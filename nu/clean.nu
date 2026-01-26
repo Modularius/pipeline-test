@@ -1,5 +1,5 @@
-use ./prelude.nu 'print heading'
-use ./executions/benchmark.nu 'new_subdir'
+use ./prelude.nu print_heading
+use ./executions/benchmark.nu new_subdir
 
 let settings: record = open "settings.json"
 
@@ -7,7 +7,8 @@ let broker_component = $settings.broker.nexus_writer
 let pipeline_component = $settings.pipeline.nexus_writer
 
 let subdir_closures = {
-    benchmark: { new_subdir }
+    benchmark: { new_subdir },
+    tests: { new_subdir },
 }
 
 def main [execution: string] {
@@ -17,7 +18,7 @@ def main [execution: string] {
     let local_path = [$pipeline_component.paths.nexus_output, $subdir] | str join "/"
     let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
 
-    print heading "Removing Nexus Files"
+    "Removing Nexus Files" | print_heading "red"
 
     def remove_nxs_file [] : table -> nothing {
         $in | where type == file | where { $in.name | str ends-with ".nxs" } | each { rm -v $in.name }

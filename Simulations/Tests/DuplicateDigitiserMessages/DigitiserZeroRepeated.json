@@ -1,0 +1,69 @@
+{
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "time-bins": {"from-env-var": "TIME_BINS" },
+    "sample-rate": {"const": 1000000000 },
+    "digitiser-config": {
+        "auto-digitisers": {
+            "num-digitisers": { "from-env-var" : "NUM_DIGITISERS" },
+            "num-channels-per-digitiser": { "const" : 8 }
+        }
+    },
+    "pulses": [
+        {
+            "pulse-type": "flat",
+            "start":  { "random-type": "exponential", "lifetime": { "from-env-var": "PULSE_MEAN_LIFETIME" } },
+            "width":  { "random-type": "uniform-float", "min": { "const": 20 }, "max": { "const": 50 } },
+            "height": { "random-type": "uniform-float", "min": { "const": 2000 }, "max": { "const": 4000 } }
+        },
+        {
+            "pulse-type": "triangular",
+            "start":     { "random-type": "exponential", "lifetime": { "from-env-var": "PULSE_MEAN_LIFETIME" } },
+            "width":     { "random-type": "uniform-float", "min": { "const": 20 }, "max": { "const": 50 } },
+            "peak_time": { "random-type": "uniform-float", "min": { "const": 0.25 }, "max": { "const": 0.75 } },
+            "height":    { "random-type": "uniform-float", "min": { "const": 2000 }, "max": { "const": 4000 } }
+        }],
+    "event-lists": [
+        {
+            "pulses": [ {"weight": 1, "pulse-index": 1}, {"weight": 1, "pulse-index": 0} ],
+            "noises": [],
+            "num-pulses": { "random-type": "constant-int", "value": { "from-env-var": "NUM_PULSES" }}
+        }
+    ],
+    "schedule" : [
+        { "generate-trace": { "event-list-index": 1, "repeat": 20}},
+        { "set-timestamp": "now"},
+        { "ensure-delay-ms": 0 },
+        { "send-run-start" : { "name": { "text-env": "RUN_NAME" }, "instrument": { "text": "MuSR" }}},
+        { "wait-ms": 200 },
+        { "set-timestamp": { "advance-by-ms": 200}},
+        { "frame-loop" : {
+                "start": { "const": 0 },
+                "end": { "const": 2 },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": { "const": 0 },
+                            "end": { "const" : 0 },
+                            "schedule" : [
+                                { "send-digitiser-trace": "replace-random" }
+                            ]
+                        }
+                    },
+                    {
+                        "digitiser-loop" : {
+                            "start": { "const": 0 },
+                            "end": { "from-env-var" : "MAX_DIGITISER" },
+                            "schedule" : [
+                                { "send-digitiser-trace": "replace-random" }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        { "wait-ms": 2000 },
+        { "set-timestamp": { "advance-by-ms": 100}},
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME" } } }
+    ]
+}

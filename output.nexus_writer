@@ -1,2 +1,2 @@
-2026-01-24T11:42:59.632986Z  WARN push_run_start{kafka_message_timestamp_ms=1769254979625}: nexus_writer::nexus_structure::entry: 'Run Number' cannot be determined, defaulting to 0
-2026-01-24T11:43:40.629207Z  INFO Move To Completed{from_path="Output/local/New_Run.nxs" to_path="Output/local/completed/New_Run.nxs"}: nexus_writer::run_engine::run: File Move Succesful.
+2026-01-26T12:19:25.102317Z  WARN push_run_start{kafka_message_timestamp_ms=1769429964090}: nexus_writer::nexus_structure::entry: 'Run Number' cannot be determined, defaulting to 0
+2026-01-26T12:19:36.291784Z  INFO Move To Completed{from_path="Output/local/New_Run.nxs" to_path="Output/local/completed/New_Run.nxs"}: nexus_writer::run_engine::run: File Move Succesful.

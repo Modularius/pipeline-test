@@ -1,11 +1,10 @@
-use ./prelude.nu 'print heading'
+use ./prelude.nu print_heading
 
 let kill_closures = {
     host: {|settings: record|
-        print heading "killing all host processes"
+        "killing all host processes" | print_heading "red"
         let components = [ "trace_to_events", "digitiser_aggregator", "nexus_writer", "simulator" ]
         for comp in $components {
-            
             let name = ($settings.components | get $comp).process_name
             "pkill --signal SIGINT " ++ $name | print
             pkill -e --signal SIGINT $name | print

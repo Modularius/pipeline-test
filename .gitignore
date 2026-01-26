@@ -5,3 +5,5 @@ Logs/*
 *.csv
 Jupyter/cache/*.json
 Jaeger/kibanadata/*
+output.*
+settings.json
