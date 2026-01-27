@@ -32,9 +32,9 @@
     "schedule" : [
         { "set-timestamp": "now"},
         { "ensure-delay-ms": 0 },
-        { "send-run-start" : { "name": { "text": "SELogTest_Run1" }, "filename": { "text": "SELogTest_Run1" }, "instrument": { "text": "Simulator" }}},
+        { "send-run-start" : { "name": { "text-env": "RUN_NAME_1" }, "filename": { "text-env": "RUN_NAME_1" }, "instrument": { "text": "Simulator" }}},
         { "wait-ms": 100 },
-        { "generate-trace": { "event-list-index": 1, "repeat": 20}},
+        { "generate-trace": { "event-list-index": 0, "repeat": 20}},
         { "set-timestamp": { "advance-by-ms": 200}},
         { "send-sample-env-log" : {
             "name" : { "text" : "PrePrefix:Prefix:Test" },
@@ -70,7 +70,7 @@
         } },
         { "wait-ms": 100 },
         { "set-timestamp": { "advance-by-ms": 100}},
-        { "send-run-stop": { "name": { "text": "SELogTest_Run1" } } },
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME_1" } } },
         { "wait-ms": 100 },
         { "set-timestamp": { "advance-by-ms": 100}},
         { "send-sample-env-log" : {
@@ -91,7 +91,7 @@
         } },
         { "wait-ms": 100 },
         { "set-timestamp": { "advance-by-ms": 100}},
-        { "send-run-start" : { "name": { "text": "SELogTest_Run2" }, "filename": { "text": "SELogTest_Run2" }, "instrument": { "text": "Simulator" }}},
+        { "send-run-start" : { "name": { "text-env": "RUN_NAME_2" }, "filename": { "text-env": "RUN_NAME_2" }, "instrument": { "text": "Simulator" }}},
         { "wait-ms": 100 },
         { "set-timestamp": { "advance-by-ms": 200}},
         { "frame-loop" : {
@@ -123,7 +123,7 @@
         } },
         { "wait-ms": 100 },
         { "set-timestamp": { "advance-by-ms": 100}},
-        { "send-run-stop": { "name": { "text": "SELogTest_Run2" } } },
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME_2" } } },
         { "send-sample-env-log" : {
             "name" : { "text" : "PrePrefix:Prefix:Test" },
             "values-type" : "uint64",

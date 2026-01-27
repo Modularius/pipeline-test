@@ -1,12 +1,10 @@
-use ../prelude.nu print_heading
-
-const HEADING_COLOUR = "red"
+use ../build/prelude.nu [print_heading, SUBHEADING_COLOUR]
 
 ### This indicates that we do not change the default nexus file subdirectory.
 export def new_subdir [] : nothing -> oneof<string,nothing> { null }
 
 export def main [deploy_pipeline: closure, run_simulator: closure, kill_pipeline: closure] {
-    "Running Benchmark Execution" | print_heading $HEADING_COLOUR
+    "Running Benchmark Execution" | print_title
 
     let pipeline_and_simulation = {|namespace: string, simulation: string, sim_env_vars: record|
         do $deploy_pipeline {new_namespace: $namespace, "suppress_archive": true}; sleep 1sec

@@ -22,6 +22,11 @@ export const components = {
         execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "supermusr-simulator:latest",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
         observability: { obsv_address: "127.0.0.1:29093" tracing_level: "info", otel_level: "info" }
+    },
+    diagnostics: {
+        execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest",
+        #image_env_vars: { image: "IMAGE_DIAGNOSTICS", obvs_port: "OBSV_ADDRESS_DIAGNOSTICS", args: "DIAGNOSTICS_ARGS" },
+        #observability: { obsv_address: "127.0.0.1:29094" tracing_level: "info", otel_level: "info" }
     }
 }
 
@@ -95,7 +100,7 @@ const brokers = {
         pipeline_name: "local",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -112,7 +117,7 @@ const brokers = {
         pipeline_name: "local",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -137,6 +142,11 @@ export def "build_settings" [broker: string, pipeline: string, detector: string]
         broker: $broker,
         pipeline: $pipeline,
         detector: $detector,
+        global_env_vars: {
+            "NO_COLOR": ($constants.no_color_env | into string),
+            "RUST_LOG": (build_rust_log_env),
+            "OTEL_LEVEL": (build_otel_level_env),
+        }
     }
 }
 

@@ -104,3 +104,12 @@ export def "build_args nexus_writer" [settings: record, instance_settings: recor
         "--local-path", $local_path
     ] | append $archive_path_maybe
 }
+
+export def "build_args diagnostics" [settings: record] : nothing -> list<string> {    #Arguments
+    [
+        "daq-trace",
+        "--broker", $settings.broker.address,
+        "--group", $settings.broker.consumer_groups.diagnostics,
+        "--topic", $settings.broker.topics.trace,
+    ]
+}

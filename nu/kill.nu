@@ -1,8 +1,8 @@
-use ./prelude.nu print_heading
+use ./build/prelude.nu print_title
 
 let kill_closures = {
     host: {|settings: record|
-        "killing all host processes" | print_heading "red"
+        "killing all host processes" | print_title
         let components = [ "trace_to_events", "digitiser_aggregator", "nexus_writer", "simulator" ]
         for comp in $components {
             let name = ($settings.components | get $comp).process_name

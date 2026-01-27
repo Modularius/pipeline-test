@@ -65,6 +65,11 @@
         "tracing_level": "info",
         "otel_level": "info"
       }
+    },
+    "diagnostics": {
+      "execution_path": "../digital-muon-pipeline/target/release/diagnostics",
+      "process_name": "diagnostics",
+      "container_image": "supermusr-diagnostics:latest"
     }
   },
   "broker": {
@@ -82,7 +87,8 @@
     "consumer_groups": {
       "trace_to_events": "trace_to_events",
       "digitiser_aggregator": "digitiser_aggregator",
-      "nexus_writer": "nexus_writer"
+      "nexus_writer": "nexus_writer",
+      "diagnostics": "diagnostics"
     },
     "trace_to_events": {
       "polarity": "positive",
@@ -136,5 +142,10 @@
     "value-at-end-trigger",
     "--peak-height-basis",
     "trace-baseline"
-  ]
+  ],
+  "global_env_vars": {
+    "NO_COLOR": "true",
+    "RUST_LOG": "info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off",
+    "OTEL_LEVEL": "info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info"
+  }
 }
