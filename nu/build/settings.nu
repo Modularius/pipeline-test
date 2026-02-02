@@ -6,7 +6,7 @@ export const components = {
     trace_to_events: {
         execution_path: ($prefix ++ "trace-to-events"), process_name: "trace-to-events" container_image: "supermusr-nexus-writer:latest",
         image_env_vars: { image: "IMAGE_EVENT_FORMATION", obvs_port: "OBSV_ADDRESS_EVENT_FORMATION", args: "EVENT_FORMATION_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29090" tracing_level: "info", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn" }
+        observability: { obsv_address: "127.0.0.1:29090" tracing_level: "info", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info" }
     },
     digitiser_aggregator: {
         execution_path: ($prefix ++ "digitiser-aggregator"), process_name: "digitiser-aggre" container_image: "supermusr-digitiser-aggregator:latest",
@@ -21,7 +21,7 @@ export const components = {
     simulator: {
         execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "supermusr-simulator:latest",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "info", otel_level: "info" }
+        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "warn", otel_level: "warn" }
     },
     diagnostics: {
         execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest",
@@ -72,6 +72,12 @@ const detector_settings = {
         "--cool-off", "0"
         "--peak-height-mode", "value-at-end-trigger",
         "--peak-height-basis", "trace-baseline"
+    ],
+    smoothing_1: [ "smoothing-detector",
+        "--noise-centile", "90",
+        "--kernel-sigma", "4",
+        "--nsig-noise", "5" #,
+        #"--min-size", "2"
     ]
 }
 
@@ -96,6 +102,23 @@ const pipeline_settings = {
 
 #### Brokers
 const brokers = {
+    local_one_digitiser: {
+        pipeline_name: "local",
+        address: "localhost:19092",
+        topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [0]
+        },
+        nexus_writer: {
+            subdirectory: "local",
+        }
+    },
     local: {
         pipeline_name: "local",
         address: "localhost:19092",

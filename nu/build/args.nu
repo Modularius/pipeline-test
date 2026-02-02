@@ -1,5 +1,6 @@
 use ./settings.nu constants
 use ./settings.nu components
+use ./prelude.nu [get_nexus_local_path, get_nexus_archive_path]
 
 export def "build_args simulator" [settings: record, instance_settings: record, source: string] : nothing -> list<string> {
     let component = $components.simulator
@@ -77,12 +78,9 @@ export def "build_args nexus_writer" [settings: record, instance_settings: recor
     let component = $components.nexus_writer
     let topics = $settings.broker.topics
 
-    # Subdirectory
-    let subdir = $instance_settings.new_broker_subdir? | default $broker_component.subdirectory
-
     # Paths
-    let local_path = [$pipeline_component.paths.nexus_output, $subdir] | str join "/"
-    let archive_path_maybe = ["--archive-path", ([$pipeline_component.paths.nexus_archive, $subdir] | str join "/") ]
+    let local_path = get_nexus_local_path $settings $instance_settings
+    let archive_path_maybe = ["--archive-path", get_nexus_archive_path $settings $instance_settings]
         | where ($instance_settings.suppress_archive? | default false) == false
 
     # Namespace

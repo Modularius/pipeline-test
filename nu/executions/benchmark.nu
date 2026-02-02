@@ -1,9 +1,9 @@
-use ../build/prelude.nu [print_heading, SUBHEADING_COLOUR]
+use ../build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
 
 ### This indicates that we do not change the default nexus file subdirectory.
 export def new_subdir [] : nothing -> oneof<string,nothing> { null }
 
-export def main [deploy_pipeline: closure, run_simulator: closure, kill_pipeline: closure] {
+export def main [settings: record, deploy_pipeline: closure, run_simulator: closure, kill_pipeline: closure] {
     "Running Benchmark Execution" | print_title
 
     let pipeline_and_simulation = {|namespace: string, simulation: string, sim_env_vars: record|
@@ -11,16 +11,12 @@ export def main [deploy_pipeline: closure, run_simulator: closure, kill_pipeline
 
         do $run_simulator $"Simulations/Benchmarks/($simulation).json" $sim_env_vars { new_namespace: $namespace }; sleep 1sec
 
-        let run_name = ($sim_env_vars | get "RUN_NAME")
-        let completed_path = $"Output/local/completed/($run_name).nxs"
-        while not ($completed_path | path exists) { sleep 1sec }
-        let path = $"Output/local/($run_name).nxs"
-        while ($path | path exists) { sleep 1sec }
-
+        $sim_env_vars | get "RUN_NAME" | wait_until_run_completed $settings
+        
         do $kill_pipeline; sleep 1sec
 
         #nu ./nu/clean.nu "benchmark"; sleep 1sec
     }
 
-    do $pipeline_and_simulation "test_3" "timing" {TIME_BINS: 10000, RUN_NAME: "New_Run" }
+    do $pipeline_and_simulation "benchmark4" "timing" {TIME_BINS: 25000, RUN_NAME: "Benchmarking_Run", LAST_FRAME: 500, LAST_DIGITISER: 7 NUM_DIGITISERS: 8 }
 }

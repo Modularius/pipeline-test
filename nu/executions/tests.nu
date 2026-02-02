@@ -1,21 +1,17 @@
-use ../build/prelude.nu [print_heading, print_title, HEADING_COLOUR, SUBHEADING_COLOUR, SUBSUBHEADING_COLOUR]
+use ../build/prelude.nu [print_heading, print_title, HEADING_COLOUR, SUBHEADING_COLOUR, SUBSUBHEADING_COLOUR, wait_until_runs_completed]
 use ../build/analysis.nu analyse_test_file
 use std/assert
 
 ### This indicates that we do not change the ddefault nexus file subdirectory.
 export def new_subdir [] : nothing -> oneof<string,nothing> { null }
 
-export def main [deploy_pipeline: closure, run_simulator: closure, kill_pipeline: closure] {
+export def main [settings: record, deploy_pipeline: closure, run_simulator: closure, kill_pipeline: closure] {
     "Running Tests Execution" | print_title
 
     let simulation_and_analysis = {|simulation: string, sim_env_vars: record, run_names: list<string>|
-        #do $run_simulator $"Simulations/Tests/($simulation).json" $sim_env_vars {}; sleep 1sec
+        do $run_simulator $"Simulations/Tests/($simulation).json" $sim_env_vars {}; sleep 1sec
 
-        let completed_paths = $run_names | each {|run_name| $"Output/local/completed/($run_name).nxs" }
-        while not ($completed_paths | path exists | all {$in}) { sleep 1sec }
-        let paths = $run_names | each {|run_name| $"Output/local/($run_name).nxs" }
-        while ($paths | path exists | any {$in}) { sleep 1sec }
-
+        let completed_paths = $run_names | wait_until_runs_completed $settings
         for completed_path in $completed_paths {
             analyse_test_file $completed_path
         }

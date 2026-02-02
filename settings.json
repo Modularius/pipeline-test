@@ -18,7 +18,7 @@
       "observability": {
         "obsv_address": "127.0.0.1:29090",
         "tracing_level": "info",
-        "otel_level": "info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn"
+        "otel_level": "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info"
       }
     },
     "digitiser_aggregator": {
@@ -62,8 +62,8 @@
       },
       "observability": {
         "obsv_address": "127.0.0.1:29093",
-        "tracing_level": "info",
-        "otel_level": "info"
+        "tracing_level": "warn",
+        "otel_level": "warn"
       }
     },
     "diagnostics": {
@@ -145,7 +145,7 @@
   ],
   "global_env_vars": {
     "NO_COLOR": "true",
-    "RUST_LOG": "info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off",
-    "OTEL_LEVEL": "info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info"
+    "RUST_LOG": "info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off",
+    "OTEL_LEVEL": "info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn"
   }
 }
