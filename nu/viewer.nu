@@ -1,0 +1,1 @@
+ ../digital-muon-pipeline/target/release/trace-viewer --broker=172.16.113.245:19092 --consumer-group=viewer --trace-topic=Traces --digitiser-event-topic=Events --name=Test --number=1 --broker-name=Dan_Kirk_Local_Broker --public-url=http://localhost:8089/trace-viewer

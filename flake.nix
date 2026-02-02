@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     pipeline.url = "github:STFC-ICD-Research-and-Design/supermusr-data-pipeline";
     #pipeline.url = "/home/ubuntu/SuperMuSRDataPipeline?dir=supermusr-data-pipeline";
   };
@@ -31,6 +31,7 @@
               netdata
               python312
               rdkafka
+              nushell
             ] ++ (
               with python312Packages; [
                 pip
