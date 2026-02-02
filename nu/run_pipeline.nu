@@ -4,10 +4,12 @@ use ./build/pipeline_closures.nu deploy_pipeline_closures
 use ./executions/benchmark.nu
 use ./executions/tests.nu
 use ./executions/stress_test.nu
+use ./executions/standard.nu
 
 let settings: record = open "settings.json"
 
 let execution_closures = {
+    standard:    {|deploy_pipeline, run_simulator, kill_pipeline| standard     $settings $deploy_pipeline $run_simulator $kill_pipeline },
     benchmark:   {|deploy_pipeline, run_simulator, kill_pipeline| benchmark    $settings $deploy_pipeline $run_simulator $kill_pipeline },
     tests:       {|deploy_pipeline, run_simulator, kill_pipeline| tests        $settings $deploy_pipeline $run_simulator $kill_pipeline },
     stress_test: {|deploy_pipeline, run_simulator, kill_pipeline| stress_test  $settings $deploy_pipeline $run_simulator $kill_pipeline },

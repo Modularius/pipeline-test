@@ -1,151 +1,62 @@
 services:
   event-formation:
     profiles:
-      - main
-      - main-and-test-event-formation
-      - main-and-test-digitiser-aggregator
-      - main-and-test-nexus-writer
+      - event-formation-only
+      - all
     deploy:
       mode: replicated
       replicas: 1
-      resources:
-        limits:
-          memory: 500m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/event-formation.log
-    #image: ghcr.io/isisneutronmuon/digital-trace-to-events:main
-    image: localhost/supermusr-trace-to-events:latest
+    image: $IMAGE_EVENT_FORMATION
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
       - OTEL_LEVEL=${OTEL_LEVEL}
-    command:
-      - --broker=${BROKER}
-      - --consumer-group=${GROUP_EVENT_FORMATION}
-      - --trace-topic=${TRACE_TOPIC}
-      - --event-topic=${DAT_EVENT_TOPIC}
-      - --observability-address=${OBSV_ADDRESS_EVENT_FORMATION}
-      - --otel-endpoint=${OTEL_ENDPOINT}
-      - --otel-namespace=${PIPELINE_NAME}
-      - --polarity=${EF_POLARITY}
-      - --baseline=${EF_BASELINE}
-      - ${EF_INPUT_MODE}
-      - ${EF_THRESHOLD}
-      - ${EF_DURATION}
-      - ${EF_COOLOFF}
-      #- ${EF_CONSTANT_MULTIPLE}
+    ports:
+      - ${OBSV_ADDRESS_EVENT_FORMATION}:9090
+    command: ${EVENT_FORMATION_ARGS}
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   frame-aggregation:
     profiles:
-      - main
-      - main-and-test-event-formation
-      - main-and-test-digitiser-aggregator
-      - main-and-test-nexus-writer
+      - frame-aggregation-only
+      - all-but-trace-to-events
+      - all
     deploy:
       mode: replicated
       replicas: 1
-      resources:
-        limits:
-          memory: 500m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/digitiser-aggregator.log
-    #image: ghcr.io/isisneutronmuon/digital-digitiser-aggregator:main
-    image: localhost/supermusr-digitiser-aggregator:latest
+    image: $IMAGE_AGGREGATOR
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
       - OTEL_LEVEL=${OTEL_LEVEL}
-    command:
-      - --broker=${BROKER}
-      - --group=${GROUP_AGGREGATOR}
-      - --observability-address=${OBSV_ADDRESS_AGGREGATOR}
-      - --input-topic=${DAT_EVENT_TOPIC}
-      - --output-topic=${FRAME_EVENT_TOPIC}
-      - --otel-endpoint=${OTEL_ENDPOINT}
-      - --otel-namespace=${PIPELINE_NAME}
-      - --frame-ttl-ms=${FRAME_TTL_MS}
-      - ${DIGITISERS}
+    ports:
+      - ${OBSV_ADDRESS_AGGREGATOR}:9090
+    command: $AGGREGATOR_ARGS
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   nexus-writer:
     profiles:
-      - main
-      - main-and-test-event-formation
-      - main-and-test-digitiser-aggregator
-      - main-and-test-nexus-writer
+     - nexus-writer-only
+     - all-but-trace-to-events
+     - all
     deploy:
       mode: replicated
       replicas: 1
-      resources:
-        limits:
-          memory: 350m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/${PIPELINE_NAME}/logs/nexus-writer.log
-    image: localhost/supermusr-nexus-writer:latest
-#    image: ghcr.io/isisneutronmuon/digital-nexus-writer:main
+    image: $IMAGE_WRITER
     environment:
       - RUST_LOG=${RUST_LOG}
       - NO_COLOR=${NO_COLOR}
       - OTEL_LEVEL=${OTEL_LEVEL}
-    command:
-      - --broker=${BROKER}
-      - --consumer-group=${GROUP_WRITER}
-      - --observability-address=${OBSV_ADDRESS_WRITER}
-      - --frame-event-topic=${FRAME_EVENT_TOPIC}
-      - --control-topic=${CONTROL_TOPIC}
-      - --log-topic=${LOGS_TOPIC}
-      - --sample-env-topic=${SELOGS_TOPIC}
-      - --alarm-topic=${ALARMS_TOPIC}
-      - --cache-run-ttl-ms=${RUN_TTL_MS}
-      - --event-list-chunk-size=16384
-      - --otel-endpoint=${OTEL_ENDPOINT}
-      - --otel-namespace=${PIPELINE_NAME}
-      - --configuration-options=${CONFIGURATION_OPTIONS}
-      - --local-path=/local
-      - --archive-path=/archive
+    ports:
+      - ${OBSV_ADDRESS_WRITER}:9090
+    command: $WRITER_ARGS
     volumes:
-      - ../${NEXUS_LOCAL_HOST_PATH}/:/local/
-      - ../${NEXUS_ARCHIVE_HOST_PATH}/:/archive/
-
-  nexus-writer-test:
-    profiles:
-      - main-and-test-nexus-writer
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          memory: 350m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/nexus-writer.log
-    image: localhost/supermusr-nexus-writer
-    environment:
-      - RUST_LOG=${RUST_LOG}
-      - NO_COLOR=${NO_COLOR}
-      - OTEL_LEVEL=${OTEL_LEVEL}
-    command:
-      - --broker=${BROKER}
-      - --consumer-group=nexus-writer-test
-      - --observability-address=${OBSV_ADDRESS_WRITER}
-      - --frame-event-topic=${FRAME_EVENT_TOPIC}
-      - --control-topic=${CONTROL_TOPIC}
-      - --log-topic=${LOGS_TOPIC}
-      - --sample-env-topic=${SELOGS_TOPIC}
-      - --alarm-topic=${ALARMS_TOPIC}
-      - --cache-run-ttl-ms=${RUN_TTL_MS}
-      - --event-list-chunk-size=16384
-      - --otel-endpoint=${OTEL_ENDPOINT}
-      - --otel-namespace=hifi-test
-      - --local-path=local
-      - --archive-path=archive
-    volumes:
-      - ../Output/Local_test:/local
-      - ../archive/incoming/hifi_test:/archive
-      - ../archive/incoming/hifi_test/logs:/logs
+      - ../${NEXUS_OUTPUT_PATH}:/local
+      - ../${NEXUS_ARCHIVE_PATH}:/archive
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"

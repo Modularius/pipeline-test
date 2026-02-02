@@ -1,151 +1,62 @@
 services:
   event-formation:
     profiles:
-      - main
-      - main-and-test-event-formation
-      - main-and-test-digitiser-aggregator
-      - main-and-test-nexus-writer
+      - event-formation-only
+      - all
     deploy:
       mode: replicated
       replicas: 1
-      resources:
-        limits:
-          memory: 500m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/event-formation.log
-    #image: ghcr.io/isisneutronmuon/digital-trace-to-events:main
-    image: localhost/supermusr-trace-to-events:latest
+    image: supermusr-trace-to-events:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn
-    command:
-      - --broker=130.246.55.29:9092
-      - --consumer-group=trace-to-events
-      - --trace-topic=daq-traces-in
-      - --event-topic=daq-events
-      - --observability-address=127.0.0.1:29090
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --otel-namespace=hifi_1
-      - --polarity=positive
-      - --baseline=0
-      - fixed-threshold-discriminator
-      - --threshold=2100
-      - --duration=1
-      - --cool-off=0
-      #-  
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
+    ports:
+      - 127.0.0.1:29090:9090
+    command: [--broker,localhost:9092,--consumer-group,trace_to_events,--observability-address,127.0.0.1:29090,--trace-topic,daq-traces-in,--event-topic,daq-events,--polarity,positive,--baseline,0,--send-eventlist-buffer-size,1024,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,hifi,fixed-threshold-discriminator,--threshold,2100,--duration,1,--cool-off,0]
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   frame-aggregation:
     profiles:
-      - main
-      - main-and-test-event-formation
-      - main-and-test-digitiser-aggregator
-      - main-and-test-nexus-writer
+      - frame-aggregation-only
+      - all-but-trace-to-events
+      - all
     deploy:
       mode: replicated
       replicas: 1
-      resources:
-        limits:
-          memory: 500m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/digitiser-aggregator.log
-    #image: ghcr.io/isisneutronmuon/digital-digitiser-aggregator:main
-    image: localhost/supermusr-digitiser-aggregator:latest
+    image: supermusr-digitiser-aggregator:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn
-    command:
-      - --broker=130.246.55.29:9092
-      - --group=digitiser-aggregator
-      - --observability-address=127.0.0.1:29091
-      - --input-topic=daq-events
-      - --output-topic=frame-events
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --otel-namespace=hifi_1
-      - --frame-ttl-ms=200
-      - -d4,5,6,7,8,9,10,11
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
+    ports:
+      - 127.0.0.1:29091:9090
+    command: [--broker,localhost:9092,--group,digitiser_aggregator,--observability-address,127.0.0.1:29091,--input-topic,daq-events,--output-topic,frame-events,--frame-ttl-ms,200,--send-frame-buffer-size,64,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,hifi,-d4,-d5,-d6,-d7,-d8,-d9,-d10,-d11]
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
 
   nexus-writer:
     profiles:
-      - main
-      - main-and-test-event-formation
-      - main-and-test-digitiser-aggregator
-      - main-and-test-nexus-writer
+     - nexus-writer-only
+     - all-but-trace-to-events
+     - all
     deploy:
       mode: replicated
       replicas: 1
-      resources:
-        limits:
-          memory: 350m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_1/logs/nexus-writer.log
-    image: localhost/supermusr-nexus-writer:latest
-#    image: ghcr.io/isisneutronmuon/digital-nexus-writer:main
+    image: supermusr-nexus-writer:latest
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn
-    command:
-      - --broker=130.246.55.29:9092
-      - --consumer-group=nexus-writer
-      - --observability-address=127.0.0.1:29092
-      - --frame-event-topic=frame-events
-      - --control-topic=ics-control-change
-      - --log-topic=ics-metadata
-      - --sample-env-topic=HIFI_sampleEnv
-      - --alarm-topic=ics-alarms
-      - --cache-run-ttl-ms=15000
-      - --event-list-chunk-size=16384
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --otel-namespace=hifi_1
-      - --configuration-options={"broker_settings":{"broker":"$BROKER", "trace_to_events_group":"$GROUP_EVENT_FORMATION", "digitiser_aggregator_group":"$GROUP_AGGREGATOR", "nexus_writer_group":"$GROUP_WRITER"}, "topics":{"trace":"$TRACE_TOPIC", "daq_eventlists":"$DAT_EVENT_TOPIC", "frame_eventlist":"$FRAME_EVENT_TOPIC", "control":"$CONTROL_TOPIC", "logs":"$LOGS_TOPIC", "selogs":"$SELOGS_TOPIC", "alarms":"$ALARMS_TOPIC"}, "event_formation":{"polarity":"$EF_POLARITY", "baseline":$EF_BASELINE, "input_command":"$EF_INPUT_COMMAND"}, "digitiser_aggregator":{"digitisers":"$DIGITISERS", "frame_ttl_ms":$FRAME_TTL_MS}, "nexus_writer":{"local_host_path":"$NEXUS_LOCAL_HOST_PATH", "archive_host_path":"$NEXUS_ARCHIVE_HOST_PATH", "run_ttl_ms":$RUN_TTL_MS}}
-      - --local-path=/local
-      - --archive-path=/archive
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
+    ports:
+      - 127.0.0.1:29092:9090
+    command: [--broker,localhost:9092,--consumer-group,nexus_writer,--observability-address,127.0.0.1:29092,--control-topic,ics-control-change,--frame-event-topic,frame-events,--log-topic,Logsics-metadata,--sample-env-topic,SELogsHIFI_sampleEnv,--alarm-topic,ics-alarms,--cache-run-ttl-ms,15000,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,hifi,--local-path,Output/hifi,--archive-path,archive/incoming/hifi]
     volumes:
-      - .././Output/Local_1/:/local/
-      - .././archive/incoming/hifi_1/:/archive/
-
-  nexus-writer-test:
-    profiles:
-      - main-and-test-nexus-writer
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          memory: 350m
-    restart: on-failure
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/archive/incoming/hifi_test/logs/nexus-writer.log
-    image: localhost/supermusr-nexus-writer
-    environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,
-      - NO_COLOR=true
-      - OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn
-    command:
-      - --broker=130.246.55.29:9092
-      - --consumer-group=nexus-writer-test
-      - --observability-address=127.0.0.1:29092
-      - --frame-event-topic=frame-events
-      - --control-topic=ics-control-change
-      - --log-topic=ics-metadata
-      - --sample-env-topic=HIFI_sampleEnv
-      - --alarm-topic=ics-alarms
-      - --cache-run-ttl-ms=15000
-      - --event-list-chunk-size=16384
-      - --otel-endpoint=http://172.16.105.83:4317/v1/traces
-      - --otel-namespace=hifi-test
-      - --local-path=local
-      - --archive-path=archive
-    volumes:
-      - ../Output/Local_test:/local
-      - ../archive/incoming/hifi_test:/archive
-      - ../archive/incoming/hifi_test/logs:/logs
+      - ../:/local
+      - ../:/archive
+    network_mode: "host"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
