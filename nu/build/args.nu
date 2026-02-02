@@ -56,7 +56,9 @@ export def "build_args digitiser_aggregator" [settings: record, instance_setting
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
 
-    let digitiser_ids = $settings.broker.digitiser_aggregator.digitiser_ids | each {into string} | str join ','
+    let digitiser_ids = $settings.broker.digitiser_aggregator.digitiser_ids
+        | each {into string}
+        | each {|digitiser_id| "-d" ++ $digitiser_id}
 
     [
         "--broker", $settings.broker.address,
@@ -67,9 +69,8 @@ export def "build_args digitiser_aggregator" [settings: record, instance_setting
         "--frame-ttl-ms", ($pipeline_component.frame_ttl_ms | into string),
         "--send-frame-buffer-size", ($pipeline_component.send_frame_buffer_size | into string),
         "--otel-endpoint", $constants.otel_endpoint,
-        "--otel-namespace", $namespace,
-        ("-d" ++ $digitiser_ids)
-    ]
+        "--otel-namespace", $namespace
+    ] | append $digitiser_ids
 }
 
 export def "build_args nexus_writer" [settings: record, instance_settings: record] : nothing -> list<string> {

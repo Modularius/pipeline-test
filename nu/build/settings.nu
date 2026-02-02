@@ -59,7 +59,7 @@ export def build_otel_level_env [] : nothing -> string {
 
 #### Event Formation
 const detector_settings = {
-    theshold_1: [ "fixed-threshold-discriminator"
+    threshold_1: [ "fixed-threshold-discriminator"
         "--threshold", "25",
         "--duration", "1",
         "--cool-off", "0"

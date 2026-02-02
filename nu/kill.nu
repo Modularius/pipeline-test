@@ -10,7 +10,7 @@ let kill_closures = {
             pkill -e --signal SIGINT $name | print
         }
     },
-    containers: {|settings: record|
+    container: {|settings: record|
         
     }
 }
