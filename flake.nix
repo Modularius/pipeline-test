@@ -29,7 +29,14 @@
               kcat
               podman-compose
               netdata
-            ];
+              python312
+              rdkafka
+            ] ++ (
+              with python312Packages; [
+                pip
+                confluent-kafka
+              ]
+            );
             inputsFrom  = [
               pipeline.devShell.${system}
             ];

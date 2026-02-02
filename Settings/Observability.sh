@@ -16,7 +16,7 @@ g_OBSV_ADDRESS_SIM="127.0.0.1:29093"       # Local
 g_NO_COLOR=true
 
 ## Stdout Observability Levels
-g_RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=warn,$g_RUST_LOG_OFF
+g_RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,$g_RUST_LOG_OFF
 
 ## Otel Observability Levels
-g_OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+g_OTEL_LEVEL=none,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=warn

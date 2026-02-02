@@ -21,6 +21,6 @@
 echo "Current Time: $(date +"%T")"
 
 #./Scripts/multiple_pipelines.sh
-. ./Scripts/local_compose.sh
+. ./Scripts/teardown.sh
 
-teardown_pipeline
+teardown_pipeline "1"

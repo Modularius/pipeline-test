@@ -28,4 +28,4 @@ g_NEXUS_LOCAL_HOST_PATH=./Output/Local
 # Where the Nexus Files go (according to their containers)
 #g_NEXUS_ARCHIVE_PATH="archive"
 #g_NEXUS_LOCAL_PATH="local"
-g_RUN_TTL_MS=2500
+g_RUN_TTL_MS=15000

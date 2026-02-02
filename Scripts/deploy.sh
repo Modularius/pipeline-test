@@ -5,7 +5,8 @@ reset_pipeline() {
     rm $NEXUS_LOCAL_HOST_PATH/*.nxs
     rm $NEXUS_LOCAL_HOST_PATH/completed/*.nxs
     
-    rpk topic create $DAT_EVENT_TOPIC $FRAME_EVENT_TOPIC -c retention.bytes=100MiB
+    rpk topic create $DAT_EVENT_TOPIC -c retention.ms=Infinite
+    rpk topic create $FRAME_EVENT_TOPIC -c retention.bytes=100MiB
 }
 
 deploy_pipeline() {

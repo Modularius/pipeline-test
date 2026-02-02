@@ -38,16 +38,3 @@ wait_for_input() {
         fi
     done
 }
-
-assert_exists() {
-    FUNC=$1;shift;
-    NAME=$1;shift;
-    VALUE=$1;shift;
-    
-    assert_not_empty $VALUE
-    if [ "$?" == 1 ]; then
-        log_failure "$FUNC: $NAME does not exist"
-    else
-        log_success "$FUNC: $NAME = '$VALUE' exists"
-    fi
-}

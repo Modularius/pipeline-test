@@ -2,6 +2,8 @@ podman load --input $(nix build .#trace-to-events-container-image --no-link --pr
 podman load --input $(nix build .#digitiser-aggregator-container-image --no-link --print-out-paths)
 podman load --input $(nix build .#nexus-writer-container-image --no-link --print-out-paths)
 
+buildah bud -f Containerfile --build-arg component=diagnostics -t diagnostics:latest
+
 cd ../supermusr-data-pipeline
 buildah bud -f Containerfile --build-arg component=trace-to-events -t supermusr-trace-to-events:latest
 buildah bud -f Containerfile --build-arg component=digitiser-aggregator -t supermusr-digitiser-aggregator:latest

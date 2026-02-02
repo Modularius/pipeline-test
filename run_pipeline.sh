@@ -27,6 +27,6 @@ echo "Current Time: $(date +"%T")"
 . ./Scripts/deploy.sh
 . ./Scripts/set_variables.sh
 
-set_pipeline_local_variables
+set_pipeline_local_variables "1"
 reset_pipeline
-deploy_pipeline
+deploy_pipeline "1"

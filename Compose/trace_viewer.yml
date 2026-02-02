@@ -3,24 +3,21 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-viewer:main
-    #image: supermusr-trace-viewer:latest
+    #image: ghcr.io/isisneutronmuon/digital-muon-trace-viewer:main
+    image: supermusr-trace-viewer:latest
     environment:
       - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=trace
+      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     ports:
       - 127.0.0.1:29090:9090
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=viewer
       - --trace-topic=daq-traces-in
-      - --digitiser-event-topic=daq-events-test
+      - --digitiser-event-topic=daq-events
+      - --number=1
       - --name=HiFi
-      - --channels=14
-      - --channels=50
-      - --digitiser-ids=3
-      - --number=2
       - --link-to-redpanda-console=http://130.246.55.29:8080/overview
       - --broker-name=HiFi Broker
       - --public-url=http://130.246.55.29:8089/trace-viewer/
@@ -28,34 +25,40 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-    image: ghcr.io/stfc-icd-research-and-design/supermusr-trace-viewer:main
-    #image: supermusr-trace-viewer:latest
+    #image: ghcr.io/isisneutronmuon/digital-muon-trace-viewer:main
+    image: supermusr-trace-viewer:latest
     environment:
       - RUST_LOG=info,digitiser_aggregator=debug,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
       - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
     ports:
-      - 127.0.0.1:29099:9090
+      - 127.0.0.1:29091:9090
     command:
       - --broker=130.246.55.29:9092
       - --consumer-group=viewer
-      - --trace-topic=daq-traces-in
-      - --digitiser-event-topic=daq-events-test
+      - --trace-topic=daq-traces-in-test
+      - --digitiser-event-topic=daq-events-test01
+      - --digitiser-event-topic=daq-events-test02
+      - --digitiser-event-topic=daq-events-test03
+      - --digitiser-event-topic=daq-events-test04
+      - --digitiser-event-topic=daq-events-test05
+      - --digitiser-event-topic=daq-events-test06
+      - --digitiser-event-topic=daq-events-test07
+      - --digitiser-event-topic=daq-events-test08
+      - --digitiser-event-topic=daq-events-test09
+      - --digitiser-event-topic=daq-events-test10
+      - --timestamp=2025-10-17 07:00:00.0+00:00
+      - --number=1
       - --name=HiFi
-      - --channels=14
-      - --channels=50
-      - --digitiser-ids=3
-      - --number=2
       - --link-to-redpanda-console=http://130.246.55.29:8080/overview
-      - --broker-name=HiFi Broker (Test)
+      - --broker-name=HiFi Broker (Test Trace Data)
       - --public-url=http://130.246.55.29:8089/trace-viewer-test/
   nginx:
     restart: always
     image: docker.io/nginx:1-alpine
     ports:
       - 8089:80
+    depends-on:
+      - trace-viewer-test
     volumes:
       - ./trace-viewer-nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - trace-viewer
-    #network_mode: "host"
