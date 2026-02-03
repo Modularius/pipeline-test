@@ -28,12 +28,12 @@ export def print_gradient_heading [colour: string, colour2: string] : string -> 
 }
 
 export def get_nexus_local_path [settings: record, instance_settings: record = {}] {
-    let subdir = $instance_settings.new_broker_subdir? | default $settings.broker.nexus_writer.subdirectory
+    let subdir = $instance_settings.new_subdir? | default $settings.broker.nexus_writer.subdirectory
     [$settings.pipeline.nexus_writer.paths.nexus_output, $subdir] | str join "/"
 }
 
 export def get_nexus_archive_path [settings: record, instance_settings: record = {}] {
-    let subdir = $instance_settings.new_broker_subdir? | default $settings.broker.nexus_writer.subdirectory
+    let subdir = $instance_settings.new_subdir? | default $settings.broker.nexus_writer.subdirectory
     [$settings.pipeline.nexus_writer.paths.nexus_archive, $subdir] | str join "/"
 }
 
