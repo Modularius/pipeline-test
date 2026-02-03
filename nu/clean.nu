@@ -11,12 +11,12 @@ let subdir_closures = {
     tests: { new_subdir },
 }
 
-def 'main' [execution: string] {
+def 'main' [execution: string, clean_archive?: bool] {
+    let clean_archive = $clean_archive | default false
     # Subdirectory
     let subdir = do ($subdir_closures | get $execution) | default $broker_component.subdirectory
 
     let local_path = [$pipeline_component.paths.nexus_output, $subdir] | str join "/"
-    let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
 
     "Removing Nexus Files" | print_title
 
@@ -26,10 +26,10 @@ def 'main' [execution: string] {
 
     ls $"($local_path)" | remove_nxs_file
     ls $"($local_path)/completed" | remove_nxs_file
-    ls $"($archive_path)" | remove_nxs_file
-}
-
-export def 'main topics' [] {
-    podman exec kafka rpk topic delete $settings.broker.topics.traces $settings.broker.topics.dat-events $settings.broker.topics.frame-events | print
-    #podman exec kafka rpk topic create $settings.broker.topics.traces $settings.broker.topics.dat-events $settings.broker.topics.frame-events | print
+    
+    # We never want to do this on HiFI
+    if $clean_archive {
+        #let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
+        #ls $"($archive_path)" | remove_nxs_file
+    }
 }

@@ -73,6 +73,32 @@ export def "build_args digitiser_aggregator" [settings: record, instance_setting
     ] | append $digitiser_ids
 }
 
+def build_configuration_options [settings: record, instance_settings: record] : nothing -> string {
+    let local_path = get_nexus_local_path $settings $instance_settings
+    let archive_path = if ($instance_settings.suppress_archive? | default false) {
+        ""
+    } else {
+        get_nexus_archive_path $settings $instance_settings
+    }
+
+    {
+        "pipeline_name": $settings.broker.pipeline_name,
+        "address": $settings.broker.address,
+        "topics": $settings.broker.topics,
+        "consumer_groups": $settings.broker.consumer_groups,
+        "trace_to_events": ($settings.broker.trace_to_events | merge $settings.pipeline.trace_to_events),
+        "digitiser_aggregator": ($settings.broker.digitiser_aggregator | merge $settings.pipeline.digitiser_aggregator),    
+        "nexus_writer": {
+            "paths": {
+                "nexus_output": $local_path,
+                "nexus_archive": $archive_path,
+            },
+            "run_ttl_ms": $settings.pipeline.nexus_writer.run_ttl_ms
+        },
+        "detector": $settings.detector
+    } | to json --raw
+}
+
 export def "build_args nexus_writer" [settings: record, instance_settings: record] : nothing -> list<string> {
     let broker_component = $settings.broker.nexus_writer
     let pipeline_component = $settings.pipeline.nexus_writer
@@ -97,6 +123,7 @@ export def "build_args nexus_writer" [settings: record, instance_settings: recor
         "--log-topic", $topics.logs,
         "--sample-env-topic", $topics.selogs,
         "--alarm-topic", $topics.alarms,
+        "--configuration-options", (build_configuration_options $settings $instance_settings),
         "--cache-run-ttl-ms", ($pipeline_component.run_ttl_ms | into string),
         "--otel-endpoint", $constants.otel_endpoint,
         "--otel-namespace", $namespace,

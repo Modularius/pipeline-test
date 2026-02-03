@@ -1,22 +1,7 @@
-use ./build/prelude.nu print_title
-
-let kill_closures = {
-    host: {|settings: record|
-        "killing all host processes" | print_title
-        let components = [ "trace_to_events", "digitiser_aggregator", "nexus_writer", "simulator" ]
-        for comp in $components {
-            let name = ($settings.components | get $comp).process_name
-            "pkill --signal SIGINT " ++ $name | print
-            pkill -e --signal SIGINT $name | print
-        }
-    },
-    container: {|settings: record|
-        
-    }
-}
+use ./modes/closures.nu mode
 
 def main [mode: string] {
     let settings: record = open "settings.json"
 
-    do ($kill_closures | get $mode) $settings
+    do (mode $mode $settings | get kill) $settings
 }

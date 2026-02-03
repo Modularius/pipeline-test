@@ -13,7 +13,7 @@ services:
       - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
     ports:
       - 127.0.0.1:29090:9090
-    command: [--broker,localhost:9092,--consumer-group,trace_to_events,--observability-address,127.0.0.1:29090,--trace-topic,daq-traces-in,--event-topic,daq-events,--polarity,positive,--baseline,0,--send-eventlist-buffer-size,1024,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,hifi,fixed-threshold-discriminator,--threshold,2100,--duration,1,--cool-off,0]
+    command: [--broker,localhost:9092,--consumer-group,musr_trace_to_events,--observability-address,127.0.0.1:29090,--trace-topic,musr-daq-traces-in,--event-topic,musr-daq-events,--polarity,positive,--baseline,0,--send-eventlist-buffer-size,1024,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,musr_to_hifi,fixed-threshold-discriminator,--threshold,2100,--duration,1,--cool-off,0]
     network_mode: "host"
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"
@@ -33,7 +33,7 @@ services:
       - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
     ports:
       - 127.0.0.1:29091:9090
-    command: [--broker,localhost:9092,--group,digitiser_aggregator,--observability-address,127.0.0.1:29091,--input-topic,daq-events,--output-topic,frame-events,--frame-ttl-ms,200,--send-frame-buffer-size,64,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,hifi,-d4,-d5,-d6,-d7,-d8,-d9,-d10,-d11]
+    command: [--broker,localhost:9092,--group,musr_digitiser_aggregator,--observability-address,127.0.0.1:29091,--input-topic,musr-daq-events,--output-topic,musr-frame-events,--frame-ttl-ms,200,--send-frame-buffer-size,64,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,musr_to_hifi,-d4,-d5,-d6,-d7,-d8,-d9,-d10,-d11]
     network_mode: "host"
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"
@@ -53,7 +53,7 @@ services:
       - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
     ports:
       - 127.0.0.1:29092:9090
-    command: [--broker,localhost:9092,--consumer-group,nexus_writer,--observability-address,127.0.0.1:29092,--control-topic,ics-control-change,--frame-event-topic,frame-events,--log-topic,Logsics-metadata,--sample-env-topic,SELogsHIFI_sampleEnv,--alarm-topic,ics-alarms,--cache-run-ttl-ms,15000,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,hifi,--local-path,Output/hifi,--archive-path,archive/incoming/hifi]
+    command: [--broker,localhost:9092,--consumer-group,musr_nexus_writer,--observability-address,127.0.0.1:29092,--control-topic,ics-control-change,--frame-event-topic,musr-frame-events,--log-topic,ics-metadata,--sample-env-topic,SELogsHIFI_sampleEnv,--alarm-topic,ics-alarms,--configuration-options,{"pipeline_name":"musr_to_hifi","address":"localhost:9092","topics":{"trace":"musr-daq-traces-in","dat_event":"musr-daq-events","frame_event":"musr-frame-events","control":"ics-control-change","logs":"ics-metadata","selogs":"SELogsHIFI_sampleEnv","alarms":"ics-alarms"},"consumer_groups":{"trace_to_events":"musr_trace_to_events","digitiser_aggregator":"musr_digitiser_aggregator","nexus_writer":"musr_nexus_writer","diagnostics":"diagnostics"},"trace_to_events":{"polarity":"positive","baseline":0,"send_eventlist_buffer_size":1024},"digitiser_aggregator":{"digitiser_ids":[4,5,6,7,8,9,10,11],"frame_ttl_ms":200,"send_frame_buffer_size":64},"nexus_writer":{"paths":{"nexus_output":"Output/musr_via_hifi","nexus_archive":"archive/incoming/musr_via_hifi"},"run_ttl_ms":15000},"detector":["fixed-threshold-discriminator","--threshold","2100","--duration","1","--cool-off","0"]},--cache-run-ttl-ms,15000,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,musr_to_hifi,--local-path,Output/musr_via_hifi,--archive-path,archive/incoming/musr_via_hifi]
     volumes:
       - ../:/local
       - ../:/archive

@@ -2,24 +2,6 @@ use ./prelude.nu [print_heading, HEADING_COLOUR, SUBHEADING_COLOUR]
 use ./args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer']
 use ./settings.nu components
 
-def spawn_component_on_host [settings: record, comp: string, args: list<string>] {
-    $"Spawning component ($comp) in background" | print_heading $SUBHEADING_COLOUR
-    print ($args | str join " ")
-    job spawn {
-        let prog = ($components | get $comp).execution_path
-        with-env $settings.global_env_vars { ^$prog ...$args o+e> $"output.($comp)" }
-    }
-}
-
-def get_container_env_vars [comp: string, args: list<string>] : nothing -> record {
-    let component = $components | get $comp
-    {
-        $component.image_env_vars.image: $component.container_image,
-        $component.image_env_vars.obvs_port: $component.observability.obsv_address,
-        $component.image_env_vars.args: $"[($args | str join ',')]",
-    }
-}
-
 export def deploy_pipeline_closures [settings: record, components: string] : nothing -> closure {
     match $components {
         host => {|instance_settings?: record|

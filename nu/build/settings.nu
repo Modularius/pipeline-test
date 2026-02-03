@@ -103,9 +103,9 @@ const pipeline_settings = {
 #### Brokers
 const brokers = {
     local: {
-        pipeline_name: "hifi",
+        pipeline_name: "hifi_1",
         address: "localhost:9092",
-        topics:             { trace: "daq-traces-in", dat_event: "daq-events", frame_event: "frame-events", control: "ics-control-change", logs: "Logsics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
+        topics:             { trace: "daq-traces-in", dat_event: "daq-events", frame_event: "frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
         consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
@@ -116,13 +116,13 @@ const brokers = {
             digitiser_ids: [4,5,6,7,8,9,10,11]
         },
         nexus_writer: {
-            subdirectory: "hifi",
+            subdirectory: "hifi_1",
         }
     },
     musr_to_local: {
-        pipeline_name: "musr",
+        pipeline_name: "musr_to_hifi",
         address: "localhost:9092",
-        topics:             { trace: "musr-daq-traces-in", dat_event: "musr-daq-events", frame_event: "musr-frame-events", control: "ics-control-change", logs: "Logsics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
+        topics:             { trace: "musr-daq-traces-in", dat_event: "musr-daq-events", frame_event: "musr-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
         consumer_groups:    { trace_to_events: "musr_trace_to_events", digitiser_aggregator: "musr_digitiser_aggregator", nexus_writer: "musr_nexus_writer", diagnostics: "diagnostics" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
@@ -133,7 +133,7 @@ const brokers = {
             digitiser_ids: [4,5,6,7,8,9,10,11]
         },
         nexus_writer: {
-            subdirectory: "hifi_musr",
+            subdirectory: "musr_via_hifi",
         }
     }
 }
