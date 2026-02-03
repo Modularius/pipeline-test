@@ -4,7 +4,7 @@ const prefix = "../digital-muon-pipeline/target/release/"
 
 export const components = {
     trace_to_events: {
-        execution_path: ($prefix ++ "trace-to-events"), process_name: "trace-to-events" container_image: "supermusr-nexus-writer:latest",
+        execution_path: ($prefix ++ "trace-to-events"), process_name: "trace-to-events" container_image: "supermusr-trace-to-events:latest",
         image_env_vars: { image: "IMAGE_EVENT_FORMATION", obvs_port: "OBSV_ADDRESS_EVENT_FORMATION", args: "EVENT_FORMATION_ARGS" },
         observability: { obsv_address: "127.0.0.1:29090" tracing_level: "info", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info" }
     },
@@ -152,7 +152,24 @@ const brokers = {
         nexus_writer: {
             subdirectory: "local",
         }
-    }
+    },
+    hifi: {
+        pipeline_name: "hifi-via-local",
+        address: "130.246.55.29:9092",
+        topics:             { trace: "daq-traces-in", dat_event: "local-daq-events", frame_event: "local-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
+        consumer_groups:    { trace_to_events: "local_trace_to_events", digitiser_aggregator: "local_digitiser_aggregator", nexus_writer: "local_nexus_writer", diagnostics: "local_diagnostics" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [4,5,6,7,8,9,10,11]
+        },
+        nexus_writer: {
+            subdirectory: "hifi-via-local",
+        }
+    },
 }
 
 export def "build_settings" [broker: string, pipeline: string, detector: string] : nothing -> record {
