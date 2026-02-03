@@ -2,31 +2,32 @@ const prefix = "../digital-muon-pipeline/target/release/"
 #const prefix = "../digital-muon-pipeline/target/debug/"
 #const prefix = "cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
 
+const obsv_address_prefix = "127.0.0.1:2909"
+#const obsv_address_prefix = "127.0.0.1:2908"
+
 export const components = {
     trace_to_events: {
         execution_path: ($prefix ++ "trace-to-events"), process_name: "trace-to-events" container_image: "supermusr-trace-to-events:latest",
         image_env_vars: { image: "IMAGE_EVENT_FORMATION", obvs_port: "OBSV_ADDRESS_EVENT_FORMATION", args: "EVENT_FORMATION_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29090" tracing_level: "info", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "0") tracing_level: "info", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info" }
     },
     digitiser_aggregator: {
         execution_path: ($prefix ++ "digitiser-aggregator"), process_name: "digitiser-aggre" container_image: "supermusr-digitiser-aggregator:latest",
         image_env_vars: { image: "IMAGE_AGGREGATOR", obvs_port: "OBSV_ADDRESS_AGGREGATOR", args: "AGGREGATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29091" tracing_level: "info", otel_level: "info" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "1") tracing_level: "info", otel_level: "info" }
     },
     nexus_writer: {
         execution_path: ($prefix ++ "nexus-writer"), process_name: "nexus-writer" container_image: "supermusr-nexus-writer:latest",
         image_env_vars: { image: "IMAGE_WRITER", obvs_port: "OBSV_ADDRESS_WRITER", args: "WRITER_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29092" tracing_level: "info", otel_level: "info" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "2") tracing_level: "info", otel_level: "info" }
     },
     simulator: {
         execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "supermusr-digital-simulator:latest",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "warn", otel_level: "warn" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "3") tracing_level: "warn", otel_level: "warn" }
     },
     diagnostics: {
         execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest",
-        #image_env_vars: { image: "IMAGE_DIAGNOSTICS", obvs_port: "OBSV_ADDRESS_DIAGNOSTICS", args: "DIAGNOSTICS_ARGS" },
-        #observability: { obsv_address: "127.0.0.1:29094" tracing_level: "info", otel_level: "info" }
     }
 }
 
@@ -104,7 +105,7 @@ const pipeline_settings = {
 const brokers = {
     local: {
         pipeline_name: "hifi_1",
-        address: "localhost:9092",
+        address: "130.246.55.29:9092",
         topics:             { trace: "daq-traces-in", dat_event: "daq-events", frame_event: "frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
         consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
         # Trace Source Dependent Event Formation Settings
@@ -121,7 +122,7 @@ const brokers = {
     },
     musr_to_local: {
         pipeline_name: "musr_to_hifi",
-        address: "localhost:9092",
+        address: "130.246.55.29:9092",
         topics:             { trace: "musr-daq-traces-in", dat_event: "musr-daq-events", frame_event: "musr-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
         consumer_groups:    { trace_to_events: "musr_trace_to_events", digitiser_aggregator: "musr_digitiser_aggregator", nexus_writer: "musr_nexus_writer", diagnostics: "diagnostics" },
         # Trace Source Dependent Event Formation Settings

@@ -7,3 +7,4 @@ alias image_refresh = nu ./nu/image_refresh.nu
 alias diagnostics = nu ./nu/diagnostic.nu
 alias topics = nu ./nu/topics.nu
 alias inspect = nu ./nu/tools/inspect_container.nu
+alias read_logs = nu ./nu/tools/container_logs.nu
