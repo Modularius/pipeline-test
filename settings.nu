@@ -24,9 +24,7 @@ export const components = {
         observability: { obsv_address: "127.0.0.1:29093" tracing_level: "warn", otel_level: "warn" }
     },
     diagnostics: {
-        execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest",
-        #image_env_vars: { image: "IMAGE_DIAGNOSTICS", obvs_port: "OBSV_ADDRESS_DIAGNOSTICS", args: "DIAGNOSTICS_ARGS" },
-        #observability: { obsv_address: "127.0.0.1:29094" tracing_level: "info", otel_level: "info" }
+        execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest"
     }
 }
 
@@ -169,6 +167,11 @@ const brokers = {
         nexus_writer: {
             subdirectory: "hifi-via-local",
         }
+    },
+    hifi-test-simulator-only: {
+        pipeline_name: "hifi-test",
+        address: "130.246.55.29:9092",
+        topics: { trace: "test-traces-in", dat_event: "test-daq-events", frame_event: "test-frame-events", control: "test-control-change", logs: "test-metadata", selogs: "test-SELogsHIFI_sampleEnv", alarms: "test-alarms" },
     },
 }
 

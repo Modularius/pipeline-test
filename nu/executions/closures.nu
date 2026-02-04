@@ -2,6 +2,7 @@ use ./benchmark.nu
 use ./standard.nu
 use ./stress_test.nu
 use ./tests.nu
+use ./simulator.nu
 
 export def execution [settings: record, execution: string] : nothing -> closure {
     match $execution {
@@ -9,5 +10,6 @@ export def execution [settings: record, execution: string] : nothing -> closure 
         benchmark   => {|deploy_pipeline, run_simulator, kill_pipeline| benchmark    $settings $deploy_pipeline $run_simulator $kill_pipeline },
         tests       => {|deploy_pipeline, run_simulator, kill_pipeline| tests        $settings $deploy_pipeline $run_simulator $kill_pipeline },
         stress_test => {|deploy_pipeline, run_simulator, kill_pipeline| stress_test  $settings $deploy_pipeline $run_simulator $kill_pipeline },
+        simulator   => {|deploy_pipeline, run_simulator, kill_pipeline| simulator    $settings $deploy_pipeline $run_simulator $kill_pipeline },
     }
 }

@@ -73,41 +73,16 @@
     }
   },
   "broker": {
-    "pipeline_name": "hifi-via-local",
+    "pipeline_name": "hifi-test",
     "address": "130.246.55.29:9092",
     "topics": {
-      "trace": "daq-traces-in",
-      "dat_event": "local-daq-events",
-      "frame_event": "local-frame-events",
-      "control": "ics-control-change",
-      "logs": "ics-metadata",
-      "selogs": "SELogsHIFI_sampleEnv",
-      "alarms": "ics-alarms"
-    },
-    "consumer_groups": {
-      "trace_to_events": "local_trace_to_events",
-      "digitiser_aggregator": "local_digitiser_aggregator",
-      "nexus_writer": "local_nexus_writer",
-      "diagnostics": "local_diagnostics"
-    },
-    "trace_to_events": {
-      "polarity": "positive",
-      "baseline": 0
-    },
-    "digitiser_aggregator": {
-      "digitiser_ids": [
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11
-      ]
-    },
-    "nexus_writer": {
-      "subdirectory": "hifi-via-local"
+      "trace": "test-traces-in",
+      "dat_event": "test-daq-events",
+      "frame_event": "test-frame-events",
+      "control": "test-control-change",
+      "logs": "test-metadata",
+      "selogs": "test-SELogsHIFI_sampleEnv",
+      "alarms": "test-alarms"
     }
   },
   "pipeline": {
