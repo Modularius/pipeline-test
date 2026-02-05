@@ -1,6 +1,6 @@
 use ../build/prelude.nu print_title
 use ../build/prelude.nu [print_heading, HEADING_COLOUR, SUBHEADING_COLOUR]
-use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator']
+use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator', 'build_args reader']
 use ../../settings.nu components
 
 def spawn_component_on_host [settings: record, comp: string, args: list<string>] {
@@ -12,9 +12,9 @@ def spawn_component_on_host [settings: record, comp: string, args: list<string>]
     }
 }
 
-export def select_host [settings: record] : nothing -> record<deploy:closure, kill:closure, run_simulator:closure> {
+export def select_host [settings: record] : nothing -> record<deploy_pipeline:closure, kill_pipeline:closure, run_simulator:closure, run_reader:closure> {
     {
-        "deploy": {|instance_settings?: record|
+        "deploy_pipeline": {|instance_settings?: record|
             let instance_settings = ($instance_settings | default {})
             "Running Host Pipeline" | print_heading $HEADING_COLOUR
 
@@ -28,7 +28,7 @@ export def select_host [settings: record] : nothing -> record<deploy:closure, ki
                 spawn_component_on_host $settings "nexus_writer"          (build_args nexus_writer $settings $instance_settings)
             }
         },
-        "kill": {
+        "kill_pipeline": {
             "Killing all pipeline host processes" | print_title
             let components = [ "trace_to_events", "digitiser_aggregator", "nexus_writer", "simulator" ]
             for comp in $components {
@@ -45,6 +45,16 @@ export def select_host [settings: record] : nothing -> record<deploy:closure, ki
             with-env ($envs | merge $settings.global_env_vars) {
                 print ($args | str join " ")
                 ^$components.simulator.execution_path ...$args | print
+            }
+        },
+        "run_reader": {|file_path: string, instance_settings?: record|
+            let instance_settings = ($instance_settings | default {})
+            
+            "Beginning File Reader (on Host)" | print_heading $HEADING_COLOUR
+            let args = build_args reader $settings ($instance_settings | default {}) $file_path
+            with-env $settings.global_env_vars {
+                print ($args | str join " ")
+                ^$components.reader.execution_path ...$args | print
             }
         }
     }

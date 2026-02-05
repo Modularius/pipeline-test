@@ -1,6 +1,6 @@
 use ../build/prelude.nu print_title
 use ../build/prelude.nu [print_heading, HEADING_COLOUR, SUBHEADING_COLOUR]
-use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer']
+use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator', 'build_args reader']
 use ../../settings.nu components
 
 def get_container_env_vars [comp: string, args: list<string>] : nothing -> record {
@@ -12,9 +12,9 @@ def get_container_env_vars [comp: string, args: list<string>] : nothing -> recor
     }
 }
 
-export def select_container [settings: record] : nothing -> record<deploy:closure, kill:closure, run_simulator:closure> {
+export def select_container [settings: record] : nothing -> record<deploy_pipeline:closure, kill_pipeline:closure, run_simulator:closure, run_reader:closure> {
     {
-        "deploy": {|instance_settings?: record|
+        "deploy_pipeline": {|instance_settings?: record|
             let instance_settings = ($instance_settings | default {})
             "Running Containerised Pipeline" | print_heading $HEADING_COLOUR
 
@@ -27,7 +27,7 @@ export def select_container [settings: record] : nothing -> record<deploy:closur
                 podman-compose -f Compose/pipeline.yml -p $settings.broker.pipeline_name --profile all up -d | print
             }
         },
-        "kill": {||
+        "kill_pipeline": {||
             "Killing all pipeline containers" | print_title
             podman-compose -f Compose/pipeline.yml -p $settings.broker.pipeline_name --profile all down | print
             podman-compose -f Compose/simulator.yml -p $settings.broker.pipeline_name down | print
@@ -39,6 +39,16 @@ export def select_container [settings: record] : nothing -> record<deploy:closur
             with-env ($envs | merge $settings.global_env_vars | merge (get_container_env_vars "simulator" $args)) {
                 cat Compose/simulator.template.yml | envsubst | save -f "Compose/simulator.yml"
                 podman-compose -f Compose/simulator.yml -p "local" up -d | print
+            }
+        },
+        "run_reader": {|file_path: string, instance_settings?: record|
+            let instance_settings = ($instance_settings | default {})
+            
+            "Beginning File Reader (on Host)" | print_heading $HEADING_COLOUR
+            let args = build_args reader $settings ($instance_settings | default {}) $file_path
+            with-env $settings.global_env_vars {
+                print ($args | str join " ")
+                ^$components.reader.execution_path ...$args | print
             }
         }
     }

@@ -1,5 +1,5 @@
 use ./build/prelude.nu print_title
-use ./executions/benchmark.nu new_subdir
+use ../executions/benchmark.nu new_subdir
 
 let settings: record = open "settings.json"
 

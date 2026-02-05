@@ -66,6 +66,21 @@
         "otel_level": "warn"
       }
     },
+    "reader": {
+      "execution_path": "../digital-muon-pipeline/target/release/trace-reader",
+      "process_name": "trace-reader",
+      "container_image": "ghcr.io/isisneutronmuon/digital-trace-reader",
+      "image_env_vars": {
+        "image": "IMAGE_READER",
+        "obvs_port": "OBSV_ADDRESS_READER",
+        "args": "READER_ARGS"
+      },
+      "observability": {
+        "obsv_address": "127.0.0.1:29094",
+        "tracing_level": "warn",
+        "otel_level": "warn"
+      }
+    },
     "diagnostics": {
       "execution_path": "../digital-muon-pipeline/target/release/diagnostics",
       "process_name": "diagnostics",
@@ -73,7 +88,7 @@
     }
   },
   "broker": {
-    "pipeline_name": "local",
+    "pipeline_name": "local_musr_file",
     "address": "localhost:19092",
     "topics": {
       "trace": "Traces",
@@ -91,43 +106,12 @@
       "diagnostics": "diagnostics"
     },
     "trace_to_events": {
-      "polarity": "positive",
-      "baseline": 0
+      "polarity": "negative",
+      "baseline": 100
     },
     "digitiser_aggregator": {
       "digitiser_ids": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31
+        0
       ]
     },
     "nexus_writer": {
@@ -151,21 +135,13 @@
     }
   },
   "detector": [
-    "differential-threshold-discriminator",
-    "--begin-threshold",
+    "fixed-threshold-discriminator",
+    "--threshold",
     "5",
-    "--end-threshold",
-    "0",
-    "--begin-duration",
-    "2",
-    "--end-duration",
-    "0",
+    "--duration",
+    "1",
     "--cool-off",
-    "0",
-    "--peak-height-mode",
-    "value-at-end-trigger",
-    "--peak-height-basis",
-    "trace-baseline"
+    "0"
   ],
   "global_env_vars": {
     "NO_COLOR": "true",

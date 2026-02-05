@@ -2,6 +2,29 @@ use ../../settings.nu constants
 use ../../settings.nu components
 use ./prelude.nu [get_nexus_local_path, get_nexus_archive_path]
 
+export def "build_args reader" [settings: record, instance_settings: record, file_path: string] : nothing -> list<string> {
+    let component = $components.reader
+
+    # Namespace
+    let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
+    let frame_number = $instance_settings.frame_number? | default 0
+    let digitiser_id = $instance_settings.digitiser_id? | default 0
+    let number_of_trace_events = $instance_settings.number_of_trace_events? | default 1
+    let random_sample = $instance_settings.random_sample? | default false
+
+    [
+        "--broker", $settings.broker.address,
+        "--otel-endpoint", $constants.otel_endpoint,
+        "--otel-namespace", $namespace,
+        "--file-name", $file_path,
+        "--trace-topic", $settings.broker.topics.trace,
+        "--frame-number", $frame_number,
+        "--digitiser-id", $digitiser_id,
+        "--number-of-trace-events", $number_of_trace_events #,
+        #"--random-sample", $random_sample
+    ]
+}
+
 export def "build_args simulator" [settings: record, instance_settings: record, source: string] : nothing -> list<string> {
     let component = $components.simulator
 
