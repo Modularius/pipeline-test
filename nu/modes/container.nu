@@ -1,7 +1,7 @@
 use ../build/prelude.nu print_title
 use ../build/prelude.nu [print_heading, HEADING_COLOUR, SUBHEADING_COLOUR]
 use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer']
-use ../build/settings.nu components
+use ../../settings.nu components
 
 def get_container_env_vars [comp: string, args: list<string>] : nothing -> record {
     let component = $components | get $comp

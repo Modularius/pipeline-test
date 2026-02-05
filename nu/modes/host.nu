@@ -1,7 +1,7 @@
 use ../build/prelude.nu print_title
 use ../build/prelude.nu [print_heading, HEADING_COLOUR, SUBHEADING_COLOUR]
 use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator']
-use ../build/settings.nu components
+use ../../settings.nu components
 
 def spawn_component_on_host [settings: record, comp: string, args: list<string>] {
     $"Spawning component ($comp) in background" | print_heading $SUBHEADING_COLOUR

@@ -1,7 +1,7 @@
 let settings: record = open "settings.json"
 
 const kakfa_path = "rpk"
-const kakfa_args = ["rpk", "topic"]
+const kakfa_args = ["topic"]
 
 export def 'main' [] {
     ^$kakfa_path ...$kakfa_args ls

@@ -1,5 +1,4 @@
-use ./settings.nu constants
-use ./settings.nu components
+use ../../settings.nu [components, constants]
 use ./prelude.nu [get_nexus_local_path, get_nexus_archive_path]
 
 export def "build_args simulator" [settings: record, instance_settings: record, source: string] : nothing -> list<string> {

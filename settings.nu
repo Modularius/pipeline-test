@@ -120,6 +120,23 @@ const brokers = {
             subdirectory: "hifi_1",
         }
     },
+    test: {
+        pipeline_name: "hifi_test",
+        address: "130.246.55.29:9092",
+        topics:             { trace: "test-traces-in", dat_event: "test-events", frame_event: "test-frame-events", control: "test-control-change", logs: "test-metadata", selogs: "test-SELogsHIFI_sampleEnv", alarms: "test-alarms" },
+        consumer_groups:    { trace_to_events: "test_trace_to_events", digitiser_aggregator: "test_digitiser_aggregator", nexus_writer: "test_nexus_writer", diagnostics: "test_diagnostics" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [0,1,2,3,4,5,6,7]
+        },
+        nexus_writer: {
+            subdirectory: "hifi_test",
+        }
+    },
     musr_to_local: {
         pipeline_name: "musr_to_hifi",
         address: "130.246.55.29:9092",
