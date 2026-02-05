@@ -1,7 +1,7 @@
 services:
   redpanda:
-    container_name: kafka
-    image: docker.redpanda.com/redpandadata/redpanda:v23.1.11
+    container_name: redpanda
+    image: docker.redpanda.com/redpandadata/redpanda:v25.3.6
     command:
       - redpanda start
       - --smp 1
@@ -33,6 +33,27 @@ services:
       timeout: 3s
       retries: 5
       start_period: 5s
+  console:
+    container_name: redpanda-console
+    image: docker.redpanda.com/redpandadata/console:v3.5.1
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda:9092"]
+        schemaRegistry:
+          enabled: true
+          urls: ["http://redpanda:8081"]
+        redpanda:
+          adminApi:
+            enabled: true
+            urls: ["http://redpanda:9644"]
+    ports:
+      - 8080:8080
+    depends_on:
+      - redpanda
 
 volumes:
   redpanda: null
