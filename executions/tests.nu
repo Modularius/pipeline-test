@@ -1,15 +1,15 @@
-use ../build/prelude.nu [print_heading, print_title, HEADING_COLOUR, SUBHEADING_COLOUR, SUBSUBHEADING_COLOUR, wait_until_runs_completed]
-use ../build/analysis.nu analyse_test_file
+use ../nu/build/prelude.nu [print_heading, print_title, HEADING_COLOUR, SUBHEADING_COLOUR, SUBSUBHEADING_COLOUR, wait_until_runs_completed]
+use ../nu/build/analysis.nu analyse_test_file
 use std/assert
 
 ### This indicates that we do not change the ddefault nexus file subdirectory.
 export def new_subdir [] : nothing -> oneof<string,nothing> { null }
 
-export def main [settings: record, deploy_pipeline: closure, run_simulator: closure, kill_pipeline: closure] {
+export def main [settings: record, controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>] {
     "Running Tests Execution" | print_title
 
     let simulation_and_analysis = {|simulation: string, sim_env_vars: record, run_names: list<string>|
-        do $run_simulator $"Simulations/Tests/($simulation).json" $sim_env_vars {}; sleep 1sec
+        do $controls.run_simulator $"Simulations/Tests/($simulation).json" $sim_env_vars {}; sleep 1sec
 
         let completed_paths = $run_names | wait_until_runs_completed $settings
         for completed_path in $completed_paths {
@@ -17,7 +17,7 @@ export def main [settings: record, deploy_pipeline: closure, run_simulator: clos
         }
     }
     
-    do $deploy_pipeline {"suppress_archive": true}; sleep 1sec
+    do $controls.deploy_pipeline {"suppress_archive": true}; sleep 1sec
 
     do $simulation_and_analysis "SanityChecking/one_run" {
         RUN_NAME: "SC_SingleRun", TIME_BINS: 10000,
@@ -40,5 +40,5 @@ export def main [settings: record, deploy_pipeline: closure, run_simulator: clos
         NUM_PULSES: 100, PULSE_MEAN_LIFETIME: 1000
     } ["SC_Selogs_Run1of2", "SC_Selogs_Run2of2"]
 
-    do $kill_pipeline
+    do $controls.kill_pipeline
 }

@@ -26,6 +26,11 @@ export const components = {
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
         observability: { obsv_address: ($obsv_address_prefix ++ "3") tracing_level: "warn", otel_level: "warn" }
     },
+    reader: {
+        execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader",
+        image_env_vars: { image: "IMAGE_READER", obvs_port: "OBSV_ADDRESS_READER", args: "READER_ARGS" },
+        observability: { obsv_address: "127.0.0.1:29094" tracing_level: "warn", otel_level: "warn" }
+    },
     diagnostics: {
         execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest",
     }

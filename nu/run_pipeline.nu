@@ -1,7 +1,7 @@
 use ./build/prelude.nu print_heading
 #use ./build/simulator_closures.nu run_simulator_closures
 #use ./build/pipeline_closures.nu deploy_pipeline_closures
-use ./executions/closures.nu execution
+use ../executions/closures.nu execution
 use ./modes/closures.nu mode
 
 let settings: record = open "settings.json"
@@ -13,5 +13,5 @@ def main [mode: string, execution: string] {
 
     let mode = mode $mode $settings
 
-    do (execution $settings $execution) $mode.deploy $mode.run_simulator $mode.kill
+    do (execution $settings $execution) $mode
 }

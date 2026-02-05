@@ -1,4 +1,4 @@
-use ../build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
+use ../nu/build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
 
 ### This indicates that we do not change the default nexus file subdirectory.
 export def new_subdir [] : nothing -> oneof<string,nothing> { null }

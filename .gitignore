@@ -3,6 +3,9 @@ Logs/*
 .direnv/*
 *.pyc
 *.csv
-local.env
 Jupyter/cache/*.json
-archive
+Jaeger/kibanadata/*
+output.*
+settings.json
+Compose/pipeline.yml
+Compose/simulator.yml
