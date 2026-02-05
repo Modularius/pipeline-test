@@ -54,7 +54,7 @@
     "simulator": {
       "execution_path": "../digital-muon-pipeline/target/release/simulator",
       "process_name": "simulator",
-      "container_image": "supermusr-simulator:latest",
+      "container_image": "ghcr.io/isisneutronmuon/digital-muon-simulator",
       "image_env_vars": {
         "image": "IMAGE_SIMULATOR",
         "obvs_port": "OBSV_ADDRESS_SIMULATOR",
@@ -73,16 +73,65 @@
     }
   },
   "broker": {
-    "pipeline_name": "hifi-test",
-    "address": "130.246.55.29:9092",
+    "pipeline_name": "local",
+    "address": "localhost:19092",
     "topics": {
-      "trace": "test-traces-in",
-      "dat_event": "test-daq-events",
-      "frame_event": "test-frame-events",
-      "control": "test-control-change",
-      "logs": "test-metadata",
-      "selogs": "test-SELogsHIFI_sampleEnv",
-      "alarms": "test-alarms"
+      "trace": "Traces",
+      "dat_event": "Events",
+      "frame_event": "FrameEvents",
+      "control": "Controls",
+      "logs": "Logs",
+      "selogs": "SELogs",
+      "alarms": "Alarms"
+    },
+    "consumer_groups": {
+      "trace_to_events": "trace_to_events",
+      "digitiser_aggregator": "digitiser_aggregator",
+      "nexus_writer": "nexus_writer",
+      "diagnostics": "diagnostics"
+    },
+    "trace_to_events": {
+      "polarity": "positive",
+      "baseline": 0
+    },
+    "digitiser_aggregator": {
+      "digitiser_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "nexus_writer": {
+      "subdirectory": "local"
     }
   },
   "pipeline": {

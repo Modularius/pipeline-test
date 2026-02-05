@@ -4,28 +4,28 @@ services:
       mode: replicated
       replicas: 1
     network_mode: "host"
-    image: supermusr-simulator:latest
+    image: 
     environment:
-      - RUST_LOG=info,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
-      - MAX_DIGITISER=7
-      - NUM_DIGITISERS=8
-      - RUN_NAME=ShortTest
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - MAX_DIGITISER=
+      - NUM_DIGITISERS=2
+      - RUN_NAME=Smoothing_Run
       - NO_COLOR=true
-      - OTEL_LEVEL=info,simulator=off,digitiser_aggregator=info,nexus_writer=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
     command:
-     - --broker=localhost:19092
-     - --otel-namespace=TEST_011TEST_011
-     - --otel-endpoint=http://172.16.105.83:4317/v1/traces
+     - --broker=
+     - --otel-namespace=
+     - --otel-endpoint=
      - defined
-     - "/home/Benchmarks/timing.json"
-     - --digitiser-trace-topic=Traces
-     - --digitiser-event-topic=Events
-     - --frame-event-topic=FrameEvents
-     - --control-topic=Controls
-     - --runlog-topic=Logs
-     - --selog-topic=SELogs
-     - --alarm-topic=Alarms
+     - "/home/"
+     - --digitiser-trace-topic=
+     - --digitiser-event-topic=
+     - --frame-event-topic=
+     - --control-topic=
+     - --runlog-topic=
+     - --selog-topic=
+     - --alarm-topic=
     volumes:
-      - ../Simulations:/home
+      - ../:/home
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"
