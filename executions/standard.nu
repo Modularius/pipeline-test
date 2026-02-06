@@ -8,5 +8,5 @@ export def new_subdir [] : nothing -> oneof<string,nothing> { null }
 export def main [settings: record, controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>] {
     "Running Standard Execution" | print_title
 
-    do $controls.deploy_pipeline { suppress_archive: true }
+    do $controls.deploy_pipeline { suppress-archive: true }
 }

@@ -1,5 +1,4 @@
-use ../build/prelude.nu print_title
-use ../build/prelude.nu [print_heading, HEADING_COLOUR, SUBHEADING_COLOUR]
+use ../build/prelude.nu [print_title, print_heading, HEADING_COLOUR, SUBHEADING_COLOUR, get_nexus_local_path, get_nexus_archive_path]
 use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator', 'build_args reader']
 use ../../settings.nu components
 
@@ -18,10 +17,18 @@ export def select_container [settings: record] : nothing -> record<deploy_pipeli
             let instance_settings = ($instance_settings | default {})
             "Running Containerised Pipeline" | print_heading $HEADING_COLOUR
 
+            let nexus_path_overwrites = {
+                new_local_path: "/local",
+                new_archive_path: "/archive"
+            }
             let env_vars = (get_container_env_vars "trace_to_events"        (build_args trace_to_events $settings $instance_settings))
                     | merge     (get_container_env_vars "digitiser_aggregator"   (build_args digitiser_aggregator $settings $instance_settings))
-                    | merge     (get_container_env_vars "nexus_writer"           (build_args nexus_writer $settings $instance_settings))
+                    | merge     (get_container_env_vars "nexus_writer"           (build_args nexus_writer $settings ($instance_settings | merge $nexus_path_overwrites) ))
                     | merge $settings.global_env_vars
+                    | merge {
+                        "NEXUS_OUTPUT_PATH": (get_nexus_local_path $settings $instance_settings)
+                        "NEXUS_ARCHIVE_PATH": (get_nexus_archive_path $settings $instance_settings)
+                    }
             with-env $env_vars {
                 cat Compose/pipeline.template.yml | envsubst | save -f "Compose/pipeline.yml"
                 podman-compose -f Compose/pipeline.yml -p $settings.broker.pipeline_name --profile all up -d | print

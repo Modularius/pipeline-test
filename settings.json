@@ -66,6 +66,21 @@
         "otel_level": "warn"
       }
     },
+    "reader": {
+      "execution_path": "../digital-muon-pipeline/target/release/trace-reader",
+      "process_name": "trace-reader",
+      "container_image": "ghcr.io/isisneutronmuon/digital-trace-reader",
+      "image_env_vars": {
+        "image": "IMAGE_READER",
+        "obvs_port": "OBSV_ADDRESS_READER",
+        "args": "READER_ARGS"
+      },
+      "observability": {
+        "obsv_address": "127.0.0.1:29094",
+        "tracing_level": "warn",
+        "otel_level": "warn"
+      }
+    },
     "diagnostics": {
       "execution_path": "../digital-muon-pipeline/target/release/diagnostics",
       "process_name": "diagnostics",
@@ -73,21 +88,21 @@
     }
   },
   "broker": {
-    "pipeline_name": "musr_to_hifi",
+    "pipeline_name": "hifi_1",
     "address": "130.246.55.29:9092",
     "topics": {
-      "trace": "musr-daq-traces-in",
-      "dat_event": "musr-daq-events",
-      "frame_event": "musr-frame-events",
+      "trace": "daq-traces-in",
+      "dat_event": "daq-events",
+      "frame_event": "frame-events",
       "control": "ics-control-change",
       "logs": "ics-metadata",
       "selogs": "SELogsHIFI_sampleEnv",
       "alarms": "ics-alarms"
     },
     "consumer_groups": {
-      "trace_to_events": "musr_trace_to_events",
-      "digitiser_aggregator": "musr_digitiser_aggregator",
-      "nexus_writer": "musr_nexus_writer",
+      "trace_to_events": "trace_to_events",
+      "digitiser_aggregator": "digitiser_aggregator",
+      "nexus_writer": "nexus_writer",
       "diagnostics": "diagnostics"
     },
     "trace_to_events": {
@@ -107,7 +122,7 @@
       ]
     },
     "nexus_writer": {
-      "subdirectory": "musr_via_hifi"
+      "subdirectory": "hifi_1"
     }
   },
   "pipeline": {

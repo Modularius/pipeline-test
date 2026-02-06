@@ -178,4 +178,3 @@ export def "build_settings" [broker: string, pipeline: string, detector: string]
         }
     }
 }
-

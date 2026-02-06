@@ -129,9 +129,13 @@ export def "build_args nexus_writer" [settings: record, instance_settings: recor
     let topics = $settings.broker.topics
 
     # Paths
-    let local_path = get_nexus_local_path $settings $instance_settings
-    let archive_path_maybe = ["--archive-path", (get_nexus_archive_path $settings $instance_settings)]
-        | where ($instance_settings.suppress_archive? | default false) == false
+    let local_path = $instance_settings.new_local_path?
+        | default (get_nexus_local_path $settings $instance_settings)
+    let archive_path_maybe = ["--archive-path", (
+        $instance_settings.new_archive_path?
+            | default (get_nexus_archive_path $settings $instance_settings)
+        )
+    ] | where ($instance_settings.suppress_archive? | default false) == false
 
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
