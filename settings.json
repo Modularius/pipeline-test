@@ -88,7 +88,7 @@
     }
   },
   "broker": {
-    "pipeline_name": "local_musr_file",
+    "pipeline_name": "local",
     "address": "localhost:19092",
     "topics": {
       "trace": "Traces",
@@ -106,12 +106,19 @@
       "diagnostics": "diagnostics"
     },
     "trace_to_events": {
-      "polarity": "negative",
-      "baseline": 100
+      "polarity": "positive",
+      "baseline": 0
     },
     "digitiser_aggregator": {
       "digitiser_ids": [
-        0
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
       ]
     },
     "nexus_writer": {

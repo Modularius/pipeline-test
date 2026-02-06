@@ -1,5 +1,4 @@
-use ../build/prelude.nu print_title
-use ../build/prelude.nu [print_heading, HEADING_COLOUR, SUBHEADING_COLOUR]
+use ../build/prelude.nu [print_title print_heading, HEADING_COLOUR, SUBHEADING_COLOUR, get_nexus_local_path, get_nexus_archive_path]
 use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator', 'build_args reader']
 use ../../settings.nu components
 
