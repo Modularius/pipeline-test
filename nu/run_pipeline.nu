@@ -10,7 +10,13 @@ def main [mode: string, execution: string] {
     #let run_simulator = run_simulator_closures $settings $mode
     #let kill_pipeline = { nu ./nu/kill.nu $mode }
 
+    let executions = execution $settings $execution
+
+    $executions | describe | print
+
+    let execution = $executions | get "run"
+    
     let mode = mode $mode $settings
 
-    do (execution $settings $execution).run $mode
+    do $execution $mode
 }

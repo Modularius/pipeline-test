@@ -2,34 +2,37 @@ const prefix = "../digital-muon-pipeline/target/release/"
 #const prefix = "../digital-muon-pipeline/target/debug/"
 #const prefix = "cargo run --manifest-path "../supermusr-data-pipeline" --release --bin "
 
+const obsv_address_prefix = "127.0.0.1:2909"
+#const obsv_address_prefix = "127.0.0.1:2908"
+
 export const components = {
     trace_to_events: {
         execution_path: ($prefix ++ "trace-to-events"), process_name: "trace-to-events" container_image: "supermusr-trace-to-events:latest",
         image_env_vars: { image: "IMAGE_EVENT_FORMATION", obvs_port: "OBSV_ADDRESS_EVENT_FORMATION", args: "EVENT_FORMATION_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29090" tracing_level: "info", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "0") tracing_level: "info", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info" }
     },
     digitiser_aggregator: {
         execution_path: ($prefix ++ "digitiser-aggregator"), process_name: "digitiser-aggre" container_image: "supermusr-digitiser-aggregator:latest",
         image_env_vars: { image: "IMAGE_AGGREGATOR", obvs_port: "OBSV_ADDRESS_AGGREGATOR", args: "AGGREGATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29091" tracing_level: "info", otel_level: "info" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "1") tracing_level: "info", otel_level: "info" }
     },
     nexus_writer: {
         execution_path: ($prefix ++ "nexus-writer"), process_name: "nexus-writer" container_image: "supermusr-nexus-writer:latest",
         image_env_vars: { image: "IMAGE_WRITER", obvs_port: "OBSV_ADDRESS_WRITER", args: "WRITER_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29092" tracing_level: "info", otel_level: "info" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "2") tracing_level: "info", otel_level: "info" }
     },
     simulator: {
-        execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "ghcr.io/isisneutronmuon/digital-muon-simulator:main",
+        execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "supermusr-digital-simulator:latest",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "warn", otel_level: "info" }
+        observability: { obsv_address: ($obsv_address_prefix ++ "3") tracing_level: "warn", otel_level: "warn" }
     },
     reader: {
-        execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader:main",
+        execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader",
         image_env_vars: { image: "IMAGE_READER", obvs_port: "OBSV_ADDRESS_READER", args: "READER_ARGS" },
         observability: { obsv_address: "127.0.0.1:29094" tracing_level: "warn", otel_level: "warn" }
     },
     diagnostics: {
-        execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest"
+        execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest",
     }
 }
 
@@ -43,7 +46,7 @@ export const constants = {
 #### Event Formation
 export const detector_settings = {
     threshold_1: [ "fixed-threshold-discriminator"
-        "--threshold", "5",
+        "--threshold", "2100",
         "--duration", "1",
         "--cool-off", "0"
     ],
@@ -58,8 +61,8 @@ export const detector_settings = {
     ],
     smoothing_1: [ "smoothing-detector",
         "--noise-centile", "90",
-        "--kernel-sigma", "2",
-        "--nsig-noise", "2" #,
+        "--kernel-sigma", "4",
+        "--nsig-noise", "5" #,
         #"--min-size", "2"
     ]
 }
@@ -70,7 +73,7 @@ export const pipeline_settings = {
             send_eventlist_buffer_size: 1024,
         },
         digitiser_aggregator: {
-            frame_ttl_ms: 3500,
+            frame_ttl_ms: 200,
             send_frame_buffer_size: 64
         }
         nexus_writer: {
@@ -78,86 +81,18 @@ export const pipeline_settings = {
                 nexus_output: "Output",
                 nexus_archive: "archive/incoming"
             },
-            run_ttl_ms: 9000
+            run_ttl_ms: 15000
         }
     }
 }
 
 #### Brokers
 export const brokers = {
-    local_one_digitiser: {
-        pipeline_name: "local",
-        address: "localhost:19092",
-        topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
-        # Trace Source Dependent Event Formation Settings
-        trace_to_events: {
-            polarity: "positive",
-            baseline: 0
-        },
-        digitiser_aggregator: {
-            digitiser_ids: [0]
-        },
-        nexus_writer: {
-            subdirectory: "local",
-        }
-    },
-    local_musr_reader: {
-        pipeline_name: "local_musr_file",
-        address: "localhost:19092",
-        topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
-        # Trace Source Dependent Event Formation Settings
-        trace_to_events: {
-            polarity: "negative",
-            baseline: 100
-        },
-        digitiser_aggregator: {
-            digitiser_ids: [0]
-        },
-        nexus_writer: {
-            subdirectory: "local",
-        }
-    },
     local: {
-        pipeline_name: "local",
-        address: "localhost:19092",
-        topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
-        # Trace Source Dependent Event Formation Settings
-        trace_to_events: {
-            polarity: "positive",
-            baseline: 0
-        },
-        digitiser_aggregator: {
-            digitiser_ids: [0,1,2,3,4,5,6,7]
-        },
-        nexus_writer: {
-            subdirectory: "local",
-        }
-    },
-    superlocal: {
-        pipeline_name: "local",
-        address: "localhost:19092",
-        topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
-        # Trace Source Dependent Event Formation Settings
-        trace_to_events: {
-            polarity: "positive",
-            baseline: 0
-        },
-        digitiser_aggregator: {
-            digitiser_ids: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31] #,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119]
-        },
-        nexus_writer: {
-            subdirectory: "local",
-        }
-    },
-    hifi: {
-        pipeline_name: "hifi-via-local",
+        pipeline_name: "hifi_1",
         address: "130.246.55.29:9092",
-        topics:             { trace: "daq-traces-in", dat_event: "local-daq-events", frame_event: "local-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
-        consumer_groups:    { trace_to_events: "local_trace_to_events", digitiser_aggregator: "local_digitiser_aggregator", nexus_writer: "local_nexus_writer", diagnostics: "local_diagnostics" },
+        topics:             { trace: "daq-traces-in", dat_event: "daq-events", frame_event: "frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -167,12 +102,41 @@ export const brokers = {
             digitiser_ids: [4,5,6,7,8,9,10,11]
         },
         nexus_writer: {
-            subdirectory: "hifi-via-local",
+            subdirectory: "hifi_1",
         }
     },
-    hifi-test-simulator-only: {
-        pipeline_name: "hifi-test",
+    test: {
+        pipeline_name: "hifi_test",
         address: "130.246.55.29:9092",
-        topics: { trace: "test-traces-in", dat_event: "test-daq-events", frame_event: "test-frame-events", control: "test-control-change", logs: "test-metadata", selogs: "test-SELogsHIFI_sampleEnv", alarms: "test-alarms" },
+        topics:             { trace: "test-traces-in", dat_event: "test-events", frame_event: "test-frame-events", control: "test-control-change", logs: "test-metadata", selogs: "test-SELogsHIFI_sampleEnv", alarms: "test-alarms" },
+        consumer_groups:    { trace_to_events: "test_trace_to_events", digitiser_aggregator: "test_digitiser_aggregator", nexus_writer: "test_nexus_writer", diagnostics: "test_diagnostics" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [0,1,2,3,4,5,6,7]
+        },
+        nexus_writer: {
+            subdirectory: "hifi_test",
+        }
     },
+    musr_to_local: {
+        pipeline_name: "musr_to_hifi",
+        address: "130.246.55.29:9092",
+        topics:             { trace: "musr-daq-traces-in", dat_event: "musr-daq-events", frame_event: "musr-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "SELogsHIFI_sampleEnv", alarms: "ics-alarms" },
+        consumer_groups:    { trace_to_events: "musr_trace_to_events", digitiser_aggregator: "musr_digitiser_aggregator", nexus_writer: "musr_nexus_writer", diagnostics: "diagnostics" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [4,5,6,7,8,9,10,11]
+        },
+        nexus_writer: {
+            subdirectory: "musr_via_hifi",
+        }
+    }
 }
