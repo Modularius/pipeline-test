@@ -2,9 +2,9 @@
 alias init_settings = nu ./nu/init_settings.nu
 alias run_pipeline = nu ./nu/run_pipeline.nu
 alias kill_pipeline = nu ./nu/kill.nu
-alias clean_pipeline = nu ./nu/clean.nu
-alias image_refresh = nu ./nu/image_refresh.nu
+alias clean_pipeline = nu ./nu/tools/clean.nu
+alias image_refresh = nu ./nu/tools/image_refresh.nu
 alias diagnostics = nu ./nu/diagnostic.nu
-alias topics = nu ./nu/topics.nu
+alias topics = nu ./nu/tools/topics.nu
 alias inspect = nu ./nu/tools/inspect_container.nu
-alias read_logs = nu ./nu/tools/container_logs.nu
+alias read_logs = nu ./nu/tools/read_logs.nu

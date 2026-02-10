@@ -1,7 +1,9 @@
-use ./build/prelude.nu print_title
-use ./executions/benchmark.nu new_subdir
+use ./../build/prelude.nu print_title
+use ./../build/settings.nu SETTINGS_PATH
+use ../../executions/benchmark.nu new_subdir
 
-let settings: record = open "settings.json"
+let settings: record = open $SETTINGS_PATH
+
 
 let broker_component = $settings.broker.nexus_writer
 let pipeline_component = $settings.pipeline.nexus_writer
@@ -26,10 +28,8 @@ def 'main' [execution: string, clean_archive?: bool] {
 
     ls $"($local_path)" | remove_nxs_file
     ls $"($local_path)/completed" | remove_nxs_file
-    
-    # We never want to do this on HiFI
     if $clean_archive {
-        #let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
-        #ls $"($archive_path)" | remove_nxs_file
+        let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
+        ls $"($archive_path)" | remove_nxs_file
     }
 }
