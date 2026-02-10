@@ -1,6 +1,6 @@
 use ./../build/prelude.nu print_title
 use ./../build/settings.nu SETTINGS_PATH
-use ../../executions/benchmark.nu new_subdir
+use ../../executions/closures.nu execution
 
 let settings: record = open $SETTINGS_PATH
 
@@ -16,7 +16,8 @@ let subdir_closures = {
 def 'main' [execution: string, clean_archive?: bool] {
     let clean_archive = $clean_archive | default false
     # Subdirectory
-    let subdir = do ($subdir_closures | get $execution) | default $broker_component.subdirectory
+    let execution = execution $settings $execution
+    let subdir = do ($execution | get "new_sub_dir") | default $broker_component.subdirectory
 
     let local_path = [$pipeline_component.paths.nexus_output, $subdir] | str join "/"
 

@@ -21,7 +21,7 @@ export const components = {
     simulator: {
         execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "ghcr.io/isisneutronmuon/digital-muon-simulator:main",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "warn", otel_level: "info" }
+        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "debug", otel_level: "warn" }
     },
     reader: {
         execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader:main",

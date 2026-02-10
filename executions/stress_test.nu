@@ -1,8 +1,8 @@
 use ../nu/build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
 
-export def main [settings: record, controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>] : nothing -> record<run: closure, new_sub_dir: oneof<string,nothing>> {
+export def main [settings: record] : nothing -> record<run: closure, new_sub_dir: closure> {
     {
-        "run": {||
+        "run": {|controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>|
             "Running Stress Test Execution" | print_title
 
             let pipeline_and_simulation = {|namespace: string, simulation: string, sim_env_vars: record|
@@ -10,21 +10,21 @@ export def main [settings: record, controls: record<deploy_pipeline: closure, ru
 
                 do $controls.run_simulator $"Simulations/($simulation).json" $sim_env_vars { new_namespace: $namespace }; sleep 1sec
 
-                #$sim_env_vars | get "RUN_NAME" | wait_until_run_completed $settings
+                $sim_env_vars | get "RUN_NAME" | wait_until_run_completed $settings
                 
-                #do $kill_pipeline; sleep 1sec
+                do $controls.kill_pipeline; sleep 1sec
 
                 #nu ./nu/clean.nu "benchmark"; sleep 1sec
             }
 
-            do $pipeline_and_simulation "local1" "noisy" {
+            do $pipeline_and_simulation "local1" "Temp/B2B" {
                 TIME_BINS: 30000,
                 MAX_NOISE: 3,
-                RUN_NAME: "Smoothing_Run",
+                RUN_NAME: "BackToBack",
                 LAST_FRAME: 0,
-                LAST_DIGITISER: 1 NUM_DIGITISERS: 2
+                LAST_DIGITISER: 7 NUM_DIGITISERS: 8
             }
         },
-        "new_sub_dir": null
+        "new_sub_dir": {|| null }
     }
 }

@@ -1,8 +1,8 @@
 use ../nu/build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
 
-export def main [settings: record, controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>] {
+export def main [settings: record] : nothing -> record<run: closure, new_sub_dir: closure> {
     {
-        "run": {||
+        "run": {|controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>|
             "Running Reader Execution" | print_title
 
             let pipeline_and_reader = {|namespace: string, file_name: string|
@@ -19,6 +19,6 @@ export def main [settings: record, controls: record<deploy_pipeline: closure, ru
 
             do $pipeline_and_reader "reader_1" "MuSR_A27_B28_C29_D30_Apr2021_Ag_ZF_InstDeg_Slit60_short.traces"
         },
-        "new_sub_dir": null
+        "new_sub_dir": {|| null }
     }
 }
