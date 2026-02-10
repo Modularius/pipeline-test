@@ -14,6 +14,6 @@ services:
       - OTEL_LEVEL=${OTEL_LEVEL}
     command: $SIMULATOR_ARGS
     volumes:
-      - ../$SOURCE_FILE:/home/$SOURCE_FILE
+      - ../$SOURCE_FILE:$SOURCE_FILE
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"
