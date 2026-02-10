@@ -6,6 +6,9 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    logging:
+      options:
+        path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/event-formation.log
     image: $IMAGE_EVENT_FORMATION
     environment:
       - RUST_LOG=${RUST_LOG}
@@ -26,6 +29,9 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    logging:
+      options:
+        path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/frame-aggregation.log
     image: $IMAGE_AGGREGATOR
     environment:
       - RUST_LOG=${RUST_LOG}
@@ -46,6 +52,9 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    logging:
+      options:
+        path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/nexus-writer.log
     image: $IMAGE_WRITER
     environment:
       - RUST_LOG=${RUST_LOG}
