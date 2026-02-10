@@ -2,11 +2,13 @@ use ../nu/build/prelude.nu [print_heading, print_title, HEADING_COLOUR, SUBHEADI
 use ../nu/build/analysis.nu analyse_test_file
 use std/assert
 
-### This indicates that we do not change the ddefault nexus file subdirectory.
-export def new_subdir [] : nothing -> oneof<string,nothing> { null }
-
 export def main [settings: record, controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>] {
-    "Running Standard Execution" | print_title
+    {
+        "run": {||
+            "Running Standard Execution" | print_title
 
-    do $controls.deploy_pipeline { suppress_archive: true }
+            do $controls.deploy_pipeline { suppress_archive: true }
+        },
+        "new_sub_dir": null
+    }
 }

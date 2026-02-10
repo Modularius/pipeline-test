@@ -1,7 +1,9 @@
-use ./build/prelude.nu print_title
-use ../executions/benchmark.nu new_subdir
+use ./../build/prelude.nu print_title
+use ./../build/settings.nu SETTINGS_PATH
+use ../../executions/benchmark.nu new_subdir
 
-let settings: record = open "settings.json"
+let settings: record = open $SETTINGS_PATH
+
 
 let broker_component = $settings.broker.nexus_writer
 let pipeline_component = $settings.pipeline.nexus_writer

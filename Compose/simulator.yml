@@ -4,28 +4,16 @@ services:
       mode: replicated
       replicas: 1
     network_mode: "host"
-    image: 
+    image: ghcr.io/isisneutronmuon/digital-muon-simulator:main
     environment:
       - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
-      - MAX_DIGITISER=
-      - NUM_DIGITISERS=2
-      - RUN_NAME=Smoothing_Run
+      - LAST_DIGITISER=
+      - NUM_DIGITISERS=8
+      - RUN_NAME=Benchmarking_Run
       - NO_COLOR=true
-      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn
-    command:
-     - --broker=
-     - --otel-namespace=
-     - --otel-endpoint=
-     - defined
-     - "/home/"
-     - --digitiser-trace-topic=
-     - --digitiser-event-topic=
-     - --frame-event-topic=
-     - --control-topic=
-     - --runlog-topic=
-     - --selog-topic=
-     - --alarm-topic=
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=info,trace_to_events::pulse_detection=info,digitiser_aggregator=info,nexus_writer=info,simulator=info
+    command: [--broker,localhost:19092,--otel-endpoint,http://172.16.105.83:4317/v1/traces,--otel-namespace,benchmark06,defined,/home/Simulations/Benchmarks/timing.json,--digitiser-trace-topic,Traces,--digitiser-event-topic,Events,--frame-event-topic,FrameEvents,--control-topic,Controls,--runlog-topic,Logs,--selog-topic,SELogs,--alarm-topic,Alarms]
     volumes:
-      - ../:/home
+      - ../Simulations/Benchmarks/timing.json:/home/Simulations/Benchmarks/timing.json
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"

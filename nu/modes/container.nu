@@ -43,9 +43,14 @@ export def select_container [settings: record] : nothing -> record<deploy_pipeli
             let instance_settings = ($instance_settings | default {})
             "Beginning Simulation (in Container)" | print_heading $HEADING_COLOUR
             let args = build_args simulator $settings ($instance_settings | default {}) $source
-            with-env ($envs | merge $settings.global_env_vars | merge (get_container_env_vars "simulator" $args)) {
+
+            let env_vars = $envs
+                | merge $settings.global_env_vars
+                | merge (get_container_env_vars "simulator" $args)
+                | merge { "SOURCE_FILE": $source }
+            with-env $env_vars {
                 cat Compose/simulator.template.yml | envsubst | save -f "Compose/simulator.yml"
-                podman-compose -f Compose/simulator.yml -p "local" up -d | print
+                podman-compose -f Compose/simulator.yml -p $"simulator_($settings.broker.pipeline_name)" up -d | print
             }
         },
         "run_reader": {|file_path: string, instance_settings?: record|

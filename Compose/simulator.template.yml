@@ -4,28 +4,16 @@ services:
       mode: replicated
       replicas: 1
     network_mode: "host"
-    image: ${g_IMAGE_SIMULATOR}
+    image: ${IMAGE_SIMULATOR}
     environment:
       - RUST_LOG=${RUST_LOG}
-      - MAX_DIGITISER=${MAX_DIGITISER}
+      - LAST_DIGITISER=${MAX_DIGITISER}
       - NUM_DIGITISERS=${NUM_DIGITISERS}
       - RUN_NAME=${RUN_NAME}
       - NO_COLOR=${NO_COLOR}
       - OTEL_LEVEL=${OTEL_LEVEL}
-    command:
-     - --broker=${BROKER}
-     - --otel-namespace=${PIPELINE_NAME}
-     - --otel-endpoint=${OTEL_ENDPOINT}
-     - defined
-     - "/home/${SIMULATOR_SOURCE}"
-     - --digitiser-trace-topic=${TRACE_TOPIC}
-     - --digitiser-event-topic=${DAT_EVENT_TOPIC}
-     - --frame-event-topic=${FRAME_EVENT_TOPIC}
-     - --control-topic=${CONTROL_TOPIC}
-     - --runlog-topic=${LOGS_TOPIC}
-     - --selog-topic=${SELOGS_TOPIC}
-     - --alarm-topic=${ALARMS_TOPIC}
+    command: $SIMULATOR_ARGS
     volumes:
-      - ../${SIMULATOR_PATH}:/home
+      - ../$SOURCE_FILE:/home/$SOURCE_FILE
     #extra_hosts:
     #  - "host.docker.internal:host-gateway"

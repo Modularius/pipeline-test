@@ -19,12 +19,12 @@ export const components = {
         observability: { obsv_address: "127.0.0.1:29092" tracing_level: "info", otel_level: "info" }
     },
     simulator: {
-        execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "ghcr.io/isisneutronmuon/digital-muon-simulator",
+        execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "ghcr.io/isisneutronmuon/digital-muon-simulator:main",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "warn", otel_level: "warn" }
+        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "warn", otel_level: "info" }
     },
     reader: {
-        execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader",
+        execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader:main",
         image_env_vars: { image: "IMAGE_READER", obvs_port: "OBSV_ADDRESS_READER", args: "READER_ARGS" },
         observability: { obsv_address: "127.0.0.1:29094" tracing_level: "warn", otel_level: "warn" }
     },
@@ -40,28 +40,8 @@ export const constants = {
     otel_endpoint: "http://172.16.105.83:4317/v1/traces",
 }
 
-const RUST_LOG_OFF = "tonic=off,h2=off,tokio_util=off,tower=off,hyper=off"
-export def build_rust_log_env [] : nothing -> string {
-    [$constants.rust_log,
-        $"trace_to_events=($components.trace_to_events.observability.tracing_level)",
-        $"digitiser_aggregator=($components.digitiser_aggregator.observability.tracing_level)",
-        $"nexus_writer=($components.nexus_writer.observability.tracing_level)",
-        $"simulator=($components.simulator.observability.tracing_level)",
-        $RUST_LOG_OFF
-    ] | str join ','
-}
-
-export def build_otel_level_env [] : nothing -> string {
-    [$constants.otel_level,
-        $"trace_to_events=($components.trace_to_events.observability.otel_level)",
-        $"digitiser_aggregator=($components.digitiser_aggregator.observability.otel_level)",
-        $"nexus_writer=($components.nexus_writer.observability.otel_level)",
-        $"simulator=($components.simulator.observability.otel_level)"
-    ] | str join ','
-}
-
 #### Event Formation
-const detector_settings = {
+export const detector_settings = {
     threshold_1: [ "fixed-threshold-discriminator"
         "--threshold", "5",
         "--duration", "1",
@@ -84,7 +64,7 @@ const detector_settings = {
     ]
 }
 
-const pipeline_settings = {
+export const pipeline_settings = {
     pipeline_1: {
         trace_to_events: {
             send_eventlist_buffer_size: 1024,
@@ -104,7 +84,7 @@ const pipeline_settings = {
 }
 
 #### Brokers
-const brokers = {
+export const brokers = {
     local_one_digitiser: {
         pipeline_name: "local",
         address: "localhost:19092",
@@ -196,22 +176,3 @@ const brokers = {
         topics: { trace: "test-traces-in", dat_event: "test-daq-events", frame_event: "test-frame-events", control: "test-control-change", logs: "test-metadata", selogs: "test-SELogsHIFI_sampleEnv", alarms: "test-alarms" },
     },
 }
-
-export def "build_settings" [broker: string, pipeline: string, detector: string] : nothing -> record {
-    let broker = $brokers | (get $broker)
-    let pipeline = $pipeline_settings | (get $pipeline)
-    let detector = $detector_settings | (get $detector)
-    {
-        constants: $constants,
-        components: $components,
-        broker: $broker,
-        pipeline: $pipeline,
-        detector: $detector,
-        global_env_vars: {
-            "NO_COLOR": ($constants.no_color_env | into string),
-            "RUST_LOG": (build_rust_log_env),
-            "OTEL_LEVEL": (build_otel_level_env),
-        }
-    }
-}
-

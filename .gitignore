@@ -6,6 +6,6 @@ Logs/*
 Jupyter/cache/*.json
 Jaeger/kibanadata/*
 output.*
-settings.json
+compiled.settings.json
 Compose/pipeline.yml
 Compose/simulator.yml

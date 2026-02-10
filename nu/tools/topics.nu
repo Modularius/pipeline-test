@@ -1,4 +1,5 @@
-let settings: record = open "settings.json"
+use ./../build/settings.nu SETTINGS_PATH
+let settings: record = open $SETTINGS_PATH
 
 const kakfa_path = "podman"
 const kakfa_args = ["exec", "redpanda", "rpk", "topic"]

@@ -7,7 +7,9 @@ def spawn_component_on_host [settings: record, comp: string, args: list<string>]
     print ($args | str join " ")
     job spawn {
         let prog = ($components | get $comp).execution_path
-        with-env $settings.global_env_vars { ^$prog ...$args o+e> $"output.($comp)" }
+        with-env $settings.global_env_vars {
+            ^$prog ...$args o+e> $"output.($comp)"
+        }
     }
 }
 
@@ -41,9 +43,10 @@ export def select_host [settings: record] : nothing -> record<deploy_pipeline:cl
             
             "Beginning Simulation (on Host)" | print_heading $HEADING_COLOUR
             let args = build_args simulator $settings ($instance_settings | default {}) $source
+            print ($args | str join " ")
+            let prog = $components.simulator.execution_path
             with-env ($envs | merge $settings.global_env_vars) {
-                print ($args | str join " ")
-                ^$components.simulator.execution_path ...$args | print
+                ^$prog ...$args o+e> $"output.simulator"
             }
         },
         "run_reader": {|file_path: string, instance_settings?: record|
@@ -51,9 +54,10 @@ export def select_host [settings: record] : nothing -> record<deploy_pipeline:cl
             
             "Beginning File Reader (on Host)" | print_heading $HEADING_COLOUR
             let args = build_args reader $settings ($instance_settings | default {}) $file_path
+            print ($args | str join " ")
+            let prog = $components.reader.execution_path
             with-env $settings.global_env_vars {
-                print ($args | str join " ")
-                ^$components.reader.execution_path ...$args | print
+                ^$prog ...$args o+e> $"output.reader"
             }
         }
     }

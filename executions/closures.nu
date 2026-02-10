@@ -5,7 +5,7 @@ use ./tests.nu
 use ./simulator.nu
 use ./reader.nu
 
-export def execution [settings: record, execution: string] : nothing -> closure {
+export def execution [settings: record, execution: string] : nothing -> record<run: closure, new_sub_dir: oneof<string,nothing>> {
     match $execution {
         standard    => {|controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>|
             standard     $settings $controls
