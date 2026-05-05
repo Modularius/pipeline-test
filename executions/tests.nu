@@ -8,7 +8,7 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
             "Running Tests Execution" | print_title
 
             let simulation_and_analysis = {|simulation: string, sim_env_vars: record, run_names: list<string>|
-                do $controls.run_simulator $"Simulations/Tests/($simulation).json" $sim_env_vars {}; sleep 1sec
+                do $controls.run_simulator $"Simulations/Tests/($simulation).json" $sim_env_vars {}; sleep 2sec
 
                 let completed_paths = $run_names | wait_until_runs_completed $settings
                 for completed_path in $completed_paths {
@@ -16,7 +16,7 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
                 }
             }
             
-            do $controls.deploy_pipeline {"suppress_archive": true}; sleep 1sec
+            do $controls.deploy_pipeline {"suppress_archive": true }; sleep 2sec
 
             do $simulation_and_analysis "SanityChecking/one_run" {
                 RUN_NAME: "SC_SingleRun", TIME_BINS: 10000,

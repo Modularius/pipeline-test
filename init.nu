@@ -8,3 +8,4 @@ alias diagnostics = nu ./nu/diagnostic.nu
 alias topics = nu ./nu/tools/topics.nu
 alias inspect = nu ./nu/tools/inspect_container.nu
 alias read_logs = nu ./nu/tools/read_logs.nu
+alias analyse = nu ./nu/build/analysis.nu

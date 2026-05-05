@@ -4,21 +4,24 @@ use std/assert
 def is_monotonic [] : list<int> -> bool {
     $in
 }
-  
-def summary_stats [path: string, field: string, do_monotonic?: bool] : nothing -> record {
-    let data = h5ls -d $"($path)/raw_data_1/detector_1_events/($field)"| split row "\n" | skip 2 | str join "" | split words | into int
+def summary_stats_calc [data: list<any>, field: string] : nothing -> record {
     {
         field: $field,
         count: ($data | length),
         mean: ($data | math avg),
-        std_dev: ($data | math stddev),
+        #std_dev: ($data | math stddev),
         max: ($data | math max),
         min: ($data | math min),
         increasing: ($data | window 2 | all {|x| ($x | get 0) <= ($x | get 1) })
     }
 }
+  
+def summary_stats [path: string, field: string, do_monotonic?: bool] : nothing -> record {
+    let data = h5ls -d $"($path)/raw_data_1/detector_1_events/($field)"| split row "\n" | skip 2 | str join "" | split words | into int
+    summary_stats_calc $data $field
+}
 
-export def analyse_test_file [path: string] {
+export def analyse_test_file [path: string, do_long_summaries:bool = true] {
     $"Analysing Test File: ($path)" | print_heading $SUBHEADING_COLOUR
 
     let top_level = h5ls $path | split row "\n" | split column -c " " "path" "type" "datatype"
@@ -62,16 +65,15 @@ export def analyse_test_file [path: string] {
     #    | sort-by "value"
     #    | table --index false --abbreviated 7
     #    | print
-    [
-        (summary_stats $path "event_id")
-        (summary_stats $path "event_time_zero")
-        (summary_stats $path "event_time_offset")
-        (summary_stats $path "pulse_height")
-        (summary_stats $path "frame_number")
-    ] | table --index false | print
-    
-    #h5ls -d $"($path)/raw_data_1/detector_1_events/pulse_height"| split row "\n" | skip 2 | str join "" | split words | into int
-    #    | histogram | print
+    if $do_long_summaries {
+        [
+            (summary_stats $path "event_id")
+            (summary_stats $path "event_time_zero")
+            (summary_stats $path "event_time_offset")
+            (summary_stats $path "pulse_height")
+            (summary_stats $path "frame_number")
+        ] | table --index false | print
+    }
     
     "Analysing 'runlog'" | print_heading $SUBSUBHEADING_COLOUR
     let runlog = h5ls $"($path)/raw_data_1/runlog" | split row "\n" | split column -c " " "path" "type" "datatype"
@@ -84,9 +86,6 @@ export def analyse_test_file [path: string] {
             let value = h5ls -d $"($path)/raw_data_1/runlog/($rl.path)/value"| split row "\n" | skip 2 | str join "" | str trim -c " " | split row ", " | str trim -c '"'
             assert equal ($time | length) ($value | length)
             [["time", "value"]] | append ($time | zip $value) | each { { 0: $in.0, 1: $in.1 } } | headers | print
-            #[["value"]; [($value | each {|t|[t]})]] | print
-            #let log = [["time"]; [($time | each {|t|[t]})]] | merge [["value"]; [($value | each {|t|[t]})]]
-            #$log | table | print
         }
     }
 
@@ -97,14 +96,17 @@ export def analyse_test_file [path: string] {
     } else {
         for sl in $selog {
             $"Selog: ($sl.path)" | print_heading $SUBSUBSUBHEADING_COLOUR
-            #let this = h5ls $"($path)/raw_data_1/selog/($sl.path)/value_log" | split row "\n" | split column -c " " "path" "type" "datatype"
-            let time = h5ls -d $"($path)/raw_data_1/selog/($sl.path)/value_log/time"| split row "\n" | skip 2 | str join "" | str trim -c " " | split row ", "
-            let value = h5ls -d $"($path)/raw_data_1/selog/($sl.path)/value_log/value"| split row "\n" | skip 2 | str join "" | str trim -c " " | split row ", " | str trim -c '"'
+            let time = h5ls -d $"($path)/raw_data_1/selog/($sl.path)/value_log/time" | split row "\n" | skip 2 | str join "" | str trim -c " " | split row ", "
+            let value = h5ls -d $"($path)/raw_data_1/selog/($sl.path)/value_log/value" | split row "\n" | skip 2 | str join "" | str trim -c " " | split row ", " | str trim -c '"'
             assert equal ($time | length) ($value | length)
-            [["time", "value"]] | append ($time | zip $value) | each { { 0: $in.0, 1: $in.1 } } | headers | print
-            #h5ls -d $"($path)/raw_data_1/runlog/($rl.path)/value" | str replace "\n" " " | print
-#            $time | print
-#            $value | print
+            #[["time", "value"]] | append ($time | zip $value) | each { { 0: $in.0, 1: $in.1 } } | headers | print
+
+            summary_stats_calc ($time | into int) "time" | print
+            summary_stats_calc ($value | into float) "value" | print
         }
     }
+}
+
+export def main [path: string] {
+    analyse_test_file $path false
 }

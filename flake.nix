@@ -31,6 +31,7 @@
               dart-sass
               podman-compose
               nushell
+              bottom
             ] ++ (
               with python312Packages; [
                 pip
@@ -48,7 +49,7 @@
             inputsFrom  = [
               pipeline.devShells.${system}
             ];
-            
+            shellHook = ''nu'';
           };
         }
     );

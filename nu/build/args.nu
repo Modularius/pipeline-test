@@ -1,9 +1,9 @@
 use ../../settings.nu constants
-use ../../settings.nu components
+#use ../../settings.nu components
 use ./prelude.nu [get_nexus_local_path, get_nexus_archive_path]
 
 export def "build_args reader" [settings: record, instance_settings: record, file_path: string] : nothing -> list<string> {
-    let component = $components.reader
+    let component = $settings.components.reader
 
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
@@ -26,10 +26,12 @@ export def "build_args reader" [settings: record, instance_settings: record, fil
 }
 
 export def "build_args simulator" [settings: record, instance_settings: record, source: string] : nothing -> list<string> {
-    let component = $components.simulator
+    let component = $settings.components.simulator
 
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
+    let dat_event = $instance_settings.dat_event? | default $settings.broker.topics.dat_event
+    let frame_event = $instance_settings.frame_event? | default $settings.broker.topics.frame_event
 
     [
         "--broker", $settings.broker.address,
@@ -37,8 +39,8 @@ export def "build_args simulator" [settings: record, instance_settings: record, 
         "--otel-namespace", $namespace,
         "defined", $source,
         "--digitiser-trace-topic", $settings.broker.topics.trace,
-        "--digitiser-event-topic", $settings.broker.topics.dat_event,
-        "--frame-event-topic", $settings.broker.topics.frame_event,
+        "--digitiser-event-topic", $dat_event,
+        "--frame-event-topic", $frame_event,
         "--control-topic", $settings.broker.topics.control,
         "--runlog-topic", $settings.broker.topics.logs,
         "--selog-topic", $settings.broker.topics.selogs,
@@ -48,7 +50,7 @@ export def "build_args simulator" [settings: record, instance_settings: record, 
 
 export def "build_args trace_to_events" [settings: record, instance_settings: record] : nothing -> list<string> {
     let broker_component = $settings.broker.trace_to_events
-    let component = $components.trace_to_events
+    let component = $settings.components.trace_to_events
     
     let topics = $settings.broker.topics
 
@@ -72,7 +74,7 @@ export def "build_args trace_to_events" [settings: record, instance_settings: re
 export def "build_args digitiser_aggregator" [settings: record, instance_settings: record] : nothing -> list<string> {
     let broker_component = $settings.broker.digitiser_aggregator
     let pipeline_component = $settings.pipeline.digitiser_aggregator
-    let component = $components.digitiser_aggregator
+    let component = $settings.components.digitiser_aggregator
 
     let topics = $settings.broker.topics
     
@@ -125,7 +127,7 @@ def build_configuration_options [settings: record, instance_settings: record] : 
 export def "build_args nexus_writer" [settings: record, instance_settings: record] : nothing -> list<string> {
     let broker_component = $settings.broker.nexus_writer
     let pipeline_component = $settings.pipeline.nexus_writer
-    let component = $components.nexus_writer
+    let component = $settings.components.nexus_writer
     let topics = $settings.broker.topics
 
     # Paths

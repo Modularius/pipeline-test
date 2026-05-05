@@ -17,7 +17,7 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
                 #nu ./nu/clean.nu "benchmark"; sleep 1sec
             }
 
-            do $pipeline_and_simulation "benchmark06" "timing" {TIME_BINS: 25000, RUN_NAME: "Benchmarking_Run", LAST_FRAME: 200, LAST_DIGITISER: 7 NUM_DIGITISERS: 8 }
+            do $pipeline_and_simulation "benchmark_02" "timing" {TIME_BINS: 25000, RUN_NAME: "Benchmarking_Run", LAST_FRAME: 200, LAST_DIGITISER: 7 NUM_DIGITISERS: 8 }
         },
         "new_sub_dir": {|| null }
     }

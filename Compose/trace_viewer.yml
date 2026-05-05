@@ -18,7 +18,7 @@ services:
       - --trace-topic=Traces
       - --digitiser-event-topic=Events
       #- --trace-topic=daq-traces-in
-      #- --digitiser-event-topic=daq-events
+      #- --digitiser-event-topic=local-daq-events
       - --name=Test
       - --number=1
       #- --link-to-redpanda-console=http://130.246.55.29:8080/overview

@@ -1,0 +1,90 @@
+{
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "time-bins": { "const": 20000 },
+    "sample-rate": { "const": 1000000000 },
+    "digitiser-config": {
+        "auto-aggregated-frame": {
+            "num-channels": { "const" : 64 }
+        }
+    },
+    "pulses": [
+        {
+            "pulse-type": "gaussian",
+            "peak_time":     { "random-type": "uniform-float", "min": { "const": 1 }, "max": { "const": 20000 } },
+            "sd":        { "random-type": "uniform-float", "min": { "const": 100 }, "max": { "const": 500 } },
+            "height":    { "random-type": "uniform-float", "min": { "const": 1000 }, "max": { "const": 4000 } }
+        }
+    ],
+    "event-lists": [
+        {
+            "pulses": [ {"weight": 1, "pulse-index": 0} ],
+            "noises": [],
+            "num-pulses": { "random-type": "constant-int", "value": { "const": 5 }}
+        }
+    ],
+    "schedule" : [
+        { "generate-event-list": { "event-list-index": 0, "repeat": 512}},
+        { "set-timestamp": {"to": "2025-03-14T10:20:00.0Z"}},
+        { "ensure-delay-ms": 0 },
+        { "send-run-start" : { "name": { "text-env": "RUN_NAME" }, "filename": { "text-env": "RUN_NAME" }, "instrument": { "text-env": "INSTR_NAME" }}},
+        { "wait-ms": 1000 },
+        { "set-timestamp": { "advance-by-ms": 20 } },
+        { "frame-loop" : {
+                "start": { "const": 0 },
+                "end": { "from-env-var": "LAST_FRAME" },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    { "send-aggregated-frame-event-list" : {
+                        "source-options": { "source": "select-from-cache", "replace-random": {} },
+                        "channel-indices" : { "min": 0, "max": 63 }
+                    } }
+                ]
+            }
+        },
+        { "set-timestamp": {"to": "2025-03-14T10:20:00.0Z"}},
+        { "log-loop" : {
+            "start": { "const": 0 },
+            "end": { "from-env-var": "LAST_SELOG" },
+            "schedule": [
+                { "send-sample-env-log" : {
+                    "name" : { "text" : "Temperature" },
+                    "values-type" : "float64",
+                    "location": "unknown",
+                    "time-delta": 1000000000,
+                    "values": { "from-noise": {
+                        "length": 10,
+                        "noise": [
+                            {
+                                "bounds": {
+                                    "min": { "const": 0 },
+                                    "max": { "const": 5 }
+                                },
+                                "attributes": { "noise-type": "uniform",
+                                    "min": { "const": 35 },
+                                    "max": { "const": 40 }
+                                },
+                                "smoothing-window-length": { "const": 1 }
+                            },
+                            {
+                                "bounds": {
+                                    "min": { "const": 0 },
+                                    "max": { "const": 5 }
+                                },
+                                "attributes": { "noise-type": "bernoulli",
+                                    "probability": { "const": 0.01 },
+                                    "value": { "random-type": "constant-float", "value": { "const": 120 } }
+                                },
+                                "smoothing-window-length": { "const": 1 }
+                            }
+                        ]
+                    } }
+                } },
+                { "set-timestamp": { "advance-by-ms": 10000 } },
+                { "wait-ms" : 1 }
+            ]
+        } },
+        { "wait-ms": 500 },
+        { "set-timestamp": { "advance-by-ms": 100}},
+        { "send-run-stop": { "name": { "text-env": "RUN_NAME" } } }
+    ]
+}

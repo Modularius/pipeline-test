@@ -16,7 +16,6 @@ def main [mode: string, execution: string] {
     
 
     let mode = mode $mode $settings
-    $mode | describe | print
 
     do $execution $mode
 }

@@ -1,14 +1,14 @@
 services:
   event-formation:
     profiles:
-      - event-formation-only
+      - event-formation
       - all
     deploy:
       mode: replicated
       replicas: 1
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/event-formation.log
+    #logging:
+    #  options:
+    #    path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/event-formation.log
     image: $IMAGE_EVENT_FORMATION
     environment:
       - RUST_LOG=${RUST_LOG}
@@ -23,15 +23,14 @@ services:
 
   frame-aggregation:
     profiles:
-      - frame-aggregation-only
-      - all-but-trace-to-events
+      - frame-aggregation
       - all
     deploy:
       mode: replicated
       replicas: 1
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/frame-aggregation.log
+    #logging:
+    #  options:
+    #    path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/frame-aggregation.log
     image: $IMAGE_AGGREGATOR
     environment:
       - RUST_LOG=${RUST_LOG}
@@ -46,15 +45,14 @@ services:
 
   nexus-writer:
     profiles:
-     - nexus-writer-only
-     - all-but-trace-to-events
+     - nexus-writer
      - all
     deploy:
       mode: replicated
       replicas: 1
-    logging:
-      options:
-        path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/nexus-writer.log
+    #logging:
+    #  options:
+    #    path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/nexus-writer.log
     image: $IMAGE_WRITER
     environment:
       - RUST_LOG=${RUST_LOG}

@@ -12,22 +12,26 @@ export def 'main trace_viewer' [] {
 }
 
 export def 'main trace_to_events' [] {
-    switch_dir { buildah bud -f Containerfile --build-arg component=trace-to-events -t supermusr-trace-to-events:latest }
+    switch_dir { buildah bud -f Containerfile --build-arg component=trace-to-events -t supermusr-trace-to-events:latest --layers }
 }
 
 export def 'main digitiser_aggregator' [] {
-    switch_dir { buildah bud -f Containerfile --build-arg component=digitiser-aggregator -t supermusr-digitiser-aggregator:latest }
+    switch_dir { buildah bud -f Containerfile --build-arg component=digitiser-aggregator -t supermusr-digitiser-aggregator:latest --layers }
 }
 
 export def 'main nexus_writer' [] {
-    switch_dir { buildah bud -f Containerfile --build-arg component=nexus-writer -t supermusr-nexus-writer:latest }
+    switch_dir { buildah bud -f Containerfile --build-arg component=nexus-writer -t supermusr-nexus-writer:latest --layers }
+}
+
+export def 'main simulator' [] {
+    switch_dir { buildah bud -f Containerfile --build-arg component=simulator -t supermusr-simulator:latest --layers }
 }
 
 export def main [] {
     switch_dir {
-        buildah bud -f Containerfile --build-arg component=trace-to-events -t supermusr-trace-to-events:latest
-        buildah bud -f Containerfile --build-arg component=digitiser-aggregator -t supermusr-digitiser-aggregator:latest
-        buildah bud -f Containerfile --build-arg component=nexus-writer -t supermusr-nexus-writer:latest
-        buildah bud -f Containerfile --build-arg component=simulator -t supermusr-simulator:latest
+        buildah bud -f Containerfile --build-arg component=trace-to-events -t supermusr-trace-to-events:latest --layers
+        buildah bud -f Containerfile --build-arg component=digitiser-aggregator -t supermusr-digitiser-aggregator:latest --layers
+        buildah bud -f Containerfile --build-arg component=nexus-writer -t supermusr-nexus-writer:latest --layers
+        buildah bud -f Containerfile --build-arg component=simulator -t supermusr-simulator:latest --layers
     }
 }

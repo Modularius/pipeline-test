@@ -1,4 +1,5 @@
 use ../../settings.nu [components, constants, brokers, pipeline_settings, detector_settings]
+use ./detector.nu [build_record_from_random_intervals, build_detector]
 export const SETTINGS_PATH = "compiled.settings.json"
 
 const RUST_LOG_OFF = "tonic=off,h2=off,tokio_util=off,tower=off,hyper=off"
@@ -24,15 +25,18 @@ export def build_otel_level_env [] : nothing -> string {
 export def "build_settings" [broker: string, pipeline: string, detector: string] : nothing -> record {
     let broker = $brokers | (get $broker)
     let pipeline = $pipeline_settings | (get $pipeline)
-    let detector = $detector_settings | (get $detector)
+    let detector_record = $detector_settings | (get $detector) | build_record_from_random_intervals
+    let detector = $detector_record | build_detector
     {
         constants: $constants,
         components: $components,
         broker: $broker,
         pipeline: $pipeline,
         detector: $detector,
+        detector_record: $detector_record,
         global_env_vars: {
             "NO_COLOR": ($constants.no_color_env | into string),
+            "RUST_BACKTRACE": ($constants.rust_backtrace | into string),
             "RUST_LOG": (build_rust_log_env),
             "OTEL_LEVEL": (build_otel_level_env) #,
             #"OTEL_BSP_MAX_QUEUE_SIZE": "16384",

@@ -10,23 +10,29 @@
     },
     "pulses": [
         {
+            "pulse-type": "flat",
+            "start":  { "random-type": "exponential", "lifetime": { "const": 2200 } },
+            "width":  { "random-type": "constant-float", "value": { "const": 20 } },
+            "height": { "random-type": "uniform-float", "min": { "const": 500 }, "max": { "const": 2000 } }
+        },
+        {
             "pulse-type": "back-to-back-exp",
-            "spread":      { "random-type": "constant-float", "value": { "const": 5.5 } },
-            "rising":      { "random-type": "constant-float", "value": { "const": 3.5 } },
-            "falling":     { "random-type": "constant-float", "value": { "const": 2.4 } },
+            "spread":      { "random-type": "constant-float", "value": { "const": 4.5 } },
+            "rising":      { "random-type": "constant-float", "value": { "const": 1.5 } },
+            "falling":     { "random-type": "constant-float", "value": { "const": 1.4 } },
             "peak_time":   { "random-type": "exponential", "lifetime": { "const": 2200 } },
             "peak_height": { "random-type": "uniform-float", "min": { "const": 250 }, "max": { "const": 1100 } }
         }
     ],
     "event-lists": [
         {
-            "pulses": [ {"weight": 1, "pulse-index": 0} ],
+            "pulses": [ {"weight": 1, "pulse-index": 1} ],
             "noises": [],
-            "num-pulses": { "random-type": "uniform-int", "min": { "const": 16 }, "max": { "const": 25 }}
+            "num-pulses": { "random-type": "uniform-int", "min": { "const": 15 }, "max": { "const": 35 }}
         }
     ],
     "schedule" : [
-        { "generate-trace": { "event-list-index": 0, "repeat": 128}},
+        { "generate-trace": { "event-list-index": 0, "repeat": 10}},
         { "set-timestamp": "now"},
         { "ensure-delay-ms": 0 },
         { "send-run-start" : { "name": { "text-env": "RUN_NAME" }, "filename": { "text-env": "RUN_NAME" }, "instrument": { "text": "Simulator" }}},
