@@ -43,10 +43,11 @@ def get_vector [ name: string ] : record  -> list<string> {
 }
 
 def build_fixed_threshold [ src: record ] : nothing  -> list<string> {
-    ($src | get "type")
+    let temp = ($src | get "type")
     | append ($src | get_pair threshold)
     | append ($src | get_pair duration)
     | append ($src | get_pair cool-off)
+    $temp
 }
 
 def build_differential_threshold [ src: record ] : nothing  -> list<string> {

@@ -17,9 +17,9 @@
         },
         {
             "pulse-type": "back-to-back-exp",
-            "spread":      { "random-type": "constant-float", "value": { "const": 3.5 } },
-            "rising":      { "random-type": "constant-float", "value": { "const": 2.5 } },
-            "falling":     { "random-type": "constant-float", "value": { "const": 2.4 } },
+            "spread":      { "random-type": "constant-float", "value": { "const": 3.0 } },
+            "rising":      { "random-type": "constant-float", "value": { "const": 1.5 } },
+            "falling":     { "random-type": "constant-float", "value": { "const": 2.5 } },
             "peak_time":   { "random-type": "exponential", "lifetime": { "const": 2200 } },
             "peak_height": { "random-type": "uniform-float", "min": { "const": 2000 }, "max": { "const": 4100 } }
         },
@@ -33,8 +33,19 @@
     ],
     "event-lists": [
         {
-            "pulses": [ {"weight": 1, "pulse-index": 1} ],
+            "pulses": [ {"weight": 1.0, "pulse-index": 0} ],
             "noises": [
+                {
+                    "bounds": {
+                        "min": { "const": 0 },
+                        "max": { "const": 30000 }
+                    },
+                    "attributes": { "noise-type": "bernoulli",
+                        "probability": { "const": 0.01 },
+                        "value": { "random-type": "uniform-float", "min": { "const": 500 }, "max": { "const": 1000 } }
+                    },
+                    "smoothing-window-length": { "const": 3 }
+                },
                 {
                     "bounds": {
                         "min": { "const": 0 },
@@ -81,7 +92,8 @@
                             "start": { "const": 0 },
                             "end": { "const" : 7 },
                             "schedule" : [
-                                { "generate-trace": { "event-list-index": 0, "repeat": 8}},
+                                { "generate-event-list-and-traces": { "event-list-index": 0, "repeat": 8}},
+                                { "send-digitiser-event-list": { "source": "select-from-cache", "pop-front": {}} },
                                 { "send-digitiser-trace": "pop-front" },
                                 { "wait-ms": 1 }
                             ]

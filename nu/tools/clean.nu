@@ -13,24 +13,47 @@ let subdir_closures = {
     tests: { new_subdir },
 }
 
-def 'main' [execution: string, clean_archive?: bool] {
+def 'main remove' [execution: string, clean_archive?: bool] {
     let clean_archive = $clean_archive | default false
     # Subdirectory
     let execution = execution $settings $execution
-    let subdir = do ($execution | get "new_sub_dir") | default $broker_component.subdirectory
+    let subdirs = do ($execution | get "new_sub_dir") | default [$broker_component.subdirectory]
 
-    let local_path = [$pipeline_component.paths.nexus_output, $subdir] | str join "/"
+    for subdir in $subdirs {
+        let local_path = [$pipeline_component.paths.nexus_output, $subdir] | str join "/"
 
-    "Removing Nexus Files" | print_title
+        "Removing Nexus Files" | print_title
 
-    def remove_nxs_file [] : table -> nothing {
-        $in | where type == file | where { $in.name | str ends-with ".nxs" } | each { rm -v $in.name }
+        def remove_nxs_file [] : table -> nothing {
+            $in | where type == file | where { $in.name | str ends-with ".nxs" } | each { rm -v $in.name }
+        }
+
+        ls $"($local_path)" | remove_nxs_file
+        ls $"($local_path)/completed" | remove_nxs_file
+        if $clean_archive {
+            let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
+            ls $"($archive_path)" | remove_nxs_file
+        }   
     }
+}
 
-    ls $"($local_path)" | remove_nxs_file
-    ls $"($local_path)/completed" | remove_nxs_file
-    if $clean_archive {
-        let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
-        ls $"($archive_path)" | remove_nxs_file
+export def 'main create' [execution: string, create_archive?: bool] {
+    let create_archive = $create_archive | default false
+    # Subdirectory
+    let execution = execution $settings $execution
+    let subdirs = do ($execution | get "new_sub_dir") | default [$broker_component.subdirectory]
+
+    for subdir in $subdirs {
+        let local_path = [$pipeline_component.paths.nexus_output, $subdir] | str join "/"
+
+        "Creating Folder Structure" | print_title
+
+        mkdir $"($local_path)"
+        mkdir $"($local_path)/completed"
+
+        if $create_archive {
+            let archive_path = [$pipeline_component.paths.nexus_archive, $subdir] | str join "/"
+            mkdir $"($archive_path)"
+        }   
     }
 }

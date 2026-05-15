@@ -28,6 +28,6 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
             #     RUN_NAME: "DAY_00000001", INSTR_NAME: "DAY_", LAST_FRAME: (50 * 3600 * 24 - 1), LAST_SELOG: (360 * 24 - 1)
             # }
         },
-        "new_sub_dir": {|| "simulated_runs" }
+        "new_sub_dir": {|| ["simulated_runs"] }
     }
 }

@@ -1,0 +1,74 @@
+services:
+  event-formation:
+    #logging:
+    #  options:
+    #    path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/event-formation.log
+    image: $IMAGE_EVENT_FORMATION
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    ports:
+      - ${OBSV_ADDRESS_EVENT_FORMATION_DETECTOR}:9090
+    command: ${EVENT_FORMATION_ARGS}
+    network_mode: "host"
+
+  frame-aggregation-detector:
+    #logging:
+    #  options:
+    #    path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/frame-aggregation.log
+    image: $IMAGE_AGGREGATOR
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    ports:
+      - ${OBSV_ADDRESS_AGGREGATOR_DETECTOR}:9090
+    command: $AGGREGATOR_ARGS_DETECTOR
+    network_mode: "host"
+
+  nexus-writer-detector:
+    #logging:
+    #  options:
+    #    path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/nexus-writer.log
+    image: $IMAGE_WRITER
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    ports:
+      - ${OBSV_ADDRESS_WRITER_DETECTOR}:9090
+    command: $WRITER_ARGS_DETECTOR
+    volumes:
+      - ../../${NEXUS_OUTPUT_PATH_DETECTOR}:/local
+    network_mode: "host"
+
+  frame-aggregation-true:
+    #logging:
+    #  options:
+    #    path: /home/dankirk/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/frame-aggregation.log
+    image: $IMAGE_AGGREGATOR
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    ports:
+      - ${OBSV_ADDRESS_AGGREGATOR_TRUE}:9090
+    command: $AGGREGATOR_ARGS_TRUE
+    network_mode: "host"
+
+  nexus-writer-true:
+    #logging:
+    #  options:
+    #    path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/${NEXUS_ARCHIVE_PATH}/logs/nexus-writer.log
+    image: $IMAGE_WRITER
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    ports:
+      - ${OBSV_ADDRESS_WRITER_TRUE}:9090
+    command: $WRITER_ARGS_TRUE
+    volumes:
+      - ../../${NEXUS_OUTPUT_PATH_TRUE}:/local
+    network_mode: "host"

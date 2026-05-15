@@ -17,6 +17,8 @@ services:
       - --consumer-group=viewer
       - --trace-topic=Traces
       - --digitiser-event-topic=Events
+      - --digitiser-event-topic=Events_true
+      - --digitiser-event-topic=Events_detector
       #- --trace-topic=daq-traces-in
       #- --digitiser-event-topic=local-daq-events
       - --name=Test

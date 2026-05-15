@@ -25,6 +25,6 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
                 LAST_DIGITISER: 7,
             }
         },
-        "new_sub_dir": {|| "local" }
+        "new_sub_dir": {|| ["local"] }
     }
 }

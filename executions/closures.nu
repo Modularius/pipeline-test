@@ -1,8 +1,7 @@
 use ./benchmark.nu
 use ./standard.nu
 use ./standard.nu
-use ./param_explore_pipeline.nu
-use ./param_explore_simulator.nu
+use ./param_space_simulator.nu
 use ./stress_test.nu
 use ./tests.nu
 use ./simulator.nu
@@ -13,11 +12,8 @@ export def execution [settings: record, execution: string] : nothing -> record<r
         standard    => {
             standard $settings
         },
-        param_explore_pipeline    => {
-            param_explore_pipeline $settings
-        },
-        param_explore_simulator    => {
-            param_explore_simulator $settings
+        param_space_simulator    => {
+            param_space_simulator $settings
         },
         benchmark   => {
             benchmark $settings

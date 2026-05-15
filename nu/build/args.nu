@@ -30,6 +30,7 @@ export def "build_args simulator" [settings: record, instance_settings: record, 
 
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
+    let trace = $instance_settings.trace? | default $settings.broker.topics.trace
     let dat_event = $instance_settings.dat_event? | default $settings.broker.topics.dat_event
     let frame_event = $instance_settings.frame_event? | default $settings.broker.topics.frame_event
 
@@ -38,7 +39,7 @@ export def "build_args simulator" [settings: record, instance_settings: record, 
         "--otel-endpoint", $constants.otel_endpoint,
         "--otel-namespace", $namespace,
         "defined", $source,
-        "--digitiser-trace-topic", $settings.broker.topics.trace,
+        "--digitiser-trace-topic", $trace,
         "--digitiser-event-topic", $dat_event,
         "--frame-event-topic", $frame_event,
         "--control-topic", $settings.broker.topics.control,
@@ -56,7 +57,7 @@ export def "build_args trace_to_events" [settings: record, instance_settings: re
 
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
-
+    
     [
         "--broker", $settings.broker.address,
         "--consumer-group", $settings.broker.consumer_groups.trace_to_events,

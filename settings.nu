@@ -22,7 +22,7 @@ export const components = {
     simulator: {
         execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "supermusr-simulator:latest",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "debug", otel_level: "info" }
+        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "info", otel_level: "info" }
     },
     reader: {
         execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader:main",
@@ -243,6 +243,22 @@ export const pipeline_settings = {
         nexus_writer: {
             paths: {
                 nexus_output: "Output",
+                nexus_archive: "archive/incoming"
+            },
+            run_ttl_ms: 9000
+        }
+    },
+    param_space: {
+        trace_to_events: {
+            send_eventlist_buffer_size: 1024,
+        },
+        digitiser_aggregator: {
+            frame_ttl_ms: 3500,
+            send_frame_buffer_size: 64
+        }
+        nexus_writer: {
+            paths: {
+                nexus_output: "Output/param_space",
                 nexus_archive: "archive/incoming"
             },
             run_ttl_ms: 9000
