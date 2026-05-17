@@ -12,7 +12,8 @@ def main [] {
         "cool-off": 0,
     };
 
-    let tests = ["500", "750", "1000", "1250", "1500", "1750", "2000"]
+    #let tests = ["500", "750", "1000", "1250", "1500", "1750", "2000"]
+    let tests = ["900", "950", "1000", "1050", "1100", "1150", "1200"]
         | each {|value| $template
         | update threshold $value | build_detector}
 

@@ -22,12 +22,12 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
             let high_count = { "MIN_PULSES": "200", "MAX_PULSES": "201" }
 
             let runs = [
-                #{ name: "NoNoiseLowCount", noise: $no_noise, count: $low_count },
+                { name: "NoNoiseLowCount", noise: $no_noise, count: $low_count },
                 #{ name: "LowNoiseLowCount", noise: $low_noise, count: $low_count },
-                #{ name: "HighNoiseLowCount", noise: $high_noise, count: $low_count },
-                { name: "NoNoiseHighCount", noise: $no_noise, count: $high_count },
+                { name: "HighNoiseLowCount", noise: $high_noise, count: $low_count },
+                #{ name: "NoNoiseHighCount", noise: $no_noise, count: $high_count },
                 #{ name: "LowNoiseHighCount", noise: $low_noise, count: $high_count },
-                { name: "HighNoiseHighCount", noise: $high_noise, count: $high_count },
+                #{ name: "HighNoiseHighCount", noise: $high_noise, count: $high_count },
             ]
             $runs | each {|run|
                 let envs = $env_args | merge $run.noise | merge $run.count | merge { "RUN_NAME": $run.name };

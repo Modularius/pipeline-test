@@ -33,6 +33,12 @@ class Data:
         self.evt_id = self.event_id[event_range]
         self.evt_times = self.event_time_offset[event_range]
         self.evt_heights = self.pulse_height[event_range]
+        
+    def set_final_event_range(self):
+        event_range = range(self.event_index[-1], len(self.event_id))
+        self.evt_id = self.event_id[event_range]
+        self.evt_times = self.event_time_offset[event_range]
+        self.evt_heights = self.pulse_height[event_range]
 
     def get_frame_channel_times(self, channel):
         return self.evt_times[self.evt_id == channel]
@@ -45,7 +51,6 @@ class Data:
     
     def get_log_time_spectra(self, num_bins) -> list[int]:
        return binned_statistic(self.event_time_offset, self.event_time_offset, bins = num_bins, statistic = "count").statistic
-
 
 class SummaryStats:
     def __init__(self, values):
