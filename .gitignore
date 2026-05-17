@@ -3,6 +3,7 @@ Logs/*
 .direnv/*
 *.pyc
 *.csv
+*.png
 Jupyter/cache/*.json
 Jaeger/kibanadata/*
 output.*
