@@ -114,8 +114,8 @@ class Channel:
         self.num_false_positives = true_events_by_nearest_detected_event.get_false_positives()
         self.num_false_negatives = true_events_by_nearest_detected_event.get_false_negatives_positives_diff() + self.num_false_positives
         
-        num_nontrivial_detected = len(true_events_by_nearest_detected_event.detected_times) - true_events_by_nearest_detected_event.get_false_positives()
+        num_true_positives = len(true_events_by_nearest_detected_event.detected_times) - true_events_by_nearest_detected_event.get_false_positives()
         self.time_deviation = sum(
-            sum(abs(t - d) for t in true_times)/len(true_times)
+            min(abs(t - d) for t in true_times)
                 for (d,true_times) in true_events_by_nearest_detected_event.get_nontrivial_detected_times_and_associated_true_times()
-        )/num_nontrivial_detected
+        )/num_true_positives

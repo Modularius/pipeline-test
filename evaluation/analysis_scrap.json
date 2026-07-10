@@ -1,0 +1,176 @@
+{
+    "metrics-json-name": "my-metrics",
+    "events-topics": [ "Events_true", "Events" ],
+    "metrics": [
+        { "name": "false", "metric-type": "false-count", "true_topic": "Events_true", "estimate_topic": "Events" },
+        { "name": "true-count", "metric-type": "event-count", "topic": "Events_true" },
+        { "name": "detector-count", "metric-type": "event-count", "topic": "Events" },
+        { "name": "true-lifetime", "metric-type": "muon-lifetime", "topic": "Events_true", "num-bins": 10, "max-lifetime": 30000 },
+        { "name": "detector-lifetime", "metric-type": "muon-lifetime", "topic": "Events", "num-bins": 10, "max-lifetime": 30000 },
+        { "name": "true-intensity", "metric-type": "intensity-graph", "topic": "Events_true", "num-bins": 20, "max-amplitude": 12000 },
+        { "name": "detector-intensity", "metric-type": "intensity-graph", "topic": "Events", "num-bins": 20, "max-amplitude": 18000 }
+    ],
+    "templates": {
+        "criteria-templates": [{
+            "name": "period-only",
+            "frames": {"constant": "any" },
+            "channels": {"constant": "any" },
+            "digitiser-ids": {"constant": "any" }
+        }],
+        "bucket-templates": [{
+            "name": "by-threshold",
+            "number": 6,
+            "algorithm": "threshold-only",
+            "waveform": "gaussian",
+            "limits": { "min": 128, "max": 50000 }
+        }],
+        "arrays": [
+            { "name": "Thresholds", "values": [900, 950, 1000, 1050, 1100, 1150] }
+        ],
+        "algorithms": [{
+            "name": "threshold-only",
+            "fixed-threshold": {
+                "threshold": {"dependency": {"array": "Thresholds" } },
+                "duration": {"constant": 1 },
+                "cool_down": {"constant": 0 }
+            }
+        }],
+        "waveforms": [{
+            "name" : "gaussian",
+            "pulse-type": "gaussian",
+            "sd": {"constant": 20 }
+        }]
+    },
+    "buckets": [
+        {
+            "source": "by-threshold",
+            "name": "no-noise-low-count-by-theshold",
+            "criteria" : { "source": "period-only", "periods": {"dependency": { "function": { "scale": 6, "value-at-zero": 0} } } }
+        },
+        {
+            "source": "by-threshold",
+            "name": "low-noise-low-count-by-theshold",
+            "criteria" : { "source": "period-only", "periods": {"dependency": { "function": { "scale": 6, "value-at-zero": 1} } } }
+        },
+        {
+            "source": "by-threshold",
+            "name": "high-noise-low-count-by-theshold",
+            "criteria" : { "source": "period-only", "periods": {"dependency": { "function": { "scale": 6, "value-at-zero": 2} } } }
+        },
+        {
+            "source": "by-threshold",
+            "name": "no-noise-high-count-by-theshold",
+            "criteria" : { "source": "period-only", "periods": {"dependency": { "function": { "scale": 6, "value-at-zero": 3} } } }
+        },
+        {
+            "source": "by-threshold",
+            "name": "low-noise-high-count-by-theshold",
+            "criteria" : { "source": "period-only", "periods": {"dependency": { "function": { "scale": 6, "value-at-zero": 4} } } }
+        },
+        {
+            "source": "by-threshold",
+            "name": "high-noise-high-count-by-theshold",
+            "criteria" : { "source": "period-only", "periods": {"dependency": { "function": { "scale": 6, "value-at-zero": 5} } } }
+        }
+    ],
+    "charts": [
+        {
+            "width": 6,
+            "output-to-json": true,
+            "output-to-html": true,
+            "x-axis": { "array": "Thresholds" },
+            "series": [
+                {"metric": "true-lifetime", "name": "True Muons (High Noise)",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "detector-lifetime", "name": "Detector Muons (High Noise)",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "true-lifetime", "name": "True Muons (Low Noise)",
+                    "line-colour": "black", "line-style": "solid",
+                    "property": "sd", "from-bucket": "low-noise-low-count-by-theshold"},
+                {"metric": "detector-lifetime", "name": "Detector Muons (Low Noise)",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "sd", "from-bucket": "low-noise-low-count-by-theshold"}
+            ],
+            "x-axis-label": "Threshold",
+            "y-axis-label": "Muon Lifetime",
+            "title": "Muon Lifetime (25 Events)"
+        },
+        {
+            "width": 6,
+            "output-to-json": true,
+            "output-to-html": true,
+            "x-axis": { "array": "Thresholds" },
+            "series": [
+                {"metric": "true-intensity", "name": "True Muons (High Noise)",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "detector-intensity", "name": "Detector Muons (High Noise)",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "true-intensity", "name": "True Muons (Low Noise)",
+                    "line-colour": "black", "line-style": "solid",
+                    "property": "sd", "from-bucket": "low-noise-low-count-by-theshold"},
+                {"metric": "detector-intensity", "name": "Detector Muons (Low Noise)",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "sd", "from-bucket": "low-noise-low-count-by-theshold"}
+            ],
+            "x-axis-label": "Threshold",
+            "y-axis-label": "Muon Lifetime",
+            "title": "Muon Intensity (25 Events)"
+        },
+        {
+            "width": 6,
+            "output-to-json": true,
+            "output-to-html": false,
+            "x-axis": { "array": "Thresholds" },
+            "series": [
+                {"metric": "false", "name": "False Positives",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "false-positives-sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "false", "name": "False Negatives",
+                    "line-colour": "black", "line-style": "solid",
+                    "property": "false-negatives-sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "true-count", "name": "True Events",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "detector-count", "name": "Detected Events",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"},
+                {"metric": "false", "name": "Ambiguous True Postitive",
+                    "line-colour": "yellow", "line-style": "solid",
+                    "property": "ambiguous-true-positives-sd", "from-bucket": "high-noise-low-count-by-theshold"}
+            ],
+            "x-axis-label": "Threshold",
+            "y-axis-label": "Average Count",
+            "title": "High Noise with 25 Events"
+        },
+        {
+            "width": 6,
+            "output-to-json": true,
+            "output-to-html": false,
+            "x-axis": { "array": "Thresholds" },
+            "series": [
+                {"metric": "false", "name": "False Positives",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "false-positives-sd", "from-bucket": "high-noise-high-count-by-theshold"},
+                {"metric": "false", "name": "False Negatives",
+                    "line-colour": "black", "line-style": "solid",
+                    "property": "false-negatives-sd", "from-bucket": "high-noise-high-count-by-theshold"},
+                {"metric": "true-count", "name": "True Events",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-high-count-by-theshold"},
+                {"metric": "detector-count", "name": "Detected Events",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-high-count-by-theshold"},
+                {"metric": "false", "name": "Ambiguous True Postitive",
+                    "line-colour": "yellow", "line-style": "solid",
+                    "property": "ambiguous-true-positives-sd", "from-bucket": "high-noise-high-count-by-theshold"}
+            ],
+            "x-axis-label": "Threshold",
+            "y-axis-label": "Average Count",
+            "title": "High Noise with 200 Event"
+        }
+    ]
+}

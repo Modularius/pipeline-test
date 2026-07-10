@@ -43,11 +43,10 @@ def get_vector [ name: string ] : record  -> list<string> {
 }
 
 def build_fixed_threshold [ src: record ] : nothing  -> list<string> {
-    let temp = ($src | get "type")
+    ($src | get "type")
     | append ($src | get_pair threshold)
     | append ($src | get_pair duration)
     | append ($src | get_pair cool-off)
-    $temp
 }
 
 def build_differential_threshold [ src: record ] : nothing  -> list<string> {
@@ -93,5 +92,6 @@ export def build_detector [] : record -> list<string> {
         "differential-threshold-discriminator" => (build_differential_threshold $detector),
         "smoothing-detector" =>  (build_smoothing $detector),
         "multiscaling" => (build_multiscaling $detector),
+        _ => (error make {msg: $"Detector type ($detector | get "type") not found."})
     }
 }

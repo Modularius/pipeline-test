@@ -1,6 +1,6 @@
-use ./build/args.nu 'build_args diagnostics'
+use ../build/args.nu 'build_args diagnostics'
 
-use ./build/settings.nu SETTINGS_PATH
+use ../build/settings.nu SETTINGS_PATH
 let settings: record = open $SETTINGS_PATH
 
 # Diagnose Daq Traces

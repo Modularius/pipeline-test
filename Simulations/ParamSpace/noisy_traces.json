@@ -1,0 +1,108 @@
+{
+    "voltage-transformation": {"scale": 1, "translate": 0 },
+    "time-bins": { "const": 30000 },
+    "sample-rate": { "const": 1000000000 },
+    "digitiser-config": {
+        "auto-digitisers": {
+            "num-digitisers": { "const" : 8 },
+            "num-channels-per-digitiser": { "const" : 8 }
+        }
+    },
+    "pulses": [
+        {
+            "pulse-type": "gaussian",
+            "peak_time":     { "random-type": "exponential", "lifetime": { "const": 2200 } },
+            "sd":        { "random-type": "uniform-float", "min": { "const": 2 }, "max": { "const": 3 } },
+            "height":    { "random-type": "uniform-float", "min": { "const": 1000 }, "max": { "const": 4000 } }
+        },
+        {
+            "pulse-type": "back-to-back-exp",
+            "spread":      { "random-type": "constant-float", "value": { "const": 3.0 } },
+            "rising":      { "random-type": "constant-float", "value": { "const": 1.5 } },
+            "falling":     { "random-type": "constant-float", "value": { "const": 2.5 } },
+            "peak_time":   { "random-type": "exponential", "lifetime": { "const": 2200 } },
+            "peak_height": { "random-type": "uniform-float", "min": { "const": 2000 }, "max": { "const": 4100 } }
+        },
+        {
+            "pulse-type": "triangular",
+            "start":     { "random-type": "uniform-float", "min": { "const": 1 }, "max": { "const": 30000 } },
+            "width":     { "random-type": "uniform-float", "min": { "const": 10 }, "max": { "const": 15 } },
+            "peak_time": { "random-type": "uniform-float", "min": { "const": 0.25 }, "max": { "const": 0.75 } },
+            "height":    { "random-type": "uniform-float", "min": { "const": 1000 }, "max": { "const": 4000 } }
+        }
+    ],
+    "event-lists": [
+        {
+            "pulses": [ {"weight": 1.0, "pulse-index": 0} ],
+            "noises": [
+                {
+                    "bounds": {
+                        "min": { "const": 0 },
+                        "max": { "const": 30000 }
+                    },
+                    "attributes": { "noise-type": "bernoulli",
+                        "probability": { "const": 0.01 },
+                        "value": { "random-type": "uniform-float", "min": { "const": 500 }, "max": { "const": 1000 } }
+                    },
+                    "smoothing-window-length": { "const": 3 }
+                },
+                {
+                    "bounds": {
+                        "min": { "const": 0 },
+                        "max": { "const": 30000 }
+                    },
+                    "attributes": { "noise-type": "uniform",
+                        "min": { "const": 0 },
+                        "max": { "from-env-var": "MAX_UNIFORM_NOISE" }
+                    },
+                    "smoothing-window-length": { "const": 5 }
+                },
+                {
+                    "bounds": {
+                        "min": { "const": 0 },
+                        "max": { "const": 30000 }
+                    },
+                    "attributes": { "noise-type": "gaussian",
+                        "mean": { "const": 0 },
+                        "sd": { "from-env-var": "SD_GAUSSIAN_NOISE" }
+                    },
+                    "smoothing-window-length": { "const": 15 }
+                }
+            ],
+            "num-pulses": {
+                "random-type": "uniform-int",
+                "min": { "from-env-var": "MIN_PULSES" },
+                "max": { "from-env-var": "MAX_PULSES" }
+            }
+        }
+    ],
+    "schedule" : [
+        { "set-period": { "from-env-var": "PERIOD" } },
+        { "set-timestamp": "now"},
+        { "ensure-delay-ms": 0 },
+        { "wait-ms": 1000 },
+        { "set-timestamp": { "advance-by-ms": 20 } },
+        { "frame-loop" : {
+                "start": { "const": 0 },
+                "end": { "const": 15 },
+                "schedule" : [
+                    { "set-timestamp": { "advance-by-ms": 20}},
+                    {
+                        "digitiser-loop" : {
+                            "start": { "const": 0 },
+                            "end": { "const" : 7 },
+                            "schedule" : [
+                                { "generate-event-list-and-traces": { "event-list-index": 0, "repeat": 8}},
+                                { "send-digitiser-event-list": { "source": "select-from-cache", "pop-front": {}} },
+                                { "send-digitiser-trace": "pop-front" },
+                                { "wait-ms": 1 }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        { "wait-ms": 500 },
+        { "set-timestamp": { "advance-by-ms": 100}}
+    ]
+}

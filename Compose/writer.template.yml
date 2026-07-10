@@ -1,0 +1,16 @@
+services:
+  trace-writer:
+    deploy:
+      mode: replicated
+      replicas: 1
+    network_mode: "host"
+    image: ${IMAGE_WRITER}
+    environment:
+      - RUST_LOG=${RUST_LOG}
+      - NO_COLOR=${NO_COLOR}
+      - OTEL_LEVEL=${OTEL_LEVEL}
+    command: $WRITER_ARGS
+    volumes:
+      - ../${OUTPUT}:/output
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"

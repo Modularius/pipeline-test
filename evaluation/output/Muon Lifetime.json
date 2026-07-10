@@ -1,0 +1,47 @@
+{
+  "chart": {
+    "ready": true,
+    "output-to-json": true,
+    "output-to-html": true,
+    "x-axis": [
+      4.6,
+      20.0,
+      20.0,
+      20.0,
+      100.0
+    ],
+    "series": [
+      {
+        "name": "Muon Lifetime",
+        "line-colour": "red",
+        "line-style": "solid",
+        "metric": 0,
+        "property": "s-d",
+        "from-bucket": 0
+      }
+    ],
+    "x-axis-label": "Slit Size (mm)",
+    "y-axis-label": "Muon Lifetime",
+    "title": "Muon Lifetime"
+  },
+  "data": [
+    {
+      "scalar-with-band": [
+        [
+          627437074094.9608,
+          2418182190095.816,
+          1003814757489.3813,
+          1204207493484.0273,
+          977116418889.4962
+        ],
+        [
+          null,
+          603740666041.9604,
+          127689377710.41869,
+          null,
+          287037425388.4028
+        ]
+      ]
+    }
+  ]
+}

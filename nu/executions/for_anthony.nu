@@ -1,4 +1,4 @@
-use ../nu/build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
+use ../build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
 
 export def main [settings: record] : nothing -> record<run: closure, new_sub_dir: closure> {
     {
@@ -17,6 +17,7 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
                 #nu ./nu/clean.nu "benchmark"; sleep 1sec
             }
             do $pipeline_and_simulation "generated" "Temp/for_anthony" {
+                RUN_NAME: "TWO_HOUR_00000002", INSTR_NAME: "TWO_HOUR_", LAST_FRAME: (50 * 3600 * 2 - 1), LAST_SELOG: (360 * 2 - 1)
             }
 
             # do $pipeline_and_simulation "generated" "Temp/for_anthony" {

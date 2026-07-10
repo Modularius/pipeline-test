@@ -6,16 +6,19 @@ services:
     network_mode: "host"
     image: supermusr-simulator:latest
     environment:
-      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=warn,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - LAST_DIGITISER=
-      - NUM_DIGITISERS=8
-      - RUN_NAME=NoNoiseLowCount
+      - NUM_DIGITISERS=
+      - INSTR_NAME=TWO_HOUR_
+      - LAST_FRAME=359999
+      - LAST_SELOG=719
+      - RUN_NAME=TWO_HOUR_00000002
       - NO_COLOR=true
       - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
-    command: [--broker,localhost:19092,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local,defined,source.json,--digitiser-trace-topic,Traces,--digitiser-event-topic,Events_direct,--frame-event-topic,FrameEvents,--control-topic,Controls,--runlog-topic,Logs,--selog-topic,SELogs,--alarm-topic,Alarms]
+    command: [--broker,localhost:19092,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,generated,defined,source.json,--digitiser-trace-topic,Traces,--digitiser-event-topic,Events,--frame-event-topic,FrameEvents,--control-topic,Controls,--runlog-topic,Logs,--selog-topic,SELogs,--alarm-topic,Alarms]
     volumes:
       - type: bind
-        source: ../Simulations/ParamSpace/noisy.json
+        source: ../Simulations/Temp/for_anthony.json
         target: /app/source.json
         read_only: true
     #extra_hosts:

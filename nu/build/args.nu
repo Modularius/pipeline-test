@@ -2,6 +2,7 @@ use ../../settings.nu constants
 #use ../../settings.nu components
 use ./prelude.nu [get_nexus_local_path, get_nexus_archive_path]
 
+# Needs fixing since add hdf5 reader
 export def "build_args reader" [settings: record, instance_settings: record, file_path: string] : nothing -> list<string> {
     let component = $settings.components.reader
 
@@ -22,6 +23,72 @@ export def "build_args reader" [settings: record, instance_settings: record, fil
         "--digitiser-id", $digitiser_id,
         "--number-of-trace-events", $number_of_trace_events #,
         #"--random-sample", $random_sample
+    ]
+}
+
+export def "build_args hdf5_reader" [settings: record, instance_settings: record, file_path: string] : nothing -> list<string> {
+    let component = $settings.components.reader
+
+    # Namespace
+    let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
+    
+    let indices_maybe = [
+        "--from-index", $instance_settings.from_index,
+        "--to-index", $instance_settings.to_index
+    ] | where ($instance_settings.use_indices? | default false)
+    
+    let shift_to_today_maybe = ["--shift-to-today"] | where ($instance_settings.shift_to_today? | default false)
+
+    [
+        "--broker", $settings.broker.address,
+        "--otel-endpoint", $constants.otel_endpoint,
+        "--otel-namespace", $namespace,
+        "--file-name", $file_path,
+        "--trace-topic", $settings.broker.topics.trace,
+        "--key", "read-from-file",
+        "hdf5"
+    ] | append $shift_to_today_maybe
+      | append $indices_maybe
+}
+
+export def "build_args writer" [settings: record, instance_settings: record, output_path: string] : nothing -> list<string> {
+    let component = $settings.components.trace_writer
+
+    # Namespace
+    let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
+    
+    let control_topic_maybe = ["--control-topic", $settings.broker.topics.control
+    ] | where ($instance_settings.use_control_topic? | default false)
+
+    let trace_topic = $instance_settings.trace_topic? | default $settings.broker.topics.trace
+    let obsv_address = $instance_settings.obsv_address? | default $component.observability.obsv_address
+
+    [
+        "--broker", $settings.broker.address,
+        "--observability-address", $obsv_address,
+        "--otel-endpoint", $constants.otel_endpoint,
+        "--otel-namespace", $namespace,
+        "--trace-topic", $trace_topic,
+        "--consumer-group", $settings.broker.consumer_groups.trace_saver,
+        "--chunk-size", ($settings.pipeline.trace_saver.chunk_size | into string),
+        "--output", $output_path
+    ] | append $control_topic_maybe
+}
+
+export def "build_args analyser" [settings: record, instance_settings: record, analysis_settings: string, chart_output: string] : nothing -> list<string> {
+    let component = $settings.components.analyser
+
+    # Namespace
+    let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
+    [
+        "--chart-output", $chart_output,
+        "--observability-address", $component.observability.obsv_address,
+        "--otel-endpoint", $constants.otel_endpoint,
+        "--otel-namespace", $namespace,
+        "evaluate",
+        "--group", $settings.broker.consumer_groups.analyser,
+        "--analysis-settings", $analysis_settings,
+        "--broker", $settings.broker.address
     ]
 }
 

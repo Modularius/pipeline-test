@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+        <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+        
+</head>
+
+<body>
+    <div>
+        <div id="plotly-html-element" class="plotly-graph-div" style="height:100%; width:100%;"></div>
+
+        <script type="module">
+            const graph_div = document.getElementById("plotly-html-element");
+            await Plotly.newPlot(graph_div, {"data":[{"type":"scatter","name":"Muon Lifetime","x":[0,20.0,40.0,60.0,80.0],"y":[627437074094.9608,2418182190095.816,1003814757489.3813,1204207493484.0273,977116418889.4962],"line":{"dash":"solid","color":"red"},"error_y":{"type":"data","array":[null,603740666041.9604,127689377710.41869,null,287037425388.4028]}}],"layout":{"title":{"text":"Muon Lifetime"},"showlegend":true,"autosize":true,"modebar":{},"xaxis":{"title":{"text":"Slit Size (mm)"}},"yaxis":{"title":{"text":"Muon Lifetime"}}},"config":{},"frames":null});
+        </script>
+    </div>
+</body>
+
+</html>

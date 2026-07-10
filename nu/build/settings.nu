@@ -9,6 +9,8 @@ export def build_rust_log_env [] : nothing -> string {
         $"digitiser_aggregator=($components.digitiser_aggregator.observability.tracing_level)",
         $"nexus_writer=($components.nexus_writer.observability.tracing_level)",
         $"simulator=($components.simulator.observability.tracing_level)",
+        $"trace_writer=($components.trace_writer.observability.tracing_level)",
+        $"trace_reader=($components.reader.observability.tracing_level)"
         $RUST_LOG_OFF
     ] | str join ','
 }
@@ -18,7 +20,9 @@ export def build_otel_level_env [] : nothing -> string {
         $"trace_to_events=($components.trace_to_events.observability.otel_level)",
         $"digitiser_aggregator=($components.digitiser_aggregator.observability.otel_level)",
         $"nexus_writer=($components.nexus_writer.observability.otel_level)",
-        $"simulator=($components.simulator.observability.otel_level)"
+        $"simulator=($components.simulator.observability.otel_level)",
+        $"trace_writer=($components.trace_writer.observability.otel_level)",
+        $"trace_reader=($components.reader.observability.otel_level)"
     ] | str join ','
 }
 

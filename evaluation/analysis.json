@@ -1,0 +1,72 @@
+{
+    "metrics-json-name": "my-metrics",
+    "events-topics": [ "Events_true", "Events" ],
+    "metrics": [
+        { "name": "true-lifetime", "metric-type": "muon-lifetime", "topic": "Events_true", "num-bins": 10, "max-lifetime": 30000 },
+        { "name": "detector-lifetime", "metric-type": "muon-lifetime", "topic": "Events", "num-bins": 10, "max-lifetime": 30000 }
+    ],
+    "templates": {
+        "criteria-templates": [{
+            "name": "period-only",
+            "frames": {"constant": "any" },
+            "channels": {"constant": "any" },
+            "digitiser-ids": {"constant": "any" }
+        }],
+        "bucket-templates": [{
+            "name": "by-threshold",
+            "number": 6,
+            "algorithm": "threshold-only",
+            "waveform": "gaussian",
+            "limits": { "min": { "constant": 128 }, "max": { "constant": 50000 } }
+        }],
+        "arrays": [
+            { "name": "Thresholds", "values": [900, 950, 1000, 1050, 1100, 1150] }
+        ],
+        "algorithms": [{
+            "name": "threshold-only",
+            "fixed-threshold": {
+                "threshold": {"dependency": {"array": "Thresholds" } },
+                "duration": {"constant": 1 },
+                "cool_down": {"constant": 5 }
+            }
+        }],
+        "waveforms": [{
+            "name" : "gaussian",
+            "pulse-type": "gaussian",
+            "sd": {"constant": 20 }
+        }]
+    },
+    "buckets": [
+        {
+            "use-template": "by-threshold",
+            "name": "high-noise-low-count-by-theshold",
+            "criteria" : {
+                "use-template": "period-only",
+                "periods": { "dependency": { "is" : { "function": { "scale": 6, "value-at-zero": 2} } } }
+            }
+        }
+    ],
+    "charts": [
+        {
+            "width": 6,
+            "output-to-json": true,
+            "output-to-html": true,
+            "x-axis": { "array": "Thresholds" },
+            "series": [
+                {
+                    "metric": "true-lifetime", "name": "First Gaussian",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"
+                },
+                {
+                    "metric": "detector-lifetime", "name": "Second Gaussian",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "sd", "from-bucket": "high-noise-low-count-by-theshold"
+                }
+            ],
+            "x-axis-label": "Count",
+            "y-axis-label": "Muon Intensity",
+            "title": "Muon Intensity (25 Events)"
+        }
+    ]
+}

@@ -22,12 +22,22 @@ export const components = {
     simulator: {
         execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "supermusr-simulator:latest",
         image_env_vars: { image: "IMAGE_SIMULATOR", obvs_port: "OBSV_ADDRESS_SIMULATOR", args: "SIMULATOR_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "info", otel_level: "info" }
+        observability: { obsv_address: "127.0.0.1:29093" tracing_level: "debug", otel_level: "off" }
+    },
+    analyser: {
+        execution_path: ($prefix ++ "events-analyser"), process_name: "events-analyser" container_image: "supermusr-events-analyser:latest",
+        image_env_vars: { image: "IMAGE_ANALYSER", obvs_port: "OBSV_ADDRESS_ANALYSER", args: "ANALYSER_ARGS" },
+        observability: { obsv_address: "127.0.0.1:29096" tracing_level: "debug", otel_level: "off" }
+    },
+    trace_writer: {
+        execution_path: ($prefix ++ "trace-writer"), process_name: "trace-writer" container_image: "supermusr-trace-writer:latest",
+        image_env_vars: { image: "IMAGE_WRITER", obvs_port: "OBSV_ADDRESS_WRITER", args: "WRITER_ARGS" },
+        observability: { obsv_address: "127.0.0.1:29094" tracing_level: "debug", otel_level: "off" }
     },
     reader: {
         execution_path: ($prefix ++ "trace-reader"), process_name: "trace-reader" container_image: "ghcr.io/isisneutronmuon/digital-trace-reader:main",
         image_env_vars: { image: "IMAGE_READER", obvs_port: "OBSV_ADDRESS_READER", args: "READER_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29094" tracing_level: "warn", otel_level: "warn" }
+        observability: { obsv_address: "127.0.0.1:29095" tracing_level: "debug", otel_level: "warn" }
     },
     diagnostics: {
         execution_path: ($prefix ++ "diagnostics"), process_name: "diagnostics" container_image: "supermusr-diagnostics:latest"
@@ -94,9 +104,12 @@ export const detector_settings_intervals = {
 export const detector_settings = {
     threshold_1: {
         "type": "fixed-threshold-discriminator",
-        "threshold": { min: 200, max: 2000, dflt: 1500},
-        "duration": { min: 1, max: 5, dflt: 3},
-        "cool-off": { min: 0, max: 3, dflt: 0},
+        "threshold": 2200,
+        "duration": 1,
+        "cool-off": 5
+        #"threshold": { min: 200, max: 2000, dflt: 1500},
+        #"duration": { min: 1, max: 5, dflt: 3},
+        #"cool-off": { min: 0, max: 3, dflt: 0},
     }
     differential_1: {
         "type": "differential-threshold-discriminator",
@@ -124,7 +137,7 @@ export const detector_settings = {
         "fft-truncation": 20,
         "number-of-layers": 4,
         "denoise": true,
-        "denoise-thresholds": [50,{ min: 1, max: 100, dflt: 50},50,50],
+        "denoise-thresholds": [50,50,50,50],
         "enhance": true,
         "enhance-thresholds": [50,50,50,50],
         "enhance-factors": [1.05,1.05,1.05,1.05],
@@ -132,103 +145,12 @@ export const detector_settings = {
         "multiply-factors": [1.01,1.01,1.01,1.01],
         "underlying": {
             "type": "fixed-threshold-discriminator",
-            "threshold": { min: 200, max: 2000, dflt: 1500},
+            "threshold": 2200,
             "duration": 1,
             "cool-off": 0,
         }
         #"--use-local-for-sizes-ge", "2"
     },
-}
-
-#### Event Formation
-export const detector_settings_legacy = {
-    threshold_1: [ "fixed-threshold-discriminator",
-        "--threshold", "5",
-        "--duration", "1",
-        "--cool-off", "0"
-    ],
-    threshold_2: {
-        "threshold": "5",
-        "duration": "1",
-        "cool-off": "0",
-    }
-    differential_1: [ "differential-threshold-discriminator",
-        "--begin-threshold", "25",
-        "--end-threshold", "0",
-        "--begin-duration", "2",
-        "--end-duration", "0",
-        "--cool-off", "0"
-        "--peak-height-mode", "value-at-end-trigger",
-        "--peak-height-basis", "trace-baseline"
-    ],
-    smoothing_1: [ "smoothing-detector",
-        "--noise-centile", "90",
-        "--kernel-sigma", "2",
-        "--nsig-noise", "5",
-        "--min-size", "5" #,
-        #"--use-local-for-sizes-ge", "2"
-    ],
-    multiscale_1: [ "multiscaling",
-        "--downsampling-smoothing", "0.125,0.5,0.75,0.5,0.125",
-        "--smoothing-support=-2,-1,0,1,2",
-        "--fft-padding", "200",
-        "--fft-truncation", "20",
-        "--number-of-layers", "4",
-        "--denoise",
-        "--denoise-thresholds","50,50,50,50",
-        "--enhance",
-        "--enhance-thresholds", "50,50,50,50" ,
-        "--enhance-factors", "1.05,1.05,1.05,1.05",
-        "--multiply",
-        "--multiply-factors", "1.01,1.01,1.01,1.01",
-        "fixed-threshold-discriminator",
-        "--threshold", "2500",
-        "--duration", "3",
-        "--cool-off", "5"
-        #"--use-local-for-sizes-ge", "2"
-    ],
-    multiscale_2: [ "multiscaling",
-        "--downsampling-smoothing", "0.125,0.5,0.75,0.5,0.125",
-        "--smoothing-support=-2,-1,0,1,2",
-        "--fft-padding", "200",
-        "--fft-truncation", "20",
-        "--number-of-layers", "4",
-        "--denoise",
-        "--denoise-thresholds","50,50,50,50",
-        "--enhance",
-        "--enhance-thresholds", "50,50,50,50" ,
-        "--enhance-factors", "1.05,1.05,1.05,1.05",
-        "--multiply",
-        "--multiply-factors", "1.01,1.01,1.01,1.01",
-        "differential-threshold-discriminator",
-        "--begin-threshold", "25",
-        "--end-threshold", "0",
-        "--begin-duration", "2",
-        "--end-duration", "0",
-        "--cool-off", "0"
-        "--peak-height-mode", "value-at-end-trigger",
-        "--peak-height-basis", "trace-baseline"
-    ],
-    multiscale_3: [ "multiscaling",
-        "--downsampling-smoothing", "0.125,0.5,0.75,0.5,0.125",
-        "--smoothing-support=-2,-1,0,1,2",
-        "--fft-padding", "200",
-        "--fft-truncation", "20",
-        "--number-of-layers", "4",
-        "--denoise",
-        "--denoise-thresholds","50,50,50,50",
-        "--enhance",
-        "--enhance-thresholds", "50,50,50,50" ,
-        "--enhance-factors", "1.05,1.05,1.05,1.05",
-        "--multiply",
-        "--multiply-factors", "1.01,1.01,1.01,1.01",
-        "smoothing-detector",
-        "--noise-centile", "90",
-        "--kernel-sigma", "2",
-        "--nsig-noise", "5",
-        "--min-size", "1" #,
-        #"--use-local-for-sizes-ge", "2"
-    ]
 }
 
 export const pipeline_settings = {
@@ -246,6 +168,9 @@ export const pipeline_settings = {
                 nexus_archive: "archive/incoming"
             },
             run_ttl_ms: 9000
+        }
+        trace_saver: {
+            chunk_size: 1
         }
     },
     param_space: {
@@ -272,7 +197,7 @@ export const brokers = {
         pipeline_name: "local",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics", trace_saver: "saver", analyser: "analyser" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -289,7 +214,7 @@ export const brokers = {
         pipeline_name: "local_musr_file",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics", trace_saver: "saver" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "negative",
@@ -306,7 +231,7 @@ export const brokers = {
         pipeline_name: "local",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics", trace_saver: "saver", analyser: "analyser" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -323,7 +248,7 @@ export const brokers = {
         pipeline_name: "local_direct",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events_direct", frame_event: "FrameEvents_direct", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator_direct", nexus_writer: "nexus_writer_direct", diagnostics: "diagnostics" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator_direct", nexus_writer: "nexus_writer_direct", diagnostics: "diagnostics", trace_saver: "saver", analyser: "analyser" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -340,7 +265,7 @@ export const brokers = {
         pipeline_name: "local",
         address: "localhost:19092",
         topics:             { trace: "Traces", dat_event: "Events", frame_event: "FrameEvents", control: "Controls", logs: "Logs", selogs: "SELogs", alarms: "Alarms" },
-        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics" },
+        consumer_groups:    { trace_to_events: "trace_to_events", digitiser_aggregator: "digitiser_aggregator", nexus_writer: "nexus_writer", diagnostics: "diagnostics", trace_saver: "saver", analyser: "analyser" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -357,7 +282,7 @@ export const brokers = {
         pipeline_name: "hifi-via-local",
         address: "130.246.55.29:9092",
         topics:             { trace: "daq-traces-in", dat_event: "local-daq-events", frame_event: "local-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "HIFI_sampleEnv", alarms: "ics-alarms" },
-        consumer_groups:    { trace_to_events: "local_trace_to_events", digitiser_aggregator: "local_digitiser_aggregator", nexus_writer: "local_nexus_writer", diagnostics: "local_diagnostics" },
+        consumer_groups:    { trace_to_events: "local_trace_to_events", digitiser_aggregator: "local_digitiser_aggregator", nexus_writer: "local_nexus_writer", diagnostics: "local_diagnostics", trace_saver: "local_saver" },
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
@@ -368,6 +293,40 @@ export const brokers = {
         },
         nexus_writer: {
             subdirectory: "hifi-via-local",
+        }
+    },
+    musr: {
+        pipeline_name: "musr-via-local",
+        address: "130.246.53.247:9092",
+        topics:             { trace: "traces-in", dat_event: "local-daq-events", frame_event: "local-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "ics-metadata", alarms: "ics-alarms" },
+        consumer_groups:    { trace_to_events: "local_trace_to_events", digitiser_aggregator: "local_digitiser_aggregator", nexus_writer: "local_nexus_writer", diagnostics: "local_diagnostics", trace_saver: "local_saver" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [4,5,6,7,8,9,10,11]
+        },
+        nexus_writer: {
+            subdirectory: "musr-via-local",
+        }
+    },
+    musr-protostave: {
+        pipeline_name: "musr-protostave-via-local",
+        address: "130.246.53.247:9092",
+        topics:             { trace: "super-traces-in", dat_event: "local-super-daq-events", frame_event: "local-super-frame-events", control: "ics-control-change", logs: "ics-metadata", selogs: "ics-metadata", alarms: "ics-alarms" },
+        consumer_groups:    { trace_to_events: "local_super_trace_to_events", digitiser_aggregator: "local_super_digitiser_aggregator", nexus_writer: "local_super_nexus_writer", diagnostics: "local_super_diagnostics", trace_saver: "local_super_saver" },
+        # Trace Source Dependent Event Formation Settings
+        trace_to_events: {
+            polarity: "positive",
+            baseline: 0
+        },
+        digitiser_aggregator: {
+            digitiser_ids: [4]
+        },
+        nexus_writer: {
+            subdirectory: "musr-protostave-via-local",
         }
     },
     hifi-test-simulator-only: {

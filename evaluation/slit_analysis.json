@@ -1,0 +1,84 @@
+{
+    "metrics-json-name": "my-metrics",
+    "events-topics": [ "Events" ],
+    "metrics": [
+        { "name": "lifetime", "metric-type": "muon-lifetime", "topic": "Events", "num-bins": 20, "max-lifetime": 40000 }
+    ],
+    "templates": {
+        "criteria-templates": [{
+            "name": "frames-only",
+            "periods": {"constant": "any" },
+            "channels": {"constant": "any" },
+            "digitiser-ids": {"constant": "any" },
+            "frames": {
+                "dependency" : {
+                    "any-in-range": {
+                        "min": { "array": "FrameMin" },
+                        "max": { "array": "FrameMax" }
+                    }
+                }
+            }
+        }],
+        "bucket-templates": [{
+            "name": "slit-template",
+            "number": 8,
+            "algorithm": "threshold-only",
+            "waveform": "gaussian",
+            "limits": {
+                "min": { "dependency": { "array": "NumberOfFrames" }},
+                "max": { "dependency": { "array": "NumberOfFrames" }}
+            }
+        }],
+        "arrays": [
+            { "name": "SlitSizesMm_Copy", "values": [4.6, 10, 20, 20, 20, 20, 40, 100] },
+            { "name": "SlitSizesMm", "values": [4.6, 20, 20, 20, 100] },
+            { "name": "Run", "values": [1, 2, 3, 4, 5] },
+            { "name": "FrameMin_Temp", "values": [119838597, 119877707, 119902850, 119921532, 119940283, 119958943, 119978103, 119995253] },
+            { "name": "FrameMax_Temp", "values": [119865108, 119890273, 119909434, 119928117, 119946847, 119965519, 119981914, 119997917] },
+            { "name": "FrameMin", "values": [119838597, 119902850, 119921532, 119958943, 119995253] },
+            { "name": "FrameMax", "values": [119865108, 119909434, 119928117, 119965519, 119997917] },
+            { "name": "NumberOfFrames_Temp", "values": [26511, 12566, 6585, 6585, 6564, 6576, 3811, 2665] },
+            { "name": "NumberOfFrames_Temp", "values": [26511, 12566, 6585, 6585, 6564, 6576, 3811, 2665] },
+            { "name": "NumberOfFrames", "values": [1024, 1024, 1024, 1024, 1024] }
+        ],
+        "algorithms": [{
+            "name": "threshold-only",
+            "fixed-threshold": {
+                "threshold": {"constant": 220 },
+                "duration": {"constant": 1 },
+                "cool_down": {"constant": 5 }
+            }
+        }],
+        "waveforms": [{
+            "name" : "gaussian",
+            "pulse-type": "gaussian",
+            "sd": {"constant": 20 }
+        }]
+    },
+    "buckets": [
+        {
+            "use-template": "slit-template",
+            "name": "SlitSettings",
+            "number": 5,
+            "criteria" : { "use-template": "frames-only" }
+        }
+    ],
+    "charts": [
+        {
+            "width": 5,
+            "output-to-json": true,
+            "output-to-html": true,
+            "x-axis": { "array": "Run" },
+            "series": [
+                {
+                    "metric": "lifetime", "name": "Muon Lifetime",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "sd", "from-bucket": "SlitSettings"
+                }
+            ],
+            "x-axis-label": "Slit Size (mm)",
+            "y-axis-label": "Muon Lifetime",
+            "title": "Muon Lifetime"
+        }
+    ]
+}

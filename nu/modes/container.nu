@@ -1,5 +1,5 @@
 use ../build/prelude.nu [print_title, print_heading, HEADING_COLOUR, SUBHEADING_COLOUR, get_nexus_local_path, get_nexus_archive_path]
-use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator', 'build_args reader']
+use ../build/args.nu ['build_args trace_to_events', 'build_args digitiser_aggregator', 'build_args nexus_writer', 'build_args simulator', 'build_args reader', 'build_args writer']
 #use ../../settings.nu components
 
 def get_container_env_vars [component: record, args: list<string>] : nothing -> record {
@@ -42,6 +42,7 @@ export def select_container [settings: record] : nothing -> record<deploy_pipeli
             "Killing all pipeline containers" | print_title
             podman-compose -f Compose/pipeline.yml -p $settings.broker.pipeline_name --profile all down | print
             podman-compose -f Compose/simulator.yml -p $"simulator_($settings.broker.pipeline_name)" down | print
+            podman-compose -f Compose/saver.yml -p $"trace_saver_($settings.broker.pipeline_name)" down | print
         },
         "run_simulator": {|source: string, envs: record, instance_settings?: record|
             let instance_settings = ($instance_settings | default {})
@@ -68,5 +69,20 @@ export def select_container [settings: record] : nothing -> record<deploy_pipeli
                 ^$settings.components.reader.execution_path ...$args | print
             }
         }
+        "run_writer": {|output_path: string, output_name: string, envs: record, instance_settings?: record|
+            let instance_settings = ($instance_settings | default {})
+            "Beginning Trace Writer (in Container)" | print_heading $HEADING_COLOUR
+            let args = build_args writer $settings ($instance_settings | default {}) $output_name
+            let env_vars = $envs
+                | merge $settings.global_env_vars
+                | merge (get_container_env_vars $settings.components.trace_saver $args)
+                | merge { "OUTPUT": $output_path }
+            print $env_vars
+            let new_namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
+            with-env $env_vars {
+                cat Compose/writer.template.yml | envsubst | save -f "Compose/writer.yml"
+                podman-compose -f Compose/writer.yml -p $"trace_writer($new_namespace)" up -d | print
+            }
+        },
     }
 }

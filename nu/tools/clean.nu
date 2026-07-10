@@ -1,6 +1,6 @@
 use ./../build/prelude.nu print_title
 use ./../build/settings.nu SETTINGS_PATH
-use ../../executions/closures.nu execution
+use ../executions/closures.nu execution
 
 let settings: record = open $SETTINGS_PATH
 

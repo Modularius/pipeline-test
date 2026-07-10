@@ -5,70 +5,84 @@ services:
     #    path: /home/dankirk/pipeline-test//logs/event-formation.log
     image: supermusr-trace-to-events:latest
     environment:
-      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,trace_writer=debug,trace_reader=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
       - NO_COLOR=true
-      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off,trace_writer=off,trace_reader=warn
     ports:
       - :9090
-    command: [--broker,localhost:19092,--consumer-group,trace_to_events,--observability-address,127.0.0.1:29090,--trace-topic,Traces,--event-topic,Events_detector,--polarity,positive,--baseline,0,--send-eventlist-buffer-size,1024,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local_detector,fixed-threshold-discriminator,--threshold,1200,--duration,1,--cool-off,0]
+    command: [--broker,localhost:19092,--consumer-group,trace_to_events,--observability-address,127.0.0.1:29090,--trace-topic,Traces,--event-topic,Events,--polarity,positive,--baseline,0,--send-eventlist-buffer-size,1024,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local,fixed-threshold-discriminator,--threshold,220,--duration,1,--cool-off,5]
     network_mode: "host"
 
-  frame-aggregation-detector:
-    #logging:
-    #  options:
-    #    path: /home/dankirk/pipeline-test//logs/frame-aggregation.log
-    image: supermusr-digitiser-aggregator:latest
-    environment:
-      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
-      - NO_COLOR=true
-      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
-    ports:
-      - :9090
-    command: [--broker,localhost:19092,--group,digitiser_aggregator_detector,--observability-address,127.0.0.1:29020,--input-topic,Events_detector,--output-topic,FrameEvents_detector,--frame-ttl-ms,3500,--send-frame-buffer-size,64,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local_detector,-d0,-d1,-d2,-d3,-d4,-d5,-d6,-d7]
-    network_mode: "host"
+  #events-analyser:
+  #  #logging:
+  #  #  options:
+  #  #    path: /home/dankirk/pipeline-test//logs/event-formation.log
+  #  image: 
+  #  environment:
+  #    - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,trace_writer=debug,trace_reader=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+  #    - NO_COLOR=true
+  #    - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off,trace_writer=off,trace_reader=warn
+  #  ports:
+  #    - :9090
+  #  command: 
+  #  network_mode: "host"
 
-  nexus-writer-detector:
-    #logging:
-    #  options:
-    #    path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test//logs/nexus-writer.log
-    image: supermusr-nexus-writer:latest
-    environment:
-      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
-      - NO_COLOR=true
-      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
-    ports:
-      - :9090
-    command: [--broker,localhost:19092,--consumer-group,nexus_writer_detector,--observability-address,127.0.0.1:29030,--control-topic,Controls,--frame-event-topic,FrameEvents_detector,--log-topic,Logs,--sample-env-topic,SELogs,--alarm-topic,Alarms,--configuration-options,{"pipeline_name":"local_detector","address":"localhost:19092","topics":{"trace":"Traces","dat_event":"Events_detector","frame_event":"FrameEvents_detector","control":"Controls","logs":"Logs","selogs":"SELogs","alarms":"Alarms"},"consumer_groups":{"trace_to_events":"trace_to_events","digitiser_aggregator":"digitiser_aggregator_detector","nexus_writer":"nexus_writer_detector","diagnostics":"diagnostics"},"trace_to_events":{"polarity":"positive","baseline":0,"send_eventlist_buffer_size":1024},"digitiser_aggregator":{"digitiser_ids":[0,1,2,3,4,5,6,7],"frame_ttl_ms":3500,"send_frame_buffer_size":64},"nexus_writer":{"paths":{"nexus_output":"Output/param_space/6/detector","nexus_archive":""},"run_ttl_ms":9000},"detector":["fixed-threshold-discriminator","--threshold","1200","--duration","1","--cool-off","0"]},--cache-run-ttl-ms,9000,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local_detector,--local-path,/local]
-    volumes:
-      - ../../Output/param_space/6/detector:/local
-    network_mode: "host"
+  # frame-aggregation:
+  #   #logging:
+  #   #  options:
+  #   #    path: /home/dankirk/pipeline-test//logs/frame-aggregation.log
+  #   image: supermusr-digitiser-aggregator:latest
+  #   environment:
+  #     - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,trace_writer=debug,trace_reader=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+  #     - NO_COLOR=true
+  #     - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off,trace_writer=off,trace_reader=warn
+  #   ports:
+  #     - :9090
+  #   command: [--broker,localhost:19092,--group,digitiser_aggregator,--observability-address,127.0.0.1:29020,--input-topic,Events,--output-topic,FrameEvents,--frame-ttl-ms,3500,--send-frame-buffer-size,64,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local,-d0,-d1,-d2,-d3,-d4,-d5,-d6,-d7]
+  #   network_mode: "host"
 
-  frame-aggregation-true:
-    #logging:
-    #  options:
-    #    path: /home/dankirk/pipeline-test//logs/frame-aggregation.log
-    image: supermusr-digitiser-aggregator:latest
-    environment:
-      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
-      - NO_COLOR=true
-      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
-    ports:
-      - :9090
-    command: [--broker,localhost:19092,--group,digitiser_aggregator_true,--observability-address,127.0.0.1:29021,--input-topic,Events_true,--output-topic,FrameEvents_true,--frame-ttl-ms,3500,--send-frame-buffer-size,64,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local_true,-d0,-d1,-d2,-d3,-d4,-d5,-d6,-d7]
-    network_mode: "host"
+  # nexus-writer:
+  #   #logging:
+  #   #  options:
+  #   #    path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test//logs/nexus-writer.log
+  #   image: supermusr-nexus-writer:latest
+  #   environment:
+  #     - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,trace_writer=debug,trace_reader=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+  #     - NO_COLOR=true
+  #     - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off,trace_writer=off,trace_reader=warn
+  #   ports:
+  #     - :9090
+  #   command: [--broker,localhost:19092,--consumer-group,nexus_writer,--observability-address,127.0.0.1:29030,--control-topic,Controls,--frame-event-topic,FrameEvents,--log-topic,Logs,--sample-env-topic,SELogs,--alarm-topic,Alarms,--configuration-options,{"pipeline_name":"local","address":"localhost:19092","topics":{"trace":"Traces","dat_event":"Events","frame_event":"FrameEvents","control":"Controls","logs":"Logs","selogs":"SELogs","alarms":"Alarms"},"consumer_groups":{"trace_to_events":"trace_to_events","digitiser_aggregator":"digitiser_aggregator","nexus_writer":"nexus_writer","diagnostics":"diagnostics","trace_saver":"saver","analyser":"analyser"},"trace_to_events":{"polarity":"positive","baseline":0,"send_eventlist_buffer_size":1024},"digitiser_aggregator":{"digitiser_ids":[0,1,2,3,4,5,6,7],"frame_ttl_ms":3500,"send_frame_buffer_size":64},"nexus_writer":{"paths":{"nexus_output":"Output/param_space/local","nexus_archive":""},"run_ttl_ms":9000},"detector":["fixed-threshold-discriminator","--threshold","220","--duration","1","--cool-off","5"]},--cache-run-ttl-ms,9000,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local,--local-path,/local]
+  #   volumes:
+  #     - ../../:/local
+  #   network_mode: "host"
 
-  nexus-writer-true:
-    #logging:
-    #  options:
-    #    path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test//logs/nexus-writer.log
-    image: supermusr-nexus-writer:latest
-    environment:
-      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=info,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
-      - NO_COLOR=true
-      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=info
-    ports:
-      - :9090
-    command: [--broker,localhost:19092,--consumer-group,nexus_writer_true,--observability-address,127.0.0.1:29031,--control-topic,Controls,--frame-event-topic,FrameEvents_true,--log-topic,Logs,--sample-env-topic,SELogs,--alarm-topic,Alarms,--configuration-options,{"pipeline_name":"local_true","address":"localhost:19092","topics":{"trace":"Traces","dat_event":"Events_true","frame_event":"FrameEvents_true","control":"Controls","logs":"Logs","selogs":"SELogs","alarms":"Alarms"},"consumer_groups":{"trace_to_events":"trace_to_events","digitiser_aggregator":"digitiser_aggregator_true","nexus_writer":"nexus_writer_true","diagnostics":"diagnostics"},"trace_to_events":{"polarity":"positive","baseline":0,"send_eventlist_buffer_size":1024},"digitiser_aggregator":{"digitiser_ids":[0,1,2,3,4,5,6,7],"frame_ttl_ms":3500,"send_frame_buffer_size":64},"nexus_writer":{"paths":{"nexus_output":"Output/param_space/6/true","nexus_archive":""},"run_ttl_ms":9000},"detector":["fixed-threshold-discriminator","--threshold","1200","--duration","1","--cool-off","0"]},--cache-run-ttl-ms,9000,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local_true,--local-path,/local]
-    volumes:
-      - ../../Output/param_space/6/true:/local
-    network_mode: "host"
+  # frame-aggregation-true:
+  #   #logging:
+  #   #  options:
+  #   #    path: /home/dankirk/pipeline-test//logs/frame-aggregation.log
+  #   image: supermusr-digitiser-aggregator:latest
+  #   environment:
+  #     - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,trace_writer=debug,trace_reader=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+  #     - NO_COLOR=true
+  #     - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off,trace_writer=off,trace_reader=warn
+  #   ports:
+  #     - :9090
+  #   command: [--broker,localhost:19092,--group,digitiser_aggregator_true,--observability-address,127.0.0.1:29021,--input-topic,Events_true,--output-topic,FrameEvents_true,--frame-ttl-ms,3500,--send-frame-buffer-size,64,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local_true,-d0,-d1,-d2,-d3,-d4,-d5,-d6,-d7]
+  #   network_mode: "host"
+
+  # nexus-writer-true:
+  #   #logging:
+  #   #  options:
+  #   #    path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test//logs/nexus-writer.log
+  #   image: supermusr-nexus-writer:latest
+  #   environment:
+  #     - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,trace_writer=debug,trace_reader=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+  #     - NO_COLOR=true
+  #     - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off,trace_writer=off,trace_reader=warn
+  #   ports:
+  #     - :9090
+  #   command: [--broker,localhost:19092,--consumer-group,nexus_writer_true,--observability-address,127.0.0.1:29031,--control-topic,Controls,--frame-event-topic,FrameEvents_true,--log-topic,Logs,--sample-env-topic,SELogs,--alarm-topic,Alarms,--configuration-options,{"pipeline_name":"local_true","address":"localhost:19092","topics":{"trace":"Traces","dat_event":"Events_true","frame_event":"FrameEvents_true","control":"Controls","logs":"Logs","selogs":"SELogs","alarms":"Alarms"},"consumer_groups":{"trace_to_events":"trace_to_events","digitiser_aggregator":"digitiser_aggregator_true","nexus_writer":"nexus_writer_true","diagnostics":"diagnostics","trace_saver":"saver","analyser":"analyser"},"trace_to_events":{"polarity":"positive","baseline":0,"send_eventlist_buffer_size":1024},"digitiser_aggregator":{"digitiser_ids":[0,1,2,3,4,5,6,7],"frame_ttl_ms":3500,"send_frame_buffer_size":64},"nexus_writer":{"paths":{"nexus_output":"Output/param_space/local/true","nexus_archive":""},"run_ttl_ms":9000},"detector":["fixed-threshold-discriminator","--threshold","220","--duration","1","--cool-off","5"]},--cache-run-ttl-ms,9000,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local_true,--local-path,/local]
+  #   volumes:
+  #     - ../../Output/param_space/local/true:/local
+  #   network_mode: "host"

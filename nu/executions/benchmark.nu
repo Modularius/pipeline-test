@@ -1,4 +1,4 @@
-use ../nu/build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
+use ../build/prelude.nu [print_title, SUBHEADING_COLOUR, wait_until_run_completed]
 
 export def main [settings: record] : nothing -> record<run: closure, new_sub_dir: closure> {
     {

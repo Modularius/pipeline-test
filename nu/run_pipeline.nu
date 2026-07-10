@@ -1,6 +1,6 @@
 use ./build/prelude.nu print_heading
 use ./build/settings.nu SETTINGS_PATH
-use ../executions/closures.nu execution
+use ./executions/closures.nu execution
 use ./modes/closures.nu mode
 
 let settings: record = open $SETTINGS_PATH
@@ -13,7 +13,6 @@ def main [mode: string, execution: string] {
     let executions = execution $settings $execution
 
     let execution = $executions | get "run"
-    
 
     let mode = mode $mode $settings
 

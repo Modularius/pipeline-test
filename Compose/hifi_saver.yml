@@ -1,0 +1,16 @@
+services:
+  trace-saver:
+    deploy:
+      mode: replicated
+      replicas: 1
+    network_mode: "host"
+    image: supermusr-trace-writer:latest
+    environment:
+      - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+      - NO_COLOR=true
+      - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off
+    command: [--broker,130.246.55.29:9092,--observability-address,127.0.0.1:29094,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,musr-via-local,--trace-topic,daq-traces-in,--consumer-group,local_saver,--chunk-size,50000000,--output,/output/trace.h5]
+    volumes:
+      - ../archive/traces:/output
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
