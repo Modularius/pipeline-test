@@ -7,7 +7,7 @@ def spawn_component_on_host [settings: record, comp: string, args: list<string>]
     job spawn {
         let prog = ($settings.components | get $comp).execution_path
         with-env $settings.global_env_vars {
-            ^$prog ...$args o+e> $"output.($comp)"
+            ^$prog ...$args o+e> $"logs/output.($comp)"
         }
     }
 }
@@ -27,6 +27,8 @@ export def select_host [settings: record] : nothing -> record<deploy_pipeline:cl
             if not ($instance_settings.no_nexus_writer? | default false) {
                 spawn_component_on_host $settings "nexus_writer"          (build_args nexus_writer $settings $instance_settings)
             }
+
+            loop {}
         },
         "kill_pipeline": {
             "Killing all pipeline host processes" | print_title
@@ -52,7 +54,7 @@ export def select_host [settings: record] : nothing -> record<deploy_pipeline:cl
             print ($args | str join " ")
             let prog = $settings.components.simulator.execution_path
             with-env ($envs | merge $settings.global_env_vars) {
-                ^$prog ...$args o+e> $"output.simulator"
+                ^$prog ...$args o+e> "logs/output.simulator"
             }
         },
         "run_reader": {|file_path: string, instance_settings?: record|
@@ -63,18 +65,18 @@ export def select_host [settings: record] : nothing -> record<deploy_pipeline:cl
             print ($args | str join " ")
             let prog = $settings.components.reader.execution_path
             with-env $settings.global_env_vars {
-                ^$prog ...$args o+e> $"output.reader"
+                ^$prog ...$args o+e> "logs/output.reader"
             }
         },
-        "run_hdf5_reader": {|file_path: string, instance_settings?: record|
+        "run_hdf5_reader": {|file_path: string, read_seq: string, instance_settings?: record|
             let instance_settings = ($instance_settings | default {})
             
             "Beginning HDF5 File Reader (on Host)" | print_heading $HEADING_COLOUR
-            let args = build_args hdf5_reader $settings ($instance_settings | default {}) $file_path
+            let args = build_args hdf5_reader $settings ($instance_settings | default {}) $file_path $read_seq
             print ($args | str join " ")
             let prog = $settings.components.reader.execution_path
             with-env $settings.global_env_vars {
-                ^$prog ...$args o+e> $"output.reader"
+                ^$prog ...$args o+e> "logs/output.reader"
             }
         }
     }

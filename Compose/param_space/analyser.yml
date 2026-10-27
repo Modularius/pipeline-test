@@ -1,0 +1,17 @@
+services:
+  events-analyser:
+   logging:
+      options:
+        path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/evaluation/events-analyser.log
+   image: supermusr-events-analyser:latest
+   environment:
+     - RUST_LOG=info,trace_to_events=info,digitiser_aggregator=info,nexus_writer=info,simulator=debug,trace_writer=debug,trace_reader=debug,tonic=off,h2=off,tokio_util=off,tower=off,hyper=off
+     - NO_COLOR=true
+     - OTEL_LEVEL=info,trace_to_events=info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn,digitiser_aggregator=info,nexus_writer=info,simulator=off,trace_writer=off,trace_reader=warn
+   ports:
+     - :9090
+   command: [--chart-output,/chart_output,--observability-address,127.0.0.1:29096,--otel-endpoint,http://172.16.105.83:4317,--otel-namespace,local,evaluate,--group,analyser,--analysis-settings,/analysis_settings.json,--eventlist-ttl-ms,20000,--broker,localhost:19092]
+   volumes:
+     - /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/evaluation/output:/chart_output
+     - /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/evaluation/input/slit_analysis2.json:/analysis_settings.json
+   network_mode: "host"

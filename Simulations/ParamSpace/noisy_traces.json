@@ -102,7 +102,6 @@
                 ]
             }
         },
-        { "wait-ms": 500 },
-        { "set-timestamp": { "advance-by-ms": 100}}
+        { "wait-ms": 1500 }
     ]
 }

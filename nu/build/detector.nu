@@ -3,7 +3,7 @@ const float_interval_type = "record<min: float, max: float, dflt: float>"
 
 def get_bool [ name: string ] : record  -> bool {
     if ($in | get $name) {
-        [$name]
+        [("--" ++ $name)]
     } else {
         []
     }
@@ -19,7 +19,7 @@ def build_from_intervals_inner [] : any -> any {
     } else if $descr.type == "record" {
         $value = $value | select_from_intervals
     } else if $descr.type == "list" {
-        $value = $value | each {|val| $val | build_record_from_random_intervals}
+        $value = $value #| each {|val| $val | build_record_from_random_intervals}
     }
     $value
 }
@@ -28,7 +28,7 @@ export def build_record_from_random_intervals [] : record -> record {
     mut detector = $in
     for field in ($detector | columns) {
         let value = $detector | get $field
-        let new_value = $value | build_from_intervals_inner
+        let new_value = $value #| build_from_intervals_inner
         $detector = $detector | update $field $new_value
     }
     $detector
@@ -39,7 +39,7 @@ def get_pair [ name: string ] : record  -> list<string> {
 }
 
 def get_vector [ name: string ] : record  -> list<string> {
-    [("--" ++ $name)=($in | get $name | str join "," )]
+    $in | get $name | each {|val| ("--" ++ $name)=($val | into string) }
 }
 
 def build_fixed_threshold [ src: record ] : nothing  -> list<string> {

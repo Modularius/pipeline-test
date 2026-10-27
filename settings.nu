@@ -7,7 +7,7 @@ export const components = {
     trace_to_events: {
         execution_path: ($prefix ++ "trace-to-events"), process_name: "trace-to-events" container_image: "supermusr-trace-to-events:latest",
         image_env_vars: { image: "IMAGE_EVENT_FORMATION", obvs_port: "OBSV_ADDRESS_EVENT_FORMATION", args: "EVENT_FORMATION_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29090" tracing_level: "info", otel_level: "info,trace_to_events::channels=warn,trace_to_events::pulse_detection=warn" }
+        observability: { obsv_address: "127.0.0.1:29090" tracing_level: "debug", otel_level: "info,trace_to_events::channels=info,trace_to_events::pulse_detection=info" }
     },
     digitiser_aggregator: {
         execution_path: ($prefix ++ "digitiser-aggregator"), process_name: "digitiser-aggre" container_image: "supermusr-digitiser-aggregator:latest",
@@ -17,7 +17,7 @@ export const components = {
     nexus_writer: {
         execution_path: ($prefix ++ "nexus-writer"), process_name: "nexus-writer" container_image: "supermusr-nexus-writer:latest",
         image_env_vars: { image: "IMAGE_WRITER", obvs_port: "OBSV_ADDRESS_WRITER", args: "WRITER_ARGS" },
-        observability: { obsv_address: "127.0.0.1:29092" tracing_level: "info", otel_level: "info" }
+        observability: { obsv_address: "127.0.0.1:29092" tracing_level: "debug", otel_level: "info" }
     },
     simulator: {
         execution_path: ($prefix ++ "simulator"), process_name: "simulator" container_image: "supermusr-simulator:latest",
@@ -46,7 +46,7 @@ export const components = {
 
 export const constants = {
     no_color_env: true,
-    rust_log: "info",
+    rust_log: "debug",
     otel_level: "info",
     otel_endpoint: "http://172.16.105.83:4317",
     rust_backtrace: "1"
@@ -104,7 +104,7 @@ export const detector_settings_intervals = {
 export const detector_settings = {
     threshold_1: {
         "type": "fixed-threshold-discriminator",
-        "threshold": 2200,
+        "threshold": 200,
         "duration": 1,
         "cool-off": 5
         #"threshold": { min: 200, max: 2000, dflt: 1500},
@@ -137,17 +137,17 @@ export const detector_settings = {
         "fft-truncation": 20,
         "number-of-layers": 4,
         "denoise": true,
-        "denoise-thresholds": [50,50,50,50],
+        "denoise-thresholds": [5,10,20,50],
         "enhance": true,
         "enhance-thresholds": [50,50,50,50],
-        "enhance-factors": [1.05,1.05,1.05,1.05],
+        "enhance-factors": [1.00,1.01,1.03,1.05],
         "multiply": true,
         "multiply-factors": [1.01,1.01,1.01,1.01],
         "underlying": {
             "type": "fixed-threshold-discriminator",
-            "threshold": 2200,
+            "threshold": 200,
             "duration": 1,
-            "cool-off": 0,
+            "cool-off": 5,
         }
         #"--use-local-for-sizes-ge", "2"
     },
@@ -235,7 +235,7 @@ export const brokers = {
         # Trace Source Dependent Event Formation Settings
         trace_to_events: {
             polarity: "positive",
-            baseline: 0
+            baseline: 2031
         },
         digitiser_aggregator: {
             digitiser_ids: [0,1,2,3,4,5,6,7]

@@ -4,9 +4,14 @@ Logs/*
 *.pyc
 *.csv
 *.png
+*.h5
 Jupyter/cache/*.json
 Jaeger/kibanadata/*
 output.*
 compiled.settings.json
 Compose/pipeline.yml
 Compose/simulator.yml
+evaluation/output
+evaluation/simulator_output
+evaluation/events-analyser.log
+Temp/*

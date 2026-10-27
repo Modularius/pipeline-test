@@ -1,0 +1,17 @@
+services:
+  events-analyser:
+   logging:
+      options:
+        path: /home/ubuntu/SuperMuSRDataPipeline/pipeline-test/evaluation/events-analyser.log
+   image: $IMAGE_ANALYSER
+   environment:
+     - RUST_LOG=${RUST_LOG}
+     - NO_COLOR=${NO_COLOR}
+     - OTEL_LEVEL=${OTEL_LEVEL}
+   ports:
+     - ${OBSV_ADDRESS_ANALYSER}:9090
+   command: ${ANALYSER_ARGS}
+   volumes:
+     - ${CHART_OUTPUT_PATH}:/chart_output
+     - ${ANALYSIS_SETTINGS_PATH}:/analysis_settings.json
+   network_mode: "host"

@@ -1,0 +1,198 @@
+{
+    "metrics-json-name": "my-metrics",
+    "events-topics": [ "Events_0", "Events_1", "Events_2", "Events_3", "Events_4", "Events_5"],
+    "metrics": [
+        { "name": "intensity_0", "metric-type": "intensity-graph", "topic": "Events_0", "num-bins": 256, "interval": { "min": 2250, "max": 2950 },
+            "smoothing-window-size": 7, "kernel-size": 5, "concentration": 0.075
+        },
+        { "name": "intensity_1", "metric-type": "intensity-graph", "topic": "Events_1", "num-bins": 256, "interval": { "min": 2200, "max": 2950 },
+            "smoothing-window-size": 7, "kernel-size": 5, "concentration": 0.075
+        },
+        { "name": "intensity_2", "metric-type": "intensity-graph", "topic": "Events_2", "num-bins": 256, "interval": { "min": 2150, "max": 2950 },
+            "smoothing-window-size": 7, "kernel-size": 5, "concentration": 0.075
+        },
+        { "name": "intensity_3", "metric-type": "intensity-graph", "topic": "Events_3", "num-bins": 256, "interval": { "min": 2000, "max": 2950 },
+            "smoothing-window-size": 7, "kernel-size": 5, "concentration": 0.075
+        },
+        { "name": "intensity_4", "metric-type": "intensity-graph", "topic": "Events_4", "num-bins": 256, "interval": { "min": 2000, "max": 2950 },
+            "smoothing-window-size": 7, "kernel-size": 5, "concentration": 0.075
+        },
+        { "name": "intensity_5", "metric-type": "intensity-graph", "topic": "Events_5", "num-bins": 256, "interval": { "min": 2000, "max": 2950 },
+            "smoothing-window-size": 7, "kernel-size": 5, "concentration": 0.075
+        }
+    ],
+    "trigger-charts-when": {"idle-time-exceeded-sec": 20},
+    "idle-time-sec": 20,
+    "templates": {
+        "criteria-templates": [{
+            "name": "periods-and-frames-only",
+            "channels": {"constant": "any" },
+            "digitiser-ids": {"constant": "any" },
+            "periods": {"constant": "any" },
+            "frames": {
+                "dependency" : {
+                    "any-in-range": {
+                        "min": { "array": "FrameMin" },
+                        "max": { "array": "FrameMax" }
+                    }
+                }
+            }
+        }],
+        "bucket-templates": [{
+            "name": "slit-template",
+            "number": 8,
+            "algorithm": "threshold-only",
+            "waveform": "gaussian",
+            "limits": {
+                "min": { "constant": 10 },
+                "max": { "constant": 100000 }
+            }
+        }],
+        "arrays": [
+            { "name": "SlitSizesMm", "values": [4.6, 10, 20, 40, 100] },
+            { "name": "FrameMin", "values": [119838597, 119877707, 119902850, 119958943, 119995253] },
+            { "name": "FrameMax", "values": [119865108, 119890273, 119909434, 119965519, 119997917] }
+        ],
+        "algorithms": [{
+            "name": "threshold-only",
+            "fixed-threshold": {
+                "threshold": {"constant": 220 },
+                "duration": {"constant": 1 },
+                "cool_down": {"constant": 5 }
+            }
+        }],
+        "waveforms": [{
+            "name" : "gaussian",
+            "pulse-type": "gaussian",
+            "sd": {"constant": 20 }
+        }]
+    },
+    "buckets": [
+        {
+            "use-template": "slit-template",
+            "name": "SlitSettings",
+            "number": 5,
+            "criteria" : {
+                "use-template": "periods-and-frames-only"
+            }
+        }
+    ],
+    "charts": [
+        {
+            "width": 5,
+            "output-to-json": false,
+            "output-to-html": true,
+            "x-axis": { "array": "SlitSizesMm" },
+            "series": [
+                {
+                    "metric": "intensity_0",
+                    "name": "Fix. Thresh. 2150",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "noise-threshold", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_1",
+                    "name": "Fix. Thresh. 2200",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "noise-threshold", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_2",
+                    "name": "Fix. Thresh. 2250",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "noise-threshold", "from-bucket": "SlitSettings"
+                }
+            ],
+            "x-axis-label": "Slit Size (mm)",
+            "y-axis-label": "Noise Threshold",
+            "title": "Noise Threshold (Fixed Threshold)"
+        },
+        {
+            "width": 5,
+            "output-to-json": false,
+            "output-to-html": true,
+            "x-axis": { "array": "SlitSizesMm" },
+            "series": [
+                {
+                    "metric": "intensity_3",
+                    "name": "Diff. Thresh. 5",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "noise-threshold", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_4",
+                    "name": "Diff. Thresh. 20",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "noise-threshold", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_5",
+                    "name": "Diff. Thresh. 35",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "noise-threshold", "from-bucket": "SlitSettings"
+                }
+            ],
+            "x-axis-label": "Slit Size (mm)",
+            "y-axis-label": "Noise Threshold",
+            "title": "Noise Threshold (Differential Threshold)"
+        },
+        {
+            "width": 5,
+            "output-to-json": false,
+            "output-to-html": true,
+            "x-axis": { "array": "SlitSizesMm" },
+            "series": [
+                {
+                    "metric": "intensity_0",
+                    "name": "Fix. Thresh. 2150",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "intensity-difference", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_1",
+                    "name": "Fix. Thresh. 2200",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "intensity-difference", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_2",
+                    "name": "Fix. Thresh. 2250",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "intensity-difference", "from-bucket": "SlitSettings"
+                }
+            ],
+            "x-axis-label": "Slit Size (mm)",
+            "y-axis-label": "Intensity Difference",
+            "title": "Intensity Difference (Fixed Threshold)"
+        },
+        {
+            "width": 5,
+            "output-to-json": false,
+            "output-to-html": true,
+            "x-axis": { "array": "SlitSizesMm" },
+            "series": [
+                {
+                    "metric": "intensity_3",
+                    "name": "Diff. Thresh. 5",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "intensity-difference", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_4",
+                    "name": "Diff. Thresh. 20",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "intensity-difference", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "intensity_5",
+                    "name": "Diff. Thresh. 35",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "intensity-difference", "from-bucket": "SlitSettings"
+                }
+            ],
+            "x-axis-label": "Slit Size (mm)",
+            "y-axis-label": "Intensity Difference",
+            "title": "Intensity Difference (Differential Threshold)"
+        }
+    ]
+}

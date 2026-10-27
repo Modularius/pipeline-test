@@ -28,8 +28,8 @@ export def analyse_test_file [path: string, do_long_summaries:bool = true] {
     assert equal $top_level [["path", "type"]; ["raw_data_1", "Group"]]
 
     let raw_data_1 = h5ls $"($path)/raw_data_1" | split row "\n" | split column -c " " "path" "type" "datatype"
-    assert equal ($raw_data_1 | length) 17
-    assert equal ($raw_data_1 | where {|row|$row.path == "detector_1_events"}) [["path", "type"]; ["detector_1_events", "Group"]]
+    assert equal ($raw_data_1 | length) 18 ("Path: " + $path)
+    assert equal ($raw_data_1 | where {|row|$row.path == "detector_1_events"}) [["path", "type"]; ["detector_1_events", "Group"]] ("Path: " + $path)
 
     let detector_1_events = h5ls $"($path)/raw_data_1/detector_1_events" | split row "\n" | split column -c " " "path" "type" "datatype"
     assert equal ($detector_1_events | get "path") [

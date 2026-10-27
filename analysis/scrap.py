@@ -1,15 +1,10 @@
 import h5py # type: ignore
 import matplotlib.pyplot as pl # type: ignore
 
-f = h5py.File("archive/traces/trace-proto5.h5")
-digitiser_4 = f['digitiser_4']
-frame_number = digitiser_4['frame_number']
-
-frames = [int(frame) for frame in frame_number]
-diffs = [a - b for (a,b) in zip(frames[1:], frames[:-1])]
-print(len(frames))
-print(frames[0], frames[diffs.index(max(diffs))])
-print(frames[diffs.index(max(diffs)) + 1], frames[-1])
+f = h5py.File("archive/traces/trace.h5")
+for digitiser in f:
+    print(len(f[digitiser]['timestamp']))
+    print(f[digitiser]['timestamp'][0],f[digitiser]['timestamp'][-1])
 
 
 

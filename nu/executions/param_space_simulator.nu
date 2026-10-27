@@ -32,10 +32,10 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
             $runs | each {|run|
                 let envs = $env_args | merge $run.noise | merge $run.count | merge { "RUN_NAME": $run.name, "PERIOD": $run.period };
                 do $controls.run_simulator $path $envs $instance_settings;
-                sleep 1sec;
+                sleep 2sec;
             }
 
         },
-        "new_sub_dir": {|| ["true", "detector"] }
+        "new_sub_dir": {|| ["true", ""] }
     }
 }

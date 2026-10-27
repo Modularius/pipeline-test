@@ -7,7 +7,7 @@ export def main [settings: record] : nothing -> record<run: closure, new_sub_dir
         "run": {|controls: record<deploy_pipeline: closure, run_simulator: closure, run_reader: closure, kill_pipeline: closure>|
             "Running Standard Execution" | print_title
 
-            do $controls.deploy_pipeline { suppress_archive: true }
+            do $controls.deploy_pipeline { suppress_archive: true, no_trace_to_events: true, no_digitiser_aggregator: true, no_nexus_writer: false, use_otel: false }
         },
         "new_sub_dir": {|| null }
     }

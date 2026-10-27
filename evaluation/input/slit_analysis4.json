@@ -1,0 +1,135 @@
+{
+    "metrics-json-name": "my-metrics",
+    "events-topics": [ "Events_0", "Events_1", "Events_2"],
+    "metrics": [
+        { "name": "count_0", "metric-type": "event-count", "topic": "Events_0", "function": "count"},
+        { "name": "count_1", "metric-type": "event-count", "topic": "Events_1", "function": "count"},
+        { "name": "count_2", "metric-type": "event-count", "topic": "Events_2", "function": "count"},
+        { "name": "minimum_0", "metric-type": "event-count", "topic": "Events_0", "function": "minimum-separation"},
+        { "name": "minimum_1", "metric-type": "event-count", "topic": "Events_1", "function": "minimum-separation"},
+        { "name": "minimum_2", "metric-type": "event-count", "topic": "Events_2", "function": "minimum-separation"}
+    ],
+    "trigger-charts-when": {"idle-time-exceeded-sec": 20},
+    "idle-time-sec": 20,
+    "templates": {
+        "criteria-templates": [{
+            "name": "periods-and-frames-only",
+            "channels": {"constant": "any" },
+            "digitiser-ids": {"constant": "any" },
+            "periods": {"constant": "any" },
+            "frames": {
+                "dependency" : {
+                    "any-in-range": {
+                        "min": { "array": "FrameMin" },
+                        "max": { "array": "FrameMax" }
+                    }
+                }
+            }
+        }],
+        "bucket-templates": [{
+            "name": "slit-template",
+            "number": 8,
+            "algorithm": "threshold-only",
+            "waveform": "gaussian",
+            "limits": {
+                "min": { "constant": 10 },
+                "max": { "constant": 100000 }
+            }
+        }],
+        "arrays": [
+            { "name": "SlitSizesMm_Copy", "values": [4.6, 10, 20, 20, 20, 20, 40, 100] },
+            { "name": "SlitSizesMm", "values": [4.6, 10, 20, 40, 100] },
+            { "name": "Run", "values": [1, 2, 3, 4, 5] },
+            { "name": "FrameMin_Temp", "values": [119838597, 119877707, 119902850, 119921532, 119940283, 119958943, 119978103, 119995253] },
+            { "name": "FrameMax_Temp", "values": [119865108, 119890273, 119909434, 119928117, 119946847, 119965519, 119981914, 119997917] },
+            { "name": "FrameMin", "values": [119838597, 119877707, 119902850, 119958943, 119995253] },
+            { "name": "FrameMax", "values": [119865108, 119890273, 119909434, 119965519, 119997917] },
+            { "name": "NumberOfTraces_Temp", "values": [26511, 12566, 6585, 6585, 6564, 6576, 3811, 2665] },
+            { "name": "NumberOfTraces_Temp", "values": [26511, 6585, 6585, 6576, 2665] },
+            { "name": "NumberOfTraces", "values": [3000, 3000, 3000, 3000, 3000] }
+        ],
+        "algorithms": [{
+            "name": "threshold-only",
+            "fixed-threshold": {
+                "threshold": {"constant": 220 },
+                "duration": {"constant": 1 },
+                "cool_down": {"constant": 5 }
+            }
+        }],
+        "waveforms": [{
+            "name" : "gaussian",
+            "pulse-type": "gaussian",
+            "sd": {"constant": 20 }
+        }]
+    },
+    "buckets": [
+        {
+            "use-template": "slit-template",
+            "name": "SlitSettings",
+            "number": 5,
+            "criteria" : {
+                "use-template": "periods-and-frames-only"
+            }
+        }
+    ],
+    "charts": [
+        {
+            "width": 5,
+            "output-to-json": true,
+            "output-to-html": true,
+            "x-axis": { "array": "SlitSizesMm" },
+            "series": [
+                {
+                    "metric": "count_0",
+                    "name": "Diff. Thresh. 15",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "sd", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "count_1",
+                    "name": "Diff. Thresh. 25",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "sd", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "count_2",
+                    "name": "Diff. Thresh. 35",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "sd", "from-bucket": "SlitSettings"
+                }
+            ],
+            "x-axis-label": "Slit Size (mm)",
+            "y-axis-label": "Count",
+            "title": "Number of Events Detected"
+        },
+        {
+            "width": 5,
+            "output-to-json": true,
+            "output-to-html": true,
+            "x-axis": { "array": "SlitSizesMm" },
+            "series": [
+                {
+                    "metric": "minimum_0",
+                    "name": "Diff. Thresh. 15",
+                    "line-colour": "red", "line-style": "solid",
+                    "property": "sd", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "minimum_1",
+                    "name": "Diff. Thresh. 25",
+                    "line-colour": "blue", "line-style": "solid",
+                    "property": "sd", "from-bucket": "SlitSettings"
+                },
+                {
+                    "metric": "minimum_2",
+                    "name": "Diff. Thresh. 35",
+                    "line-colour": "green", "line-style": "solid",
+                    "property": "sd", "from-bucket": "SlitSettings"
+                }
+            ],
+            "x-axis-label": "Slit Size (mm)",
+            "y-axis-label": "Minimum Separation",
+            "title": "Minimum Separation"
+        }
+    ]
+}

@@ -19,13 +19,14 @@ def main [] {
         | update threshold $value | build_detector}
 
     let settings = build_settings "local" "param_space" "threshold_1"
+
     let mode = mode "param_space" $settings
-    let chart_output = "/home/ubuntu/SuperMuSRDataPipeline/pipeline-test/evaluation/output"
+    let chart_output = "/home/ubuntu/SuperMuSRDataPipeline/pipeline-test/evaluation/output2"
     let analysis_settings = "/home/ubuntu/SuperMuSRDataPipeline/pipeline-test/evaluation/analysis.json"
-    do $mode.run_analyser $chart_output $analysis_settings
+    do $mode.run_analyser $chart_output $analysis_settings { load_metrics: false }
 
     $tests | enumerate | each {|test|
-        $"Running Test ($test)" | print_heading "red"
+        $"Running Test ($test.index)" | print_heading "red"
         $test.item | print
         "Running Test" | print_heading "red"
         init_custom_settings_detector $settings $test.item $test.index

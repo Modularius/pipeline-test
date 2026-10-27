@@ -31,6 +31,10 @@ export def 'main saver' [] {
     switch_dir { buildah bud -f Containerfile --build-arg component=trace-writer -t supermusr-trace-writer:latest --layers }
 }
 
+export def 'main analyser' [] {
+    switch_dir { buildah bud -f Containerfile --build-arg component=events-analyser -t supermusr-events-analyser:latest --layers }
+}
+
 export def main [] {
     switch_dir {
         buildah bud -f Containerfile --build-arg component=trace-to-events -t supermusr-trace-to-events:latest --layers

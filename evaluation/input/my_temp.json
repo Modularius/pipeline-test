@@ -1,0 +1,1731 @@
+{
+  "metrics-json-name": "my-metrics",
+  "events-topics": [
+    "Events_0",
+    "Events_1",
+    "Events_2",
+    "Events_3",
+    "Events_4",
+    "Events_5",
+    "Events_6",
+    "Events_7",
+    "Events_8"
+  ],
+  "metrics": [
+    {
+      "name": "pulse_pair_differences_0",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_0",
+      "intensity-filter": {
+        "min": 2270,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_1",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_1",
+      "intensity-filter": {
+        "min": 2270,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_2",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_2",
+      "intensity-filter": {
+        "min": 2270,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_3",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_3",
+      "intensity-filter": {
+        "min": 2240,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_4",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_4",
+      "intensity-filter": {
+        "min": 2240,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_5",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_5",
+      "intensity-filter": {
+        "min": 2240,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_6",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_6",
+      "intensity-filter": {
+        "min": 2200,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_7",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_7",
+      "intensity-filter": {
+        "min": 2200,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "pulse_pair_differences_8",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_8",
+      "intensity-filter": {
+        "min": 2200,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_0",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_0",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_1",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_1",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_2",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_2",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_3",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_3",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_4",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_4",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_5",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_5",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_6",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_6",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_7",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_7",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    },
+    {
+      "name": "filtered_pulse_pair_differences_8",
+      "metric-type": "pulse-pair-differences",
+      "topic": "Events_8",
+      "intensity-filter": {
+        "min": 0,
+        "max": 10000
+      },
+      "num-bins": 32,
+      "interval": {
+        "min": 0,
+        "max": 64
+      }
+    }
+  ],
+  "trigger-charts-when": {
+    "idle-time-exceeded-sec": 20
+  },
+  "idle-time-sec": 20,
+  "templates": {
+    "criteria-templates": [
+      {
+        "name": "any-criteria",
+        "channels": {
+          "constant": "any"
+        },
+        "digitiser-ids": {
+          "constant": "any"
+        },
+        "periods": {
+          "constant": "any"
+        },
+        "frames": {
+          "constant": "any"
+        }
+      }
+    ],
+    "bucket-templates": [
+      {
+        "name": "any-bucket-template",
+        "algorithm": "threshold-only",
+        "waveform": "gaussian",
+        "number": 1,
+        "limits": {
+          "min": {
+            "constant": 10
+          },
+          "max": {
+            "constant": 100000
+          }
+        }
+      }
+    ],
+    "arrays": [],
+    "algorithms": [
+      {
+        "name": "threshold-only",
+        "fixed-threshold": {
+          "threshold": {
+            "constant": 220
+          },
+          "duration": {
+            "constant": 1
+          },
+          "cool_down": {
+            "constant": 5
+          }
+        }
+      }
+    ],
+    "waveforms": [
+      {
+        "name": "gaussian",
+        "pulse-type": "gaussian",
+        "sd": {
+          "constant": 20
+        }
+      }
+    ]
+  },
+  "buckets": [
+    {
+      "name": "Slit_4.6mm_Message",
+      "use-template": "any-bucket-template",
+      "number": 1,
+      "criteria": {
+        "use-template": "any-criteria",
+        "frames": {
+          "constant": {
+            "any-in-range": {
+              "min": 119838597,
+              "max": 119865108
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Slit_10mm_Message",
+      "use-template": "any-bucket-template",
+      "number": 1,
+      "criteria": {
+        "use-template": "any-criteria",
+        "frames": {
+          "constant": {
+            "any-in-range": {
+              "min": 119877707,
+              "max": 119890273
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Slit_20mm_Message",
+      "use-template": "any-bucket-template",
+      "number": 1,
+      "criteria": {
+        "use-template": "any-criteria",
+        "frames": {
+          "constant": {
+            "any-in-range": {
+              "min": 119902850,
+              "max": 119909434
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Slit_40mm_Message",
+      "use-template": "any-bucket-template",
+      "number": 1,
+      "criteria": {
+        "use-template": "any-criteria",
+        "frames": {
+          "constant": {
+            "any-in-range": {
+              "min": 119958943,
+              "max": 119965519
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Slit_100mm_Message",
+      "use-template": "any-bucket-template",
+      "number": 1,
+      "criteria": {
+        "use-template": "any-criteria",
+        "frames": {
+          "constant": {
+            "any-in-range": {
+              "min": 119995253,
+              "max": 119997917
+            }
+          }
+        }
+      }
+    }
+  ],
+  "charts": [
+    {
+      "width": 1,
+      "output-to-json": false,
+      "output-to-html": true,
+      "x-axis": {
+        "function": {
+          "scale": 1,
+          "value-at-zero": 2150
+        }
+      },
+      "x-axis-label": "Pulse Pair Time Diffs",
+      "y-axis-label": "Count",
+      "title": "Pulse Pair Time Diffs: Fixed Threshold",
+      "series": [
+        {
+          "metric": "pulse_pair_differences_0",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_0",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_0",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_0",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_0",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_1",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_1",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_1",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_1",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_1",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_2",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_2",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_2",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_2",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_2",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Fixed (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_0",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_0",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_0",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_0",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_0",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_1",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_1",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_1",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_1",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_1",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_2",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_2",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_2",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_2",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_2",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Fixed (2250)"
+        }
+      ],
+      "num-rows": 3,
+      "num-cols": 1
+    },
+    {
+      "width": 1,
+      "output-to-json": false,
+      "output-to-html": true,
+      "x-axis": {
+        "function": {
+          "scale": 1,
+          "value-at-zero": 2000
+        }
+      },
+      "x-axis-label": "Pulse Pair Time Diffs",
+      "y-axis-label": "Count",
+      "title": "Pulse Pair Time Diffs: Differential Threshold",
+      "series": [
+        {
+          "metric": "pulse_pair_differences_3",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_3",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_3",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_3",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_3",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_4",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_4",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_4",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_4",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_4",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_5",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_5",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_5",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_5",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_5",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Differential (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_3",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_3",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_3",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_3",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_3",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_4",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_4",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_4",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_4",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_4",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_5",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_5",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_5",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_5",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_5",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Differential (2250)"
+        }
+      ],
+      "num-rows": 3,
+      "num-cols": 1
+    },
+    {
+      "width": 1,
+      "output-to-json": false,
+      "output-to-html": true,
+      "x-axis": {
+        "function": {
+          "scale": 1,
+          "value-at-zero": 2000
+        }
+      },
+      "x-axis-label": "Pulse Pair Time Diffs",
+      "y-axis-label": "Count",
+      "title": "Pulse Pair Time Diffs: 2nd Order Smoothing",
+      "series": [
+        {
+          "metric": "pulse_pair_differences_6",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_6",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_6",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_6",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_6",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2150)"
+        },
+        {
+          "metric": "pulse_pair_differences_7",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_7",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_7",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_7",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_7",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2200)"
+        },
+        {
+          "metric": "pulse_pair_differences_8",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_8",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_8",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_8",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2250)"
+        },
+        {
+          "metric": "pulse_pair_differences_8",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "solid",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Smoothing (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_6",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_6",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_6",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_6",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_6",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x1",
+          "y-axis": "y1",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2150)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_7",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_7",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_7",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_7",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_7",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x2",
+          "y-axis": "y2",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2200)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_8",
+          "name": "Slit 4.6mm",
+          "line-colour": "blue",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_4.6mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_8",
+          "name": "Slit 10mm",
+          "line-colour": "red",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_10mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_8",
+          "name": "Slit 20mm",
+          "line-colour": "green",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_20mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_8",
+          "name": "Slit 40mm",
+          "line-colour": "black",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_40mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2250)"
+        },
+        {
+          "metric": "filtered_pulse_pair_differences_8",
+          "name": "Slit 100mm",
+          "line-colour": "purple",
+          "line-style": "dash",
+          "property": {
+            "pulse-pair-differences": "mean-sd"
+          },
+          "from-bucket": "Slit_100mm_Message",
+          "x-axis": "x3",
+          "y-axis": "y3",
+          "series-type": "bar",
+          "legend-group-title": "Filtered Smoothing (2250)"
+        }
+      ],
+      "num-rows": 3,
+      "num-cols": 1
+    }
+  ]
+}

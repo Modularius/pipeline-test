@@ -26,19 +26,29 @@ export def "build_args reader" [settings: record, instance_settings: record, fil
     ]
 }
 
-export def "build_args hdf5_reader" [settings: record, instance_settings: record, file_path: string] : nothing -> list<string> {
+export def "build_args hdf5_reader" [settings: record, instance_settings: record, file_path: string, read_seq: string] : nothing -> list<string> {
     let component = $settings.components.reader
 
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
     
-    let indices_maybe = [
-        "--from-index", $instance_settings.from_index,
-        "--to-index", $instance_settings.to_index
-    ] | where ($instance_settings.use_indices? | default false)
+    #let frames_maybe = [
+    #    "--from-frame-number", $instance_settings.from_frame,
+    #    "--to-frame-number", $instance_settings.to_frame
+    #] | where ($instance_settings.use_frames? | default false)
+    
+    #let indices_maybe = [
+    #    "--from-index", $instance_settings.from_index,
+    #    "--to-index", $instance_settings.to_index
+    #] | where ($instance_settings.use_indices? | default false)
+    
+    let sample_rate = [ "--sample_rate", ($instance_settings.sample_rate? | default 1000000000) ]
+    let overwrite_period_maybe = [
+        "--overwrite-period-number", ($instance_settings.overwrite_period? | default 0)
+    ] | where ($instance_settings.overwrite_period? != null)
     
     let shift_to_today_maybe = ["--shift-to-today"] | where ($instance_settings.shift_to_today? | default false)
-
+    
     [
         "--broker", $settings.broker.address,
         "--otel-endpoint", $constants.otel_endpoint,
@@ -46,9 +56,10 @@ export def "build_args hdf5_reader" [settings: record, instance_settings: record
         "--file-name", $file_path,
         "--trace-topic", $settings.broker.topics.trace,
         "--key", "read-from-file",
-        "hdf5"
+        "hdf5",
+        "--read", $"[($read_seq)]"
     ] | append $shift_to_today_maybe
-      | append $indices_maybe
+      | append $overwrite_period_maybe
 }
 
 export def "build_args writer" [settings: record, instance_settings: record, output_path: string] : nothing -> list<string> {
@@ -75,8 +86,10 @@ export def "build_args writer" [settings: record, instance_settings: record, out
     ] | append $control_topic_maybe
 }
 
-export def "build_args analyser" [settings: record, instance_settings: record, analysis_settings: string, chart_output: string] : nothing -> list<string> {
+export def "build_args analyser" [settings: record, analysis_settings: string, chart_output: string, instance_settings: record] : nothing -> list<string> {
     let component = $settings.components.analyser
+
+    let load_metrics_maybe = ["--load-metrics"] | where ($instance_settings.load_metrics? | default false)
 
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
@@ -88,8 +101,9 @@ export def "build_args analyser" [settings: record, instance_settings: record, a
         "evaluate",
         "--group", $settings.broker.consumer_groups.analyser,
         "--analysis-settings", $analysis_settings,
+        "--eventlist-ttl-ms", "20000",
         "--broker", $settings.broker.address
-    ]
+    ] | append $load_metrics_maybe
 }
 
 export def "build_args simulator" [settings: record, instance_settings: record, source: string] : nothing -> list<string> {
@@ -100,10 +114,12 @@ export def "build_args simulator" [settings: record, instance_settings: record, 
     let trace = $instance_settings.trace? | default $settings.broker.topics.trace
     let dat_event = $instance_settings.dat_event? | default $settings.broker.topics.dat_event
     let frame_event = $instance_settings.frame_event? | default $settings.broker.topics.frame_event
+    
+    let otel_endpoint_maybe = ["--otel-endpoint", $constants.otel_endpoint]
+        | where ($instance_settings.use_otel? | default true)
 
     [
         "--broker", $settings.broker.address,
-        "--otel-endpoint", $constants.otel_endpoint,
         "--otel-namespace", $namespace,
         "defined", $source,
         "--digitiser-trace-topic", $trace,
@@ -113,7 +129,7 @@ export def "build_args simulator" [settings: record, instance_settings: record, 
         "--runlog-topic", $settings.broker.topics.logs,
         "--selog-topic", $settings.broker.topics.selogs,
         "--alarm-topic", $settings.broker.topics.alarms
-    ]
+    ] # | append $otel_endpoint_maybe
 }
 
 export def "build_args trace_to_events" [settings: record, instance_settings: record] : nothing -> list<string> {
@@ -125,6 +141,9 @@ export def "build_args trace_to_events" [settings: record, instance_settings: re
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
     
+    let otel_endpoint_maybe = ["--otel-endpoint", $constants.otel_endpoint]
+        | where ($instance_settings.use_otel? | default true)
+    
     [
         "--broker", $settings.broker.address,
         "--consumer-group", $settings.broker.consumer_groups.trace_to_events,
@@ -133,10 +152,10 @@ export def "build_args trace_to_events" [settings: record, instance_settings: re
         "--event-topic", $topics.dat_event,
         "--polarity", $broker_component.polarity,
         "--baseline", ($broker_component.baseline | into string),
-        "--send-eventlist-buffer-size", ($settings.pipeline.trace_to_events.send_eventlist_buffer_size | into string)
-        "--otel-endpoint", $constants.otel_endpoint,
+        "--send-eventlist-buffer-size", ($settings.pipeline.trace_to_events.send_eventlist_buffer_size | into string),
         "--otel-namespace", $namespace
-    ] | append $settings.detector
+    ] | append $otel_endpoint_maybe
+      | append $settings.detector
 }
 
 export def "build_args digitiser_aggregator" [settings: record, instance_settings: record] : nothing -> list<string> {
@@ -149,6 +168,9 @@ export def "build_args digitiser_aggregator" [settings: record, instance_setting
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
 
+    let otel_endpoint_maybe = ["--otel-endpoint", $constants.otel_endpoint]
+        | where ($instance_settings.use_otel? | default true)
+    
     let digitiser_ids = $settings.broker.digitiser_aggregator.digitiser_ids
         | each {into string}
         | each {|digitiser_id| "-d" ++ $digitiser_id}
@@ -163,7 +185,8 @@ export def "build_args digitiser_aggregator" [settings: record, instance_setting
         "--send-frame-buffer-size", ($pipeline_component.send_frame_buffer_size | into string),
         "--otel-endpoint", $constants.otel_endpoint,
         "--otel-namespace", $namespace
-    ] | append $digitiser_ids
+    ] | append $otel_endpoint_maybe
+      | append $digitiser_ids
 }
 
 def build_configuration_options [settings: record, instance_settings: record] : nothing -> string {
@@ -210,6 +233,9 @@ export def "build_args nexus_writer" [settings: record, instance_settings: recor
     # Namespace
     let namespace = $instance_settings.new_namespace? | default $settings.broker.pipeline_name
     
+    let otel_endpoint_maybe = ["--otel-endpoint", $constants.otel_endpoint]
+        | where ($instance_settings.use_otel? | default true)
+    
     #Arguments
     [
         "--broker", $settings.broker.address,
@@ -222,10 +248,10 @@ export def "build_args nexus_writer" [settings: record, instance_settings: recor
         "--alarm-topic", $topics.alarms,
         "--configuration-options", (build_configuration_options $settings $instance_settings),
         "--cache-run-ttl-ms", ($pipeline_component.run_ttl_ms | into string),
-        "--otel-endpoint", $constants.otel_endpoint,
         "--otel-namespace", $namespace,
         "--local-path", $local_path
-    ] | append $archive_path_maybe
+    ] | append $otel_endpoint_maybe
+      | append $archive_path_maybe
 }
 
 export def "build_args diagnostics" [settings: record] : nothing -> list<string> {    #Arguments
